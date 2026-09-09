@@ -25,12 +25,21 @@ namespace TheLastSignal.Entities.Player
         private Rigidbody2D rb;
         private Vector2 moveInput;
         private Vector2 facingDirection = Vector2.down;
+        private PlayerDirection facing = PlayerDirection.Down;
 
         /// <summary>Raw (already clamped to length 1) movement input for this frame.</summary>
         public Vector2 MoveInput => moveInput;
 
         /// <summary>The last non-zero movement direction; persists while idle so the player keeps facing it.</summary>
         public Vector2 FacingDirection => facingDirection;
+
+        /// <summary>
+        /// The last non-zero movement direction collapsed to one of 4 cardinal directions (dominant
+        /// axis wins; ties resolve to horizontal). Persists while idle. For consumers that need a
+        /// discrete Up/Down/Left/Right value (animation, flashlight, interaction, role abilities, ...)
+        /// instead of the continuous <see cref="FacingDirection"/> vector.
+        /// </summary>
+        public PlayerDirection Facing => facing;
 
         /// <summary>True while the player has non-zero movement input.</summary>
         public bool IsMoving => moveInput.sqrMagnitude > 0.0001f;
@@ -108,7 +117,23 @@ namespace TheLastSignal.Entities.Player
             if (moveInput.sqrMagnitude > 0.0001f)
             {
                 facingDirection = moveInput.normalized;
+                facing = ResolveCardinalDirection(moveInput);
             }
+        }
+
+        /// <summary>
+        /// Collapses a movement vector to one of 4 cardinal directions by picking the axis with the
+        /// larger absolute component (ties resolve to horizontal), so diagonal input always resolves to
+        /// exactly one unambiguous direction instead of a blended/diagonal state.
+        /// </summary>
+        private static PlayerDirection ResolveCardinalDirection(Vector2 input)
+        {
+            if (Mathf.Abs(input.x) >= Mathf.Abs(input.y))
+            {
+                return input.x >= 0f ? PlayerDirection.Right : PlayerDirection.Left;
+            }
+
+            return input.y >= 0f ? PlayerDirection.Up : PlayerDirection.Down;
         }
 
         /// <summary>
