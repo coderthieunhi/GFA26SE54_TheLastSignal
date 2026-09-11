@@ -41,6 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Floor
+    uniqueID: 1845129310
+    locked: 0
+  - name: Obstacles
+    uniqueID: 2541628192
+    locked: 0
+  - name: Characters
+    uniqueID: 3201948123
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []
