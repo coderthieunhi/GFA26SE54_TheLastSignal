@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TheLastSignal.Core.Interaction;
 
 namespace TheLastSignal.Entities.Player
 {
@@ -21,6 +22,8 @@ namespace TheLastSignal.Entities.Player
         [SerializeField] private float interactionRange = 2f;
         [SerializeField] private LayerMask interactableLayer;
         [SerializeField, Range(0f, 1f)] private float facingDotThreshold = 0.5f;
+
+        public float InteractionRange => interactionRange;
 
         private Rigidbody2D rb;
         private Vector2 moveInput;
@@ -48,7 +51,7 @@ namespace TheLastSignal.Entities.Player
         /// The interactable the player should be able to interact with right now, or null if none is
         /// in range. Recomputed every frame, so it never goes stale when the player moves out of range.
         /// </summary>
-        public Collider2D CurrentInteractable { get; private set; }
+        public IInteractable CurrentInteractable { get; private set; }
 
         private void Awake()
         {
@@ -68,12 +71,30 @@ namespace TheLastSignal.Entities.Player
         private void Update()
         {
             ReadMovementInput();
+            ReadInteractionInput();
             UpdateInteractionDetection();
         }
 
         private void FixedUpdate()
         {
             ApplyMovement(moveInput);
+        }
+
+        private void ReadInteractionInput()
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.eKey.wasPressedThisFrame)
+            {
+                AttemptInteraction();
+            }
+        }
+
+        private void AttemptInteraction()
+        {
+            if (CurrentInteractable != null)
+            {
+                CurrentInteractable.Interact(this);
+            }
         }
 
         /// <summary>
@@ -162,20 +183,26 @@ namespace TheLastSignal.Entities.Player
                 return;
             }
 
-            Collider2D facedHit = null;
+            IInteractable facedInteractable = null;
             float facedBestDot = facingDotThreshold;
-            Collider2D closestHit = null;
+            IInteractable closestInteractable = null;
             float closestSqrDistance = float.MaxValue;
 
             foreach (Collider2D hit in hits)
             {
+                IInteractable interactable = hit.GetComponent<IInteractable>();
+                if (interactable == null || !interactable.CanInteract(this))
+                {
+                    continue;
+                }
+
                 Vector2 toHit = (Vector2)hit.bounds.center - rb.position;
                 float sqrDistance = toHit.sqrMagnitude;
 
                 if (sqrDistance < closestSqrDistance)
                 {
                     closestSqrDistance = sqrDistance;
-                    closestHit = hit;
+                    closestInteractable = interactable;
                 }
 
                 if (sqrDistance > 0.0001f)
@@ -184,12 +211,12 @@ namespace TheLastSignal.Entities.Player
                     if (dot > facedBestDot)
                     {
                         facedBestDot = dot;
-                        facedHit = hit;
+                        facedInteractable = interactable;
                     }
                 }
             }
 
-            CurrentInteractable = facedHit != null ? facedHit : closestHit;
+            CurrentInteractable = facedInteractable != null ? facedInteractable : closestInteractable;
         }
 
         private void OnDrawGizmosSelected()

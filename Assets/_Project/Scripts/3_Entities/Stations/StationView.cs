@@ -1,5 +1,6 @@
 using UnityEngine;
 using TheLastSignal.Systems.Tasks;
+using TheLastSignal.Core.Interaction;
 
 namespace TheLastSignal.Entities.Stations
 {
@@ -9,10 +10,8 @@ namespace TheLastSignal.Entities.Stations
     /// visually to a task ticket assigned by TaskTicketSystem. Never contains game rules itself, per
     /// ARCHITECTURE_RULES.md Rule 2.
     /// </summary>
-    public abstract class StationView : MonoBehaviour
+    public abstract class StationView : InteractableBase
     {
-        /// <summary>Called when a player interacts with this station. Must route through a ServerRpc.</summary>
-        public abstract void Interact();
 
         /// <summary>Called when TaskTicketSystem (via OnTaskGenerated) assigns a ticket to this station.</summary>
         public abstract void OnTicketAssigned(TaskData ticket);
