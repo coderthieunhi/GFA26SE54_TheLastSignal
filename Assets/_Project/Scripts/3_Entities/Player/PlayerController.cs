@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TheLastSignal.Core.Interaction;
+using TheLastSignal.Entities.Camera;
 
 namespace TheLastSignal.Entities.Player
 {
@@ -65,6 +66,19 @@ namespace TheLastSignal.Entities.Player
             if (playerLayer >= 0)
             {
                 gameObject.layer = playerLayer;
+            }
+        }
+
+        private void Start()
+        {
+            // Hand this player's Transform to the local camera as its follow target. Deliberately not
+            // a scene-wide "find the player" lookup on the camera's side (ARCHITECTURE_RULES.md): in a
+            // future co-op version, each client's camera must target only its own local player, so the
+            // player is the one announcing itself here rather than the camera searching for one.
+            UnityEngine.Camera mainCamera = UnityEngine.Camera.main;
+            if (mainCamera != null && mainCamera.TryGetComponent(out CameraFollow cameraFollow))
+            {
+                cameraFollow.SetTarget(transform);
             }
         }
 
