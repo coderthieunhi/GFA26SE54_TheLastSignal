@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TheLastSignal.Entities.Camera;
+using TheLastSignal.Entities.Interaction;
 
 namespace TheLastSignal.Entities.Player
 {
@@ -83,6 +84,46 @@ namespace TheLastSignal.Entities.Player
         {
             ReadMovementInput();
             UpdateInteractionDetection();
+            HandleInteractionInput();
+        }
+
+        private void HandleInteractionInput()
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.eKey.wasPressedThisFrame)
+            {
+                TriggerInteraction();
+            }
+        }
+
+        /// <summary>
+        /// Attempts to interact with <see cref="CurrentInteractable"/>. Supports any <see cref="IInteractable"/>
+        /// implementer (e.g. Door) as well as legacy <see cref="Stations.StationView"/>.
+        /// </summary>
+        public void TriggerInteraction()
+        {
+            if (CurrentInteractable == null)
+            {
+                return;
+            }
+
+            // Check for IInteractable on the collider or its parents
+            if (CurrentInteractable.TryGetComponent(out IInteractable interactable) ||
+                CurrentInteractable.GetComponentInParent<IInteractable>() is { } parentInteractable && (interactable = parentInteractable) != null)
+            {
+                if (interactable.CanInteract)
+                {
+                    interactable.Interact(gameObject);
+                }
+                return;
+            }
+
+            // Fallback for StationView if not implementing IInteractable
+            if (CurrentInteractable.TryGetComponent(out Stations.StationView station) ||
+                CurrentInteractable.GetComponentInParent<Stations.StationView>() is { } parentStation && (station = parentStation) != null)
+            {
+                station.Interact();
+            }
         }
 
         private void FixedUpdate()
