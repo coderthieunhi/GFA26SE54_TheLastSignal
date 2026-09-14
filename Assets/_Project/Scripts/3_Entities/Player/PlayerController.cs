@@ -204,8 +204,9 @@ namespace TheLastSignal.Entities.Player
 
         /// <summary>
         /// Finds interactable colliders within range and selects the one the player is facing; falls
-        /// back to the closest one if none is faced directly. Only identifies the target — Story 1.2
-        /// handles actually triggering interaction on it.
+        /// back to the closest one if none is faced directly. Only selects colliders that actually
+        /// implement <see cref="IInteractable"/> (or legacy <see cref="Stations.StationView"/>),
+        /// ignoring any non-interactive colliders that may share the interactable layer (such as TaskLocationMarker).
         /// </summary>
         private void UpdateInteractionDetection()
         {
@@ -224,6 +225,15 @@ namespace TheLastSignal.Entities.Player
 
             foreach (Collider2D hit in hits)
             {
+                // Filter: only consider colliders that have an IInteractable or StationView component
+                if (!hit.TryGetComponent(out IInteractable _) &&
+                    hit.GetComponentInParent<IInteractable>() == null &&
+                    !hit.TryGetComponent(out Stations.StationView _) &&
+                    hit.GetComponentInParent<Stations.StationView>() == null)
+                {
+                    continue;
+                }
+
                 Vector2 toHit = (Vector2)hit.bounds.center - rb.position;
                 float sqrDistance = toHit.sqrMagnitude;
 

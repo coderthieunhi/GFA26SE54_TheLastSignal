@@ -9,6 +9,19 @@ using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.EditorTools
 {
+    /// <summary>
+    /// =========================================================================================
+    /// BẢN GHI THAM CHIẾU KẾT CẤU BẢN ĐỒ CƠ SỞ (FACILITY MAP REFERENCE)
+    /// ĐÃ CHỐT CHÍNH THỨC NGÀY: 14/09/2026
+    /// 
+    /// LƯU Ý QUAN TRỌNG:
+    /// Kể từ ngày 14/09/2026, Scene 'SampleScene.unity' là NGUỒN SỰ THẬT DUY NHẤT (Single Source of Truth).
+    /// Mọi thay đổi bản đồ sau này PHẢI được cập nhật trực tiếp trong Scene hoặc tài liệu tham chiếu 
+    /// 'Assets/_Project/Documentation/Facility_Final_v1.md'.
+    /// Menu 'Tools > Facility > Generate Prototype Tilemap' đã được trang bị hộp thoại cảnh báo xác nhận
+    /// để ngăn chặn việc ghi đè ngoài ý muốn.
+    /// =========================================================================================
+    /// </summary>
     public static class PrototypeTilemapSetup
     {
         private const string TileDir = "Assets/_Project/Tiles";
@@ -74,21 +87,21 @@ namespace TheLastSignal.EditorTools
 
             // --- 3 Nodes ---
             new MapBlock("Node_A", BlockType.Node, -3, 14, 2, 19),
-            new MapBlock("Node_B", BlockType.Node, -3, -8, 2, -3),
+            new MapBlock("Node_B", BlockType.Node, -3, -9, 2, -2),
             new MapBlock("Node_C", BlockType.Node, -3, -29, 2, -25),
 
             // --- Corridors on Main Spine (Standard 2-tile doorway width: X in [-1, 0]) ---
             new MapBlock("Corridor_Crew_NodeA", BlockType.Corridor, -1, 20, 0, 22),
             new MapBlock("Corridor_NodeA_Airlock", BlockType.Corridor, -1, 9, 0, 13),
-            new MapBlock("Corridor_Airlock_NodeB", BlockType.Corridor, -1, -2, 0, 0),
-            new MapBlock("Corridor_NodeB_Cargo", BlockType.Corridor, -1, -11, 0, -9),
+            new MapBlock("Corridor_Airlock_NodeB", BlockType.Corridor, -1, -1, 0, 0),
+            new MapBlock("Corridor_NodeB_Cargo", BlockType.Corridor, -1, -11, 0, -10),
             new MapBlock("Corridor_Cargo_NodeC", BlockType.Corridor, -1, -24, 0, -22),
 
             // --- Lateral Corridors (East-West) ---
             new MapBlock("Corridor_MedBay_NodeA", BlockType.Corridor, -6, 16, -4, 17),
             new MapBlock("Corridor_NodeA_Console", BlockType.Corridor, 3, 16, 5, 17),
-            new MapBlock("Corridor_MessHall_NodeB", BlockType.Corridor, -6, -6, -4, -5),
-            new MapBlock("Corridor_NodeB_VentShaft", BlockType.Corridor, 3, -6, 5, -5),
+            new MapBlock("Corridor_MessHall_NodeB", BlockType.Corridor, -6, -4, -4, -3),
+            new MapBlock("Corridor_NodeB_VentShaft", BlockType.Corridor, 3, -4, 5, -3),
 
             // --- Node C Stem & T-Branch Corridors ---
             new MapBlock("Corridor_C_Stem", BlockType.Corridor, -1, -36, 0, -30),
@@ -100,7 +113,12 @@ namespace TheLastSignal.EditorTools
 
             // --- Facility Loop Corridors (Vent Shaft South -> Node C East) ---
             new MapBlock("Loop_Vertical", BlockType.Corridor, 14, -28, 15, -10),
-            new MapBlock("Loop_Horizontal_Bend", BlockType.Corridor, 3, -28, 14, -27)
+            new MapBlock("Loop_Horizontal_Bend", BlockType.Corridor, 3, -28, 14, -27),
+
+            // --- Facility West Loop Corridors (Med Bay West -> Deep Storage West) ---
+            new MapBlock("Loop_West_Vertical", BlockType.Corridor, -19, -34, -18, 15),
+            new MapBlock("Loop_West_Bend_North", BlockType.Corridor, -17, 14, -15, 15),
+            new MapBlock("Loop_West_Bend_South", BlockType.Corridor, -17, -34, -16, -33)
         };
 
         [InitializeOnLoadMethod]
@@ -112,6 +130,19 @@ namespace TheLastSignal.EditorTools
         [MenuItem("Tools/Facility/Generate Prototype Tilemap", false, 1)]
         public static void GeneratePrototypeTilemap()
         {
+            bool proceed = EditorUtility.DisplayDialog(
+                "Cảnh báo: Bản đồ đã được chốt chính thức",
+                "Map đã được chốt làm bản chính thức. Chạy lại sẽ ghi đè toàn bộ thay đổi thủ công trong Scene. Bạn có chắc chắn muốn tiếp tục?",
+                "Tiếp tục",
+                "Hủy bỏ"
+            );
+
+            if (!proceed)
+            {
+                Debug.Log("<color=yellow>[FacilityTilemap] Thao tác tạo lại bản đồ đã bị hủy để bảo vệ dữ liệu Scene chính thức.</color>");
+                return;
+            }
+
             EnsureTileAssets();
 
             AssetDatabase.Refresh();
@@ -346,11 +377,11 @@ namespace TheLastSignal.EditorTools
             // 5. Airlock South Door: wall opening row Y=0, span X in [-1, 0] (bounds [-1.0, 1.0]), wall Left: (-2, 0), Right: (1, 0)
             CreateDoorInstance("Door_Airlock_South", doorsRoot.transform, new Vector3(0.0f, 0.5f, 0f), true, hSprite);
 
-            // 6. Mess Hall East Door: wall opening col X=-6, span Y in [-6, -5] (bounds [-6.0, -4.0]), wall Bottom: (-6, -7), Top: (-6, -4)
-            CreateDoorInstance("Door_MessHall", doorsRoot.transform, new Vector3(-5.5f, -5.0f, 0f), false, vSprite);
+            // 6. Mess Hall East Door: wall opening col X=-6, span Y in [-4, -3] (bounds [-4.0, -2.0]), wall Bottom: (-6, -5), Top: (-6, -2)
+            CreateDoorInstance("Door_MessHall", doorsRoot.transform, new Vector3(-5.5f, -3.0f, 0f), false, vSprite);
 
-            // 7. Vent Shaft West Door: wall opening col X=5, span Y in [-6, -5] (bounds [-6.0, -4.0]), wall Bottom: (5, -7), Top: (5, -4)
-            CreateDoorInstance("Door_VentShaft", doorsRoot.transform, new Vector3(5.5f, -5.0f, 0f), false, vSprite);
+            // 7. Vent Shaft West Door: wall opening col X=5, span Y in [-4, -3] (bounds [-4.0, -2.0]), wall Bottom: (5, -5), Top: (5, -2)
+            CreateDoorInstance("Door_VentShaft", doorsRoot.transform, new Vector3(5.5f, -3.0f, 0f), false, vSprite);
 
             // 8. Cargo Hold North Door: wall opening row Y=-11, span X in [-1, 0] (bounds [-1.0, 1.0]), wall Left: (-2, -11), Right: (1, -11)
             CreateDoorInstance("Door_CargoHold_North", doorsRoot.transform, new Vector3(0.0f, -10.5f, 0f), true, hSprite);
@@ -389,17 +420,55 @@ namespace TheLastSignal.EditorTools
             Sprite tableSprite = AssetDatabase.LoadAssetAtPath<Sprite>(TablePngPath);
             Sprite equipSprite = AssetDatabase.LoadAssetAtPath<Sprite>(EquipmentPngPath);
 
-            // 1. Obstacle_MedBay_Crate: room [-14,14,-7,19], pos (-12, 17), box (1, 1)
-            CreateObstacleInstance("Obstacle_MedBay_Crate", obstaclesRoot.transform, new Vector3(-12.0f, 17.0f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            Sprite structSprite = AssetDatabase.LoadAssetAtPath<Sprite>(StructurePngPath);
 
-            // 2. Obstacle_CargoHold_Crate_01: room [-6,-21,5,-12], pos (-3, -15), box (1, 1)
-            CreateObstacleInstance("Obstacle_CargoHold_Crate_01", obstaclesRoot.transform, new Vector3(-3.0f, -15.0f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            // 1. Obstacle_MedBay_Crate: room [-14,14,-7,19], pos (-9.0, 16.5), box (2, 2) - doubled from 1x1, sits along route to TaskLoc_MedBay, >= 2 tiles from East Door (-6, 16..17)
+            CreateObstacleInstance("Obstacle_MedBay_Crate", obstaclesRoot.transform, new Vector3(-9.0f, 16.5f, 0f), new Vector2(2.0f, 2.0f), crateSprite);
 
-            // 3. Obstacle_CargoHold_Table_02: room [-6,-21,5,-12], pos (2, -18), box (2, 1)
-            CreateObstacleInstance("Obstacle_CargoHold_Table_02", obstaclesRoot.transform, new Vector3(2.0f, -18.0f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+            // 2. Obstacle_DeepStorage_Equipment: room [-15,-39,-6,-32], pos (-8.0, -35.5), box (2, 3) - doubled from 1x2, sits along route to TaskLoc_DeepStorage, >= 2 tiles from East Door (-5, -36..-35)
+            CreateObstacleInstance("Obstacle_DeepStorage_Equipment", obstaclesRoot.transform, new Vector3(-8.0f, -35.5f, 0f), new Vector2(2.0f, 3.0f), equipSprite);
 
-            // 4. Obstacle_DeepStorage_Equipment: room [-15,-39,-6,-32], pos (-12, -35), box (1, 2)
-            CreateObstacleInstance("Obstacle_DeepStorage_Equipment", obstaclesRoot.transform, new Vector3(-12.0f, -35.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
+            // 3-5. Cargo Hold Obstacle Cluster: 3 objects forming a horizontal bar spanning 4 tiles East-West at Y=-15.5 across the central spine
+            // Forces player entering from North (-1..0, -11) or South (-1..0, -22) to navigate around left or right.
+            CreateObstacleInstance("Obstacle_CargoHold_Crate_01", obstaclesRoot.transform, new Vector3(-2.0f, -15.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            CreateObstacleInstance("Obstacle_CargoHold_Table_02", obstaclesRoot.transform, new Vector3(-0.5f, -15.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+            CreateObstacleInstance("Obstacle_CargoHold_Crate_03", obstaclesRoot.transform, new Vector3(1.0f, -15.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+
+            // --- 3 Evacuation Friction Obstacles (Adds gentle chicane/turning without blocking any doorway or corridor) ---
+            // 6. Obstacle_Loop_Chicane: Loop_Horizontal_Bend [3..14, -28..-27], placed on North row (Y=-26.5), leaves South row fully open (100% passable chicane)
+            CreateObstacleInstance("Obstacle_Loop_Chicane", obstaclesRoot.transform, new Vector3(8.5f, -26.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+
+            // 7. Obstacle_NodeC_Center: Node_C [-3..2, -29..-25], placed in NW corner at (-2.5, -25.5), clear of North spine (-1..0), South spine (-1..0), and East bend (2)
+            CreateObstacleInstance("Obstacle_NodeC_Center", obstaclesRoot.transform, new Vector3(-2.5f, -25.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+
+            // 8. Obstacle_NodeB_Center: Node_B [-3..2, -8..-3], placed in SW corner at (-2.5, -6.5), clear of North spine (-1..0), South spine (-1..0), West corridor (-4..-3), and East corridor (-4..-3)
+            CreateObstacleInstance("Obstacle_NodeB_Center", obstaclesRoot.transform, new Vector3(-2.5f, -6.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+
+            // --- 4 Balancing Obstacles for Empty Rooms & Node A ---
+            // 9. Obstacle_CrewQuarters_Table: Crew_Quarters [-5..4, 23..30], placed at West (-3.0, 26.5) with size (2x1), off-axis from South door (-1..0) to TaskLoc (-0.5)
+            CreateObstacleInstance("Obstacle_CrewQuarters_Table", obstaclesRoot.transform, new Vector3(-3.0f, 26.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+
+            // 10. Obstacle_MessHall_Table: Mess_Hall [-14..-7, -9..-2], placed at North (-10.5, -3.5) with size (2x1), off-axis from East door (-6, -6..-5) to TaskLoc (-10.5, -5.5)
+            CreateObstacleInstance("Obstacle_MessHall_Table", obstaclesRoot.transform, new Vector3(-10.5f, -3.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+
+            // 11. Obstacle_VentShaft_Equipment: Vent_Shaft [6..13, -10..-1], placed at North (9.5, -3.0) with size (2x1), off-axis from West door (5, -6..-5) to TaskLoc (9.5, -5.5), clear of South Loop entrance (Y=-10)
+            CreateObstacleInstance("Obstacle_VentShaft_Equipment", obstaclesRoot.transform, new Vector3(9.5f, -3.0f, 0f), new Vector2(2.0f, 1.0f), equipSprite);
+
+            // 12. Obstacle_NodeA_Center: Node_A [-3..2, 14..19], placed in NW corner at (-2.5, 18.5) with size (1x1), matching Node B & C pattern, clear of all 4 doorway axes
+            CreateObstacleInstance("Obstacle_NodeA_Center", obstaclesRoot.transform, new Vector3(-2.5f, 18.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+
+            // --- 6 Obstacles for 3 Dual Console Rooms (Difficulty Tiered) ---
+            // 13. Console Alpha (Easy): 1 technical cable box (1x2) in SE corner, far from Door and TaskLoc
+            CreateObstacleInstance("Obstacle_ConsoleAlpha_CableBox", obstaclesRoot.transform, new Vector3(14.0f, 14.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
+
+            // 14-15. Power Relay Bay (Medium): 2 conduit/equipment racks (1x2) placed symmetrically on North and South flanks at East wall
+            CreateObstacleInstance("Obstacle_PowerRelay_Conduit_North", obstaclesRoot.transform, new Vector3(13.5f, -33.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_PowerRelay_Conduit_South", obstaclesRoot.transform, new Vector3(13.5f, -38.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
+
+            // 16-18. Reactor Core (Finale): 3 coolant tanks / structural supports filling out 10x10 space without blocking doorway or TaskLoc
+            CreateObstacleInstance("Obstacle_ReactorCore_CoolantTank_West", obstaclesRoot.transform, new Vector3(6.0f, -47.5f, 0f), new Vector2(1.0f, 2.0f), structSprite);
+            CreateObstacleInstance("Obstacle_ReactorCore_CoolantTank_East", obstaclesRoot.transform, new Vector3(13.5f, -47.5f, 0f), new Vector2(1.0f, 2.0f), structSprite);
+            CreateObstacleInstance("Obstacle_ReactorCore_BasePipe_South", obstaclesRoot.transform, new Vector3(9.5f, -51.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
         }
 
         private static GameObject CreateObstacleInstance(string name, Transform parent, Vector3 position, Vector2 colliderSize, Sprite sprite)
@@ -472,23 +541,32 @@ namespace TheLastSignal.EditorTools
             Sprite cpSprite = AssetDatabase.LoadAssetAtPath<Sprite>(MarkerControlPanelPngPath);
             Sprite exitSprite = AssetDatabase.LoadAssetAtPath<Sprite>(MarkerExitPngPath);
 
-            // 9 Task Locations across the facility (excluding Airlock Spawn per brief)
-            CreateTaskLocationInstance("TaskLoc_CrewQuarters", taskLocsRoot.transform, new Vector3(-0.5f, 26.5f, 0f), cpSprite);
-            CreateTaskLocationInstance("TaskLoc_MedBay", taskLocsRoot.transform, new Vector3(-10.5f, 16.5f, 0f), compSprite);
-            CreateTaskLocationInstance("TaskLoc_ConsoleAlpha", taskLocsRoot.transform, new Vector3(10.5f, 16.5f, 0f), cpSprite);
-            CreateTaskLocationInstance("TaskLoc_MessHall", taskLocsRoot.transform, new Vector3(-10.5f, -5.5f, 0f), mechSprite);
-            CreateTaskLocationInstance("TaskLoc_VentShaft", taskLocsRoot.transform, new Vector3(9.5f, -5.5f, 0f), mechSprite);
-            CreateTaskLocationInstance("TaskLoc_CargoHold", taskLocsRoot.transform, new Vector3(-0.5f, -16.5f, 0f), exitSprite);
-            CreateTaskLocationInstance("TaskLoc_DeepStorage", taskLocsRoot.transform, new Vector3(-10.5f, -35.5f, 0f), mechSprite);
-            CreateTaskLocationInstance("TaskLoc_PowerRelayBay", taskLocsRoot.transform, new Vector3(9.5f, -35.5f, 0f), genSprite);
-            CreateTaskLocationInstance("TaskLoc_ReactorCore", taskLocsRoot.transform, new Vector3(9.5f, -47.5f, 0f), genSprite);
+            // 10 Task Locations across the facility (excluding Airlock Spawn per brief)
+            // Group 2: Dual Console rooms (ConsoleAlpha, PowerRelayBay, ReactorCore) enlarged to 2x2 physical colliders
+            CreateTaskLocationInstance("TaskLoc_CrewQuarters", taskLocsRoot.transform, new Vector3(-0.5f, 26.5f, 0f), cpSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_MedBay", taskLocsRoot.transform, new Vector3(-10.5f, 16.5f, 0f), compSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_ConsoleAlpha", taskLocsRoot.transform, new Vector3(10.5f, 16.5f, 0f), cpSprite, new Vector2(2.0f, 2.0f));
+            CreateTaskLocationInstance("TaskLoc_MessHall", taskLocsRoot.transform, new Vector3(-10.5f, -5.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_VentShaft", taskLocsRoot.transform, new Vector3(9.5f, -5.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_CargoHold", taskLocsRoot.transform, new Vector3(-0.5f, -16.5f, 0f), exitSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_CargoHold_02", taskLocsRoot.transform, new Vector3(-4.0f, -19.0f, 0f), exitSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_DeepStorage", taskLocsRoot.transform, new Vector3(-10.5f, -35.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_PowerRelayBay", taskLocsRoot.transform, new Vector3(9.5f, -35.5f, 0f), genSprite, new Vector2(2.0f, 2.0f));
+            CreateTaskLocationInstance("TaskLoc_ReactorCore", taskLocsRoot.transform, new Vector3(9.5f, -47.5f, 0f), genSprite, new Vector2(2.0f, 2.0f));
         }
 
-        private static GameObject CreateTaskLocationInstance(string name, Transform parent, Vector3 position, Sprite markerSprite = null)
+        private static GameObject CreateTaskLocationInstance(string name, Transform parent, Vector3 position, Sprite markerSprite = null, Vector2? colliderSize = null)
         {
             GameObject locGo = new GameObject(name);
             locGo.transform.SetParent(parent, false);
             locGo.transform.position = position;
+
+            // Set Layer 10 (Interactable) so PlayerController's Physics2D.OverlapCircleAll detects it
+            int interactableLayer = LayerMask.NameToLayer("Interactable");
+            if (interactableLayer != -1)
+            {
+                locGo.layer = interactableLayer;
+            }
 
             if (markerSprite != null)
             {
@@ -497,6 +575,11 @@ namespace TheLastSignal.EditorTools
                 sr.sortingLayerName = "Obstacles";
                 sr.sortingOrder = 3;
             }
+
+            // Solid Physical Collider for realistic physical station presence
+            BoxCollider2D boxCol = locGo.AddComponent<BoxCollider2D>();
+            boxCol.size = colliderSize ?? new Vector2(1.0f, 1.0f);
+            boxCol.isTrigger = false;
 
             TaskLocationMarker marker = locGo.AddComponent<TaskLocationMarker>();
             marker.Initialize(name);
@@ -645,6 +728,85 @@ namespace TheLastSignal.EditorTools
             if (allNonDoorReachable)
             {
                 Debug.Log($"<color=green>[FacilityTilemap] CLOSED DOORS CONNECTIVITY VERIFIED 100%: All non-door rooms & spine remain connected without soft-lock ({visitedClosed.Count} tiles reached)!</color>");
+            }
+
+            // 3. Isolated 2-Way BFS for West Loop (Med_Bay <-> Deep_Storage independent of main spine)
+            HashSet<Vector3Int> westLoopFloors = new HashSet<Vector3Int>();
+            string[] westLoopBlockNames = new[] { "Med_Bay", "Loop_West_Vertical", "Loop_West_Bend_North", "Loop_West_Bend_South", "Deep_Storage" };
+            foreach (var block in FacilityBlocks)
+            {
+                if (System.Array.IndexOf(westLoopBlockNames, block.Name) != -1)
+                {
+                    for (int x = block.MinX; x <= block.MaxX; x++)
+                    {
+                        for (int y = block.MinY; y <= block.MaxY; y++)
+                        {
+                            westLoopFloors.Add(new Vector3Int(x, y, 0));
+                        }
+                    }
+                }
+            }
+
+            Vector3Int medBayWestTile = new Vector3Int(-14, 14, 0);
+            Vector3Int deepStorageWestTile = new Vector3Int(-15, -34, 0);
+
+            // Test Direction 1: Med_Bay -> Deep_Storage
+            queue.Clear();
+            HashSet<Vector3Int> visitedWestA = new HashSet<Vector3Int>();
+            queue.Enqueue(medBayWestTile);
+            visitedWestA.Add(medBayWestTile);
+            bool reachedDeepStorage = false;
+            while (queue.Count > 0)
+            {
+                Vector3Int curr = queue.Dequeue();
+                if (curr == deepStorageWestTile)
+                {
+                    reachedDeepStorage = true;
+                    break;
+                }
+                foreach (var dir in cardinal)
+                {
+                    Vector3Int nbr = curr + dir;
+                    if (westLoopFloors.Contains(nbr) && !visitedWestA.Contains(nbr))
+                    {
+                        visitedWestA.Add(nbr);
+                        queue.Enqueue(nbr);
+                    }
+                }
+            }
+
+            // Test Direction 2: Deep_Storage -> Med_Bay
+            queue.Clear();
+            HashSet<Vector3Int> visitedWestB = new HashSet<Vector3Int>();
+            queue.Enqueue(deepStorageWestTile);
+            visitedWestB.Add(deepStorageWestTile);
+            bool reachedMedBay = false;
+            while (queue.Count > 0)
+            {
+                Vector3Int curr = queue.Dequeue();
+                if (curr == medBayWestTile)
+                {
+                    reachedMedBay = true;
+                    break;
+                }
+                foreach (var dir in cardinal)
+                {
+                    Vector3Int nbr = curr + dir;
+                    if (westLoopFloors.Contains(nbr) && !visitedWestB.Contains(nbr))
+                    {
+                        visitedWestB.Add(nbr);
+                        queue.Enqueue(nbr);
+                    }
+                }
+            }
+
+            if (reachedDeepStorage && reachedMedBay)
+            {
+                Debug.Log("<color=green>[FacilityTilemap] WEST LOOP ISOLATED 2-WAY BFS VERIFIED 100%: Direct bypass Med_Bay <-> Deep_Storage confirmed!</color>");
+            }
+            else
+            {
+                Debug.LogError($"[FacilityTilemap] WEST LOOP ISOLATED BFS FAILED! Forward: {reachedDeepStorage}, Backward: {reachedMedBay}");
             }
         }
 
