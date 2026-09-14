@@ -81,11 +81,13 @@ namespace TheLastSignal.UI
                 case GameSessionState.Gameplay:
                     sessionStatusText.text = string.Empty;
                     break;
+                case GameSessionState.Win:
                 case GameSessionState.GameComplete:
-                    sessionStatusText.text = "Game Complete — press R to restart";
+                    sessionStatusText.text = "<b><color=#44FF44>MISSION COMPLETE</color></b>\n<size=24>Objective Cleared — Press [R] to Restart</size>";
                     break;
+                case GameSessionState.Lose:
                 case GameSessionState.GameOver:
-                    sessionStatusText.text = "Game Over — press R to restart";
+                    sessionStatusText.text = "<b><color=#FF4444>GAME OVER</color></b>\n<size=24>Mission Failed — Press [R] to Restart</size>";
                     break;
                 default:
                     sessionStatusText.text = string.Empty;

@@ -11,21 +11,40 @@ namespace TheLastSignal.Entities
     [RequireComponent(typeof(Collider2D))]
     public class ExitZone : MonoBehaviour
     {
+        private bool isTriggered = false;
+
+        public bool IsTriggered => isTriggered;
+
         private void Reset()
         {
             Collider2D col = GetComponent<Collider2D>();
-            col.isTrigger = true;
+            if (col != null)
+            {
+                col.isTrigger = true;
+            }
+        }
+
+        public void ResetTrigger()
+        {
+            isTriggered = false;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (isTriggered)
+            {
+                return;
+            }
+
             if (other.GetComponent<PlayerController>() == null)
             {
                 return;
             }
 
-            if (GameManager.Instance != null)
+            if (GameManager.Instance != null && GameManager.Instance.IsPlaying)
             {
+                isTriggered = true;
+                Debug.Log("[ExitZone] Player reached exit zone; notifying win condition.");
                 GameManager.Instance.NotifyExitReached();
             }
         }

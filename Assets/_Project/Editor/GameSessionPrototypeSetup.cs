@@ -137,12 +137,35 @@ namespace TheLastSignal.EditorTools
             sr.color = new Color(0.25f, 1f, 0.4f, 0.85f);
             sr.sortingOrder = 5;
 
+            GameObject hazardGo = GameObject.Find("Hazard_Zone");
+            if (hazardGo == null)
+            {
+                hazardGo = new GameObject("Hazard_Zone");
+                Undo.RegisterCreatedObjectUndo(hazardGo, "Create Hazard_Zone");
+            }
+
+            hazardGo.transform.position = new Vector3(-0.5f, -3f, 0f);
+            BoxCollider2D hazardBox = GetOrAddComponent<BoxCollider2D>(hazardGo);
+            hazardBox.isTrigger = true;
+            hazardBox.size = new Vector2(2f, 2f);
+            GetOrAddComponent<HazardZone>(hazardGo);
+
+            SpriteRenderer hazardSr = GetOrAddComponent<SpriteRenderer>(hazardGo);
+            if (playerSr != null && playerSr.sprite != null)
+            {
+                hazardSr.sprite = playerSr.sprite;
+                hazardSr.sortingLayerName = playerSr.sortingLayerName;
+            }
+
+            hazardSr.color = new Color(1f, 0.25f, 0.25f, 0.85f);
+            hazardSr.sortingOrder = 5;
+
             EnsureHud(objectiveChannel, sessionChannel);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log("[GameSessionPrototypeSetup] SampleScene wired: GameSession, SpawnArea P1-P4, Exit_Zone, HUD.");
+            Debug.Log("[GameSessionPrototypeSetup] SampleScene wired: GameSession, SpawnArea P1-P4, Exit_Zone, Hazard_Zone, HUD.");
         }
 
         private static T GetOrAddComponent<T>(GameObject go) where T : Component

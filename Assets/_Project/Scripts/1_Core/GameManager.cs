@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TheLastSignal.Core.EventBus;
+using TheLastSignal.Entities;
 using TheLastSignal.Systems;
 using TheLastSignal.Systems.Objectives;
 
@@ -29,6 +30,7 @@ namespace TheLastSignal.Core
         private IGameSystem[] activeSystems = System.Array.Empty<IGameSystem>();
 
         public GameSessionState CurrentState => currentState;
+        public bool IsPlaying => currentState == GameSessionState.Gameplay;
 
         public ObjectiveData CurrentObjective =>
             objectiveSystem != null ? objectiveSystem.CurrentObjective : default;
@@ -68,10 +70,20 @@ namespace TheLastSignal.Core
         private void Update()
         {
             Keyboard keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.rKey.wasPressedThisFrame)
+            if (keyboard != null)
             {
-                RestartSession();
-                return;
+                if (keyboard.rKey.wasPressedThisFrame)
+                {
+                    RestartSession();
+                    return;
+                }
+
+                if (IsPlaying && keyboard.kKey.wasPressedThisFrame)
+                {
+                    Debug.Log("[GameManager] Debug fail key [K] pressed.");
+                    NotifyPlayerDied("Debug Key [K]");
+                    return;
+                }
             }
 
             for (int i = 0; i < activeSystems.Length; i++)
@@ -83,6 +95,7 @@ namespace TheLastSignal.Core
         public void StartSession()
         {
             SetState(GameSessionState.GameStart);
+            ResetTriggerZones();
             InitializeGame();
             SpawnPlayer();
             InitializeObjective();
@@ -110,14 +123,41 @@ namespace TheLastSignal.Core
             HandleWin();
         }
 
-        public void NotifyPlayerFailed()
+        public void NotifyPlayerDied(string reason = "Hazard")
         {
             if (currentState != GameSessionState.Gameplay)
             {
                 return;
             }
 
+            Debug.Log($"[GameManager] Player failed due to: {reason}");
             HandleLose();
+        }
+
+        public void NotifyPlayerFailed()
+        {
+            NotifyPlayerDied("Player Failed");
+        }
+
+        public void ReturnToMenu()
+        {
+            Debug.Log("[GameManager] Return to menu requested.");
+            // Future epic hook: UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
+
+        private void ResetTriggerZones()
+        {
+            ExitZone[] exitZones = FindObjectsByType<ExitZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int i = 0; i < exitZones.Length; i++)
+            {
+                exitZones[i].ResetTrigger();
+            }
+
+            HazardZone[] hazardZones = FindObjectsByType<HazardZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int i = 0; i < hazardZones.Length; i++)
+            {
+                hazardZones[i].ResetTrigger();
+            }
         }
 
         private void InitializeGame()
