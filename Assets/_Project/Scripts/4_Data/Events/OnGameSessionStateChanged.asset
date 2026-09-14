@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: OnSanityChanged
-  m_EditorClassIdentifier: Assembly-CSharp:TheLastSignal.Core.EventBus:FloatEventChannelSO
+  m_Script: {fileID: 11500000, guid: 6d0f598645514de47ab82dd66c086a99, type: 3}
+  m_Name: OnGameSessionStateChanged
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Core.EventBus.GameSessionStateEventChannelSO

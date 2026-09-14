@@ -1,12 +1,18 @@
 using TheLastSignal.Systems.Tasks;
+using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.Entities.Stations
 {
     /// <summary>Radar station view. Presents radar-specific visuals and interaction prompts.</summary>
     public class RadarStation : StationView
     {
+        private void Awake()
+        {
+            promptMessage = "[E] Use Radar";
+        }
+
         /// <inheritdoc />
-        public override void Interact()
+        protected override void ProcessInteraction(PlayerController player)
         {
             // TODO: forward this interaction to the Host via ServerRpc.
         }

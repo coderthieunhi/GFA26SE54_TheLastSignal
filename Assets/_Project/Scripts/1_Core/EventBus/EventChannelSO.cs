@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
+using TheLastSignal.Core;
 using TheLastSignal.Systems.Tasks;
 using TheLastSignal.Systems.Monster;
+using TheLastSignal.Systems.Objectives;
 
 namespace TheLastSignal.Core.EventBus
 {
@@ -27,23 +29,5 @@ namespace TheLastSignal.Core.EventBus
         {
             OnEventRaised?.Invoke(payload);
         }
-    }
-
-    /// <summary>Concrete float-payload channel. Backs the OnSanityChanged.asset event (see EVENTS.md).</summary>
-    [CreateAssetMenu(menuName = "TheLastSignal/Events/Float Event Channel", fileName = "NewFloatEventChannel")]
-    public class FloatEventChannelSO : EventChannelSO<float>
-    {
-    }
-
-    /// <summary>Concrete TaskData-payload channel. Backs the OnTaskGenerated.asset event (see EVENTS.md).</summary>
-    [CreateAssetMenu(menuName = "TheLastSignal/Events/Task Data Event Channel", fileName = "NewTaskDataEventChannel")]
-    public class TaskDataEventChannelSO : EventChannelSO<TaskData>
-    {
-    }
-
-    /// <summary>Concrete MonsterState-payload channel. Backs the OnMonsterStateChanged.asset event (see EVENTS.md).</summary>
-    [CreateAssetMenu(menuName = "TheLastSignal/Events/Monster State Event Channel", fileName = "NewMonsterStateEventChannel")]
-    public class MonsterStateEventChannelSO : EventChannelSO<MonsterState>
-    {
     }
 }

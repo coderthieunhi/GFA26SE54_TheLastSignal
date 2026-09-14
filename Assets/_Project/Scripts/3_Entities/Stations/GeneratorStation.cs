@@ -1,12 +1,18 @@
 using TheLastSignal.Systems.Tasks;
+using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.Entities.Stations
 {
     /// <summary>Generator station view. Presents generator-specific visuals and interaction prompts.</summary>
     public class GeneratorStation : StationView
     {
+        private void Awake()
+        {
+            promptMessage = "[E] Repair Generator";
+        }
+
         /// <inheritdoc />
-        public override void Interact()
+        protected override void ProcessInteraction(PlayerController player)
         {
             // TODO: forward this interaction to the Host via ServerRpc.
         }
