@@ -35,18 +35,51 @@ namespace TheLastSignal.UI
         {
             if (localPlayer == null || promptText == null) return;
 
-            var interactable = localPlayer.CurrentInteractable;
-            if (interactable != null)
+            var hit = localPlayer.CurrentInteractable;
+            if (hit != null)
             {
-                if (promptContainer != null && !promptContainer.activeSelf)
-                    promptContainer.SetActive(true);
+                string prompt = null;
 
-                promptText.text = interactable.GetInteractionPrompt();
+                if (hit.TryGetComponent(out TheLastSignal.Entities.Interaction.IInteractable entityInteractable) ||
+                    hit.GetComponentInParent<TheLastSignal.Entities.Interaction.IInteractable>() is { } parentEntity && (entityInteractable = parentEntity) != null)
+                {
+                    if (entityInteractable.CanInteract)
+                    {
+                        prompt = entityInteractable.InteractionPrompt;
+                    }
+                }
+                else if (hit.TryGetComponent(out TheLastSignal.Core.Interaction.IInteractable coreInteractable) ||
+                         hit.GetComponentInParent<TheLastSignal.Core.Interaction.IInteractable>() is { } parentCore && (coreInteractable = parentCore) != null)
+                {
+                    if (coreInteractable.CanInteract(localPlayer))
+                    {
+                        prompt = coreInteractable.GetInteractionPrompt();
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(prompt))
+                {
+                    if (promptContainer != null && !promptContainer.activeSelf)
+                    {
+                        promptContainer.SetActive(true);
+                    }
+
+                    promptText.text = prompt;
+                }
+                else
+                {
+                    if (promptContainer != null && promptContainer.activeSelf)
+                    {
+                        promptContainer.SetActive(false);
+                    }
+                }
             }
             else
             {
                 if (promptContainer != null && promptContainer.activeSelf)
+                {
                     promptContainer.SetActive(false);
+                }
             }
         }
     }

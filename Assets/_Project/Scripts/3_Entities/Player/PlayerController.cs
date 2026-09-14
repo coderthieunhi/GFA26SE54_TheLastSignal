@@ -183,11 +183,22 @@ namespace TheLastSignal.Entities.Player
                 return;
             }
 
+            // Check for Core.Interaction.IInteractable (StationView, InteractableBase)
+            if (CurrentInteractable.TryGetComponent(out TheLastSignal.Core.Interaction.IInteractable coreInteractable) ||
+                CurrentInteractable.GetComponentInParent<TheLastSignal.Core.Interaction.IInteractable>() is { } parentCore && (coreInteractable = parentCore) != null)
+            {
+                if (coreInteractable.CanInteract(this))
+                {
+                    coreInteractable.Interact(this);
+                }
+                return;
+            }
+
             // Fallback for StationView if not implementing IInteractable
             if (CurrentInteractable.TryGetComponent(out Stations.StationView station) ||
                 CurrentInteractable.GetComponentInParent<Stations.StationView>() is { } parentStation && (station = parentStation) != null)
             {
-                station.Interact();
+                station.Interact(this);
             }
         }
 
@@ -295,11 +306,12 @@ namespace TheLastSignal.Entities.Player
 
             foreach (Collider2D hit in hits)
             {
-                // Filter: only consider colliders that have an IInteractable or StationView component
-                if (!hit.TryGetComponent(out IInteractable _) &&
-                    hit.GetComponentInParent<IInteractable>() == null &&
-                    !hit.TryGetComponent(out Stations.StationView _) &&
-                    hit.GetComponentInParent<Stations.StationView>() == null)
+                // Filter: only consider colliders that have an IInteractable (Entities or Core) or StationView component
+                bool isEntity = hit.TryGetComponent(out IInteractable _) || hit.GetComponentInParent<IInteractable>() != null;
+                bool isCore = hit.TryGetComponent(out TheLastSignal.Core.Interaction.IInteractable _) || hit.GetComponentInParent<TheLastSignal.Core.Interaction.IInteractable>() != null;
+                bool isStation = hit.TryGetComponent(out Stations.StationView _) || hit.GetComponentInParent<Stations.StationView>() != null;
+
+                if (!isEntity && !isCore && !isStation)
                 {
                     continue;
                 }
