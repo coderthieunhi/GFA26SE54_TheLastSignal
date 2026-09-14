@@ -30,6 +30,8 @@ namespace TheLastSignal.Entities.Player
         private Vector2 moveInput;
         private Vector2 facingDirection = Vector2.down;
         private PlayerDirection facing = PlayerDirection.Down;
+        private bool controlEnabled = false;
+        private int slotIndex;
 
         /// <summary>Raw (already clamped to length 1) movement input for this frame.</summary>
         public Vector2 MoveInput => moveInput;
@@ -47,6 +49,11 @@ namespace TheLastSignal.Entities.Player
 
         /// <summary>True while the player has non-zero movement input.</summary>
         public bool IsMoving => moveInput.sqrMagnitude > 0.0001f;
+
+        /// <summary>Spawn slot this instance occupies (0 = P1 … 3 = P4).</summary>
+        public int SlotIndex => slotIndex;
+
+        public bool ControlEnabled => controlEnabled;
 
         /// <summary>
         /// The interactable the player should be able to interact with right now, or null if none is
@@ -71,10 +78,61 @@ namespace TheLastSignal.Entities.Player
 
         private void Start()
         {
+            BindLocalCamera();
+        }
+
+        /// <summary>Assigns this instance to a spawn slot so co-op can address P1–P4 later.</summary>
+        public void BindSlot(int slot)
+        {
+            slotIndex = Mathf.Clamp(slot, 0, PlayerSpawnPoint.MaxSlots - 1);
+            gameObject.name = slotIndex == 0 ? "Player" : $"Player_P{slotIndex + 1}";
+        }
+
+        public void SetControlEnabled(bool enabled)
+        {
+            controlEnabled = enabled;
+            if (!enabled)
+            {
+                moveInput = Vector2.zero;
+            }
+        }
+
+        /// <summary>
+        /// Teleports the player to <paramref name="worldPosition"/> and clears movement / interactable
+        /// state so a session restart does not inherit the previous run.
+        /// </summary>
+        public void ResetState(Vector2 worldPosition)
+        {
+            if (rb == null)
+            {
+                rb = GetComponent<Rigidbody2D>();
+            }
+
+            moveInput = Vector2.zero;
+            facingDirection = Vector2.down;
+            facing = PlayerDirection.Down;
+            CurrentInteractable = null;
+            controlEnabled = false;
+
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.position = worldPosition;
+            transform.position = new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
+
+            BindLocalCamera();
+        }
+
+        private void BindLocalCamera()
+        {
             // Hand this player's Transform to the local camera as its follow target. Deliberately not
             // a scene-wide "find the player" lookup on the camera's side (ARCHITECTURE_RULES.md): in a
             // future co-op version, each client's camera must target only its own local player, so the
             // player is the one announcing itself here rather than the camera searching for one.
+            if (slotIndex != 0)
+            {
+                return;
+            }
+
             UnityEngine.Camera mainCamera = UnityEngine.Camera.main;
             if (mainCamera != null && mainCamera.TryGetComponent(out CameraFollow cameraFollow))
             {
@@ -84,6 +142,13 @@ namespace TheLastSignal.Entities.Player
 
         private void Update()
         {
+            if (!controlEnabled)
+            {
+                moveInput = Vector2.zero;
+                CurrentInteractable = null;
+                return;
+            }
+
             ReadMovementInput();
             ReadInteractionInput();
             UpdateInteractionDetection();
@@ -91,6 +156,11 @@ namespace TheLastSignal.Entities.Player
 
         private void FixedUpdate()
         {
+            if (!controlEnabled)
+            {
+                return;
+            }
+
             ApplyMovement(moveInput);
         }
 

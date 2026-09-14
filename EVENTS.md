@@ -7,3 +7,5 @@ Living registry of every `EventChannelSO` asset in the project. Keep this table 
 | OnSanityChanged | float (new sanity value) | SanitySystem (via NetworkGameState) | PlayerSanityView, HUDManager |
 | OnTaskGenerated | TaskData | TaskTicketSystem | StationView, HUDManager |
 | OnMonsterStateChanged | MonsterState | MonsterFSM (via NetworkGameState) | MonsterView, HUDManager |
+| OnObjectiveChanged | ObjectiveData | SimpleObjectiveSystem (via GameManager) | HUDManager |
+| OnGameSessionStateChanged | GameSessionState | GameManager | HUDManager |

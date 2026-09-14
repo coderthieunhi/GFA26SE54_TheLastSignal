@@ -1,47 +1,202 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using TheLastSignal.Core.EventBus;
+using TheLastSignal.Systems;
+using TheLastSignal.Systems.Objectives;
 
 namespace TheLastSignal.Core
 {
     /// <summary>
-    /// Top-level orchestrator for match flow (lobby -> playing -> ended). Owns/creates the Host-side
-    /// 2_Systems/ instances and drives their Tick, and coordinates with NetworkGameState to publish
-    /// state to clients. Per ARCHITECTURE_RULES.md Rule 1, the systems it drives only execute on the Host.
+    /// Top-level orchestrator for a game session:
+    /// Game Start -> Initialize Game -> Spawn Player -> Initialize Objective -> Gameplay -> Win/Lose.
+    /// Host-side 2_Systems/ are created here. This story does not start Sanity, Task tickets, or The Shade.
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public class GameManager : MonoBehaviour
     {
-        /// <summary>High-level phases of a match.</summary>
-        public enum GameState
-        {
-            Lobby,
-            Playing,
-            Ended
-        }
+        public static GameManager Instance { get; private set; }
 
-        [SerializeField] private GameState currentState = GameState.Lobby;
+        [Header("Session")]
+        [SerializeField] private bool startSessionOnPlay = true;
+        [SerializeField] private PlayerSpawner playerSpawner;
 
-        /// <summary>The current phase of the match.</summary>
-        public GameState CurrentState => currentState;
+        [Header("Events")]
+        [SerializeField] private GameSessionStateEventChannelSO onGameSessionStateChanged;
+        [SerializeField] private ObjectiveDataEventChannelSO onObjectiveChanged;
+
+        private GameSessionState currentState = GameSessionState.GameStart;
+        private IObjectiveSystem objectiveSystem;
+        private IGameSystem[] activeSystems = System.Array.Empty<IGameSystem>();
+
+        public GameSessionState CurrentState => currentState;
+
+        public ObjectiveData CurrentObjective =>
+            objectiveSystem != null ? objectiveSystem.CurrentObjective : default;
 
         private void Awake()
         {
-            // TODO: acquire/validate references to NetworkGameState and other 1_Core singletons.
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+
+            if (playerSpawner == null)
+            {
+                playerSpawner = GetComponent<PlayerSpawner>();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         private void Start()
         {
-            // TODO: initialize Host-side 2_Systems/ instances (SanitySystem, TaskTicketSystem, MonsterFSM, ...)
-            // once a network session has started, guarded by IsServer.
+            if (startSessionOnPlay)
+            {
+                StartSession();
+            }
         }
 
         private void Update()
         {
-            // TODO: on the Host only, Tick every active IGameSystem with Time.deltaTime.
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.rKey.wasPressedThisFrame)
+            {
+                RestartSession();
+                return;
+            }
+
+            for (int i = 0; i < activeSystems.Length; i++)
+            {
+                activeSystems[i].Tick(Time.deltaTime);
+            }
         }
 
-        /// <summary>Transitions the match to a new <see cref="GameState"/>.</summary>
-        public void SetState(GameState newState)
+        public void StartSession()
         {
-            // TODO: implement state transition rules and side effects (spawning, UI, etc.).
+            SetState(GameSessionState.GameStart);
+            InitializeGame();
+            SpawnPlayer();
+            InitializeObjective();
+            SetState(GameSessionState.Gameplay);
+            playerSpawner?.SetControlEnabled(true);
+        }
+
+        public void RestartSession()
+        {
+            StartSession();
+        }
+
+        public void NotifyExitReached()
+        {
+            if (currentState != GameSessionState.Gameplay)
+            {
+                return;
+            }
+
+            if (objectiveSystem == null || !objectiveSystem.TryComplete())
+            {
+                return;
+            }
+
+            HandleWin();
+        }
+
+        public void NotifyPlayerFailed()
+        {
+            if (currentState != GameSessionState.Gameplay)
+            {
+                return;
+            }
+
+            HandleLose();
+        }
+
+        private void InitializeGame()
+        {
+            SetState(GameSessionState.InitializeGame);
+
+            for (int i = 0; i < activeSystems.Length; i++)
+            {
+                activeSystems[i].Shutdown();
+            }
+
+            objectiveSystem = new SimpleObjectiveSystem(PublishObjective);
+            objectiveSystem.Initialize();
+            activeSystems = new IGameSystem[] { objectiveSystem };
+
+            PrepareMap();
+        }
+
+        private void PrepareMap()
+        {
+            // Ensure prototype map grid is present and active
+            GameObject grid = GameObject.Find("Facility_Grid");
+            if (grid != null && !grid.activeSelf)
+            {
+                grid.SetActive(true);
+            }
+        }
+
+        private void SpawnPlayer()
+        {
+            SetState(GameSessionState.SpawnPlayer);
+
+            if (playerSpawner == null)
+            {
+                Debug.LogError("[GameManager] PlayerSpawner is missing.");
+                return;
+            }
+
+            playerSpawner.SpawnPlayers();
+        }
+
+        private void InitializeObjective()
+        {
+            SetState(GameSessionState.InitializeObjective);
+            objectiveSystem.ResetObjective();
+            objectiveSystem.Begin(ObjectiveData.ReachTheExit());
+        }
+
+        private void HandleWin()
+        {
+            SetState(GameSessionState.Win);
+            playerSpawner?.SetControlEnabled(false);
+            SetState(GameSessionState.GameComplete);
+        }
+
+        private void HandleLose()
+        {
+            SetState(GameSessionState.Lose);
+            playerSpawner?.SetControlEnabled(false);
+            SetState(GameSessionState.GameOver);
+        }
+
+        private void SetState(GameSessionState newState)
+        {
+            currentState = newState;
+            if (onGameSessionStateChanged != null)
+            {
+                onGameSessionStateChanged.Raise(newState);
+            }
+
+            Debug.Log($"[GameManager] State -> {newState}");
+        }
+
+        private void PublishObjective(ObjectiveData objective)
+        {
+            if (onObjectiveChanged != null)
+            {
+                onObjectiveChanged.Raise(objective);
+            }
         }
     }
 }
