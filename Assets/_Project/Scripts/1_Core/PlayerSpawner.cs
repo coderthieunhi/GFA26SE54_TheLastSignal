@@ -28,7 +28,7 @@ namespace TheLastSignal.Core
         {
             // Fulfill criterion: "Player does not appear before game initialization is complete"
             // Hide any pre-existing scene players immediately until SpawnPlayers is called.
-            PlayerController[] existing = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            PlayerController[] existing = FindObjectsByType<PlayerController>(FindObjectsInactive.Include);
             for (int i = 0; i < existing.Length; i++)
             {
                 if (existing[i] != null)
@@ -41,7 +41,7 @@ namespace TheLastSignal.Core
         public void CollectSpawnPoints()
         {
             pointsBySlot.Clear();
-            PlayerSpawnPoint[] points = FindObjectsByType<PlayerSpawnPoint>(FindObjectsSortMode.None);
+            PlayerSpawnPoint[] points = FindObjectsByType<PlayerSpawnPoint>();
             for (int i = 0; i < points.Length; i++)
             {
                 PlayerSpawnPoint point = points[i];
@@ -62,7 +62,7 @@ namespace TheLastSignal.Core
             spawnedPlayers.Clear();
 
             List<PlayerController> existing = new List<PlayerController>(
-                FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None));
+                FindObjectsByType<PlayerController>(FindObjectsInactive.Include));
 
             int count = Mathf.Clamp(playersToSpawn, 1, MaxPlayers);
             for (int slot = 0; slot < count; slot++)

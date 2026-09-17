@@ -170,13 +170,13 @@ namespace TheLastSignal.Core
 
         private void ResetTriggerZones()
         {
-            ExitZone[] exitZones = FindObjectsByType<ExitZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            ExitZone[] exitZones = FindObjectsByType<ExitZone>(FindObjectsInactive.Include);
             for (int i = 0; i < exitZones.Length; i++)
             {
                 exitZones[i].ResetTrigger();
             }
 
-            HazardZone[] hazardZones = FindObjectsByType<HazardZone>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            HazardZone[] hazardZones = FindObjectsByType<HazardZone>(FindObjectsInactive.Include);
             for (int i = 0; i < hazardZones.Length; i++)
             {
                 hazardZones[i].ResetTrigger();

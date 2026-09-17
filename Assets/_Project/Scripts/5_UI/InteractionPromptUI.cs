@@ -22,7 +22,7 @@ namespace TheLastSignal.UI
         {
             if (localPlayer == null)
             {
-                localPlayer = FindObjectOfType<PlayerController>();
+                localPlayer = FindAnyObjectByType<PlayerController>();
             }
 
             if (promptContainer != null)
