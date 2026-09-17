@@ -40,8 +40,19 @@ namespace TheLastSignal.Core.Interaction
         {
             if (!isAvailable) return false;
 
-            // Double check range to strictly avoid edge-case physics lag
-            float sqrDistance = (transform.position - player.transform.position).sqrMagnitude;
+            // Use closest point on collider if available, so large objects (e.g. 2x2 consoles) don't fail range check
+            Collider2D col = GetComponent<Collider2D>();
+            float sqrDistance;
+            if (col != null)
+            {
+                Vector2 closest = col.ClosestPoint(player.transform.position);
+                sqrDistance = (closest - (Vector2)player.transform.position).sqrMagnitude;
+            }
+            else
+            {
+                sqrDistance = (transform.position - player.transform.position).sqrMagnitude;
+            }
+
             if (sqrDistance > (player.InteractionRange * player.InteractionRange))
             {
                 return false;

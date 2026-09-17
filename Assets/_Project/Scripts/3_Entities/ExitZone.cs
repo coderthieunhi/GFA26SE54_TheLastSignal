@@ -31,7 +31,23 @@ namespace TheLastSignal.Entities
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            TryTriggerExit(other);
+        }
+
+        private void OnTriggerStay2D(Collider2D other)
+        {
+            TryTriggerExit(other);
+        }
+
+        private void TryTriggerExit(Collider2D other)
+        {
             if (isTriggered)
+            {
+                return;
+            }
+
+            // Zero-overhead early exit during Phase 1: only active when evacuation is underway
+            if (GameManager.Instance == null || !GameManager.Instance.IsEvacuating)
             {
                 return;
             }
@@ -41,12 +57,9 @@ namespace TheLastSignal.Entities
                 return;
             }
 
-            if (GameManager.Instance != null && GameManager.Instance.IsPlaying)
-            {
-                isTriggered = true;
-                Debug.Log("[ExitZone] Player reached exit zone; notifying win condition.");
-                GameManager.Instance.NotifyExitReached();
-            }
+            isTriggered = true;
+            Debug.Log("[ExitZone] Player reached exit zone during evacuation; notifying win condition.");
+            GameManager.Instance.NotifyExitReached();
         }
 
         private void OnDrawGizmos()

@@ -5,6 +5,7 @@ namespace TheLastSignal.Systems.Objectives
     {
         NotStarted,
         InProgress,
-        Completed
+        Completed,
+        Failed
     }
 }

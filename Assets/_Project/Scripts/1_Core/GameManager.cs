@@ -19,18 +19,22 @@ namespace TheLastSignal.Core
 
         [Header("Session")]
         [SerializeField] private bool startSessionOnPlay = true;
+        [SerializeField] private float evacuationDuration = 45f;
         [SerializeField] private PlayerSpawner playerSpawner;
 
         [Header("Events")]
         [SerializeField] private GameSessionStateEventChannelSO onGameSessionStateChanged;
         [SerializeField] private ObjectiveDataEventChannelSO onObjectiveChanged;
+        [SerializeField] private FloatEventChannelSO onEvacuationTimerTicked;
 
         private GameSessionState currentState = GameSessionState.GameStart;
-        private IObjectiveSystem objectiveSystem;
+        private SimpleObjectiveSystem objectiveSystem;
         private IGameSystem[] activeSystems = System.Array.Empty<IGameSystem>();
 
         public GameSessionState CurrentState => currentState;
-        public bool IsPlaying => currentState == GameSessionState.Gameplay;
+        public bool IsPlaying => currentState == GameSessionState.Gameplay || currentState == GameSessionState.Evacuation;
+        public bool IsEvacuating => currentState == GameSessionState.Evacuation;
+        public float EvacuationDuration => evacuationDuration;
 
         public ObjectiveData CurrentObjective =>
             objectiveSystem != null ? objectiveSystem.CurrentObjective : default;
@@ -110,8 +114,9 @@ namespace TheLastSignal.Core
 
         public void NotifyExitReached()
         {
-            if (currentState != GameSessionState.Gameplay)
+            if (currentState != GameSessionState.Evacuation)
             {
+                // Player stepped on exit zone during Phase 1 (Reactor not yet activated)
                 return;
             }
 
@@ -120,12 +125,30 @@ namespace TheLastSignal.Core
                 return;
             }
 
+            Debug.Log("[GameManager] Player safely returned to Airlock! Evacuation successful.");
             HandleWin();
+        }
+
+        public void NotifyReactorActivated()
+        {
+            if (currentState != GameSessionState.Gameplay)
+            {
+                Debug.LogWarning($"[GameManager] NotifyReactorActivated ignored because currentState is {currentState} (expected Gameplay).");
+                return;
+            }
+
+            if (objectiveSystem != null)
+            {
+                objectiveSystem.TryComplete();
+            }
+
+            Debug.Log("[GameManager] Reactor Core activated! Initiating emergency evacuation countdown.");
+            SetState(GameSessionState.Evacuation);
         }
 
         public void NotifyPlayerDied(string reason = "Hazard")
         {
-            if (currentState != GameSessionState.Gameplay)
+            if (!IsPlaying)
             {
                 return;
             }
@@ -169,7 +192,11 @@ namespace TheLastSignal.Core
                 activeSystems[i].Shutdown();
             }
 
-            objectiveSystem = new SimpleObjectiveSystem(PublishObjective);
+            objectiveSystem = new SimpleObjectiveSystem(
+                PublishObjective,
+                PublishTimer,
+                HandleTimeout,
+                evacuationDuration);
             objectiveSystem.Initialize();
             activeSystems = new IGameSystem[] { objectiveSystem };
 
@@ -203,7 +230,26 @@ namespace TheLastSignal.Core
         {
             SetState(GameSessionState.InitializeObjective);
             objectiveSystem.ResetObjective();
-            objectiveSystem.Begin(ObjectiveData.ReachTheExit());
+            objectiveSystem.Begin(ObjectiveData.ActivateReactor());
+        }
+
+        private void HandleTimeout()
+        {
+            if (currentState != GameSessionState.Evacuation)
+            {
+                return;
+            }
+
+            Debug.Log("[GameManager] Evacuation countdown reached 0! Reactor meltdown.");
+            NotifyPlayerDied("Reactor Meltdown");
+        }
+
+        private void PublishTimer(float seconds)
+        {
+            if (onEvacuationTimerTicked != null)
+            {
+                onEvacuationTimerTicked.Raise(seconds);
+            }
         }
 
         private void HandleWin()

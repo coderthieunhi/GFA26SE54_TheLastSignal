@@ -195,7 +195,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f15a8ce28d19c446a2a9a78850c6cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerController
-  moveSpeed: 5
+  moveSpeed: 3.5
+  acceleration: 18
+  deceleration: 25
+  enableCornerAssist: 1
+  cornerRayDistance: 0.5
+  cornerSideOffset: 0.35
+  cornerNudgeSpeed: 3
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
   interactionRange: 2
   interactableLayer:
     serializedVersion: 2

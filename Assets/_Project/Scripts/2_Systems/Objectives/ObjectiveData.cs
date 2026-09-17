@@ -11,6 +11,26 @@ namespace TheLastSignal.Systems.Objectives
         public string Description;
         public ObjectiveStatus Status;
 
+        public static ObjectiveData ActivateReactor()
+        {
+            return new ObjectiveData
+            {
+                Id = "activate_reactor",
+                Description = "Reach Reactor Core & Activate Console",
+                Status = ObjectiveStatus.NotStarted
+            };
+        }
+
+        public static ObjectiveData EvacuateAirlock()
+        {
+            return new ObjectiveData
+            {
+                Id = "evacuate_airlock",
+                Description = "EVACUATE! Return to Airlock before Meltdown!",
+                Status = ObjectiveStatus.NotStarted
+            };
+        }
+
         public static ObjectiveData ReachTheExit()
         {
             return new ObjectiveData

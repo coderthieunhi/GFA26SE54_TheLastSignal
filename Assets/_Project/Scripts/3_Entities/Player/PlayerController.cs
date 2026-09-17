@@ -17,7 +17,16 @@ namespace TheLastSignal.Entities.Player
     public class PlayerController : MonoBehaviour
     {
         [Header("Movement")]
-        [SerializeField] private float moveSpeed = 5f;
+        [SerializeField] private float moveSpeed = 3.5f;
+        [SerializeField] private float acceleration = 18f;
+        [SerializeField] private float deceleration = 25f;
+
+        [Header("Corner Assist")]
+        [SerializeField] private bool enableCornerAssist = true;
+        [SerializeField] private float cornerRayDistance = 0.5f;
+        [SerializeField] private float cornerSideOffset = 0.35f;
+        [SerializeField] private float cornerNudgeSpeed = 3f;
+        [SerializeField] private LayerMask collisionLayers;
 
         [Header("Interaction Detection")]
         [SerializeField] private float interactionRange = 2f;
@@ -27,7 +36,9 @@ namespace TheLastSignal.Entities.Player
         public float InteractionRange => interactionRange;
 
         private Rigidbody2D rb;
+        private CapsuleCollider2D capsuleCollider;
         private Vector2 moveInput;
+        private Vector2 currentVelocity;
         private Vector2 facingDirection = Vector2.down;
         private PlayerDirection facing = PlayerDirection.Down;
         private bool controlEnabled = false;
@@ -35,6 +46,9 @@ namespace TheLastSignal.Entities.Player
 
         /// <summary>Raw (already clamped to length 1) movement input for this frame.</summary>
         public Vector2 MoveInput => moveInput;
+
+        /// <summary>Current actual velocity after acceleration and deceleration smoothing.</summary>
+        public Vector2 CurrentVelocity => currentVelocity;
 
         /// <summary>The last non-zero movement direction; persists while idle so the player keeps facing it.</summary>
         public Vector2 FacingDirection => facingDirection;
@@ -45,8 +59,8 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         public PlayerDirection Facing => facing;
 
-        /// <summary>True while the player has non-zero movement input.</summary>
-        public bool IsMoving => moveInput.sqrMagnitude > 0.0001f;
+        /// <summary>True while the player has non-zero movement input or is decelerating to a stop.</summary>
+        public bool IsMoving => currentVelocity.sqrMagnitude > 0.01f || moveInput.sqrMagnitude > 0.0001f;
 
         /// <summary>Spawn slot this instance occupies (0 = P1 … 3 = P4).</summary>
         public int SlotIndex => slotIndex;
@@ -67,10 +81,36 @@ namespace TheLastSignal.Entities.Player
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
+            capsuleCollider = GetComponent<CapsuleCollider2D>();
+            if (capsuleCollider != null)
+            {
+                // Frictionless material eliminates sticking against wall colliders on diagonal contact
+                PhysicsMaterial2D zeroFriction = new PhysicsMaterial2D("Player_ZeroFriction")
+                {
+                    friction = 0f,
+                    bounciness = 0f
+                };
+                capsuleCollider.sharedMaterial = zeroFriction;
+            }
+
             int playerLayer = LayerMask.NameToLayer("Player");
             if (playerLayer >= 0)
             {
                 gameObject.layer = playerLayer;
+            }
+
+            if (collisionLayers.value == 0)
+            {
+                int obstacleLayer = LayerMask.NameToLayer("Obstacle");
+                if (obstacleLayer >= 0)
+                {
+                    collisionLayers |= (1 << obstacleLayer);
+                }
+                int defaultLayer = LayerMask.NameToLayer("Default");
+                if (defaultLayer >= 0)
+                {
+                    collisionLayers |= (1 << defaultLayer);
+                }
             }
         }
 
@@ -92,6 +132,7 @@ namespace TheLastSignal.Entities.Player
             if (!enabled)
             {
                 moveInput = Vector2.zero;
+                currentVelocity = Vector2.zero;
             }
         }
 
@@ -107,6 +148,7 @@ namespace TheLastSignal.Entities.Player
             }
 
             moveInput = Vector2.zero;
+            currentVelocity = Vector2.zero;
             facingDirection = Vector2.down;
             facing = PlayerDirection.Down;
             CurrentInteractable = null;
@@ -273,14 +315,98 @@ namespace TheLastSignal.Entities.Player
         }
 
         /// <summary>
-        /// Applies movement to the Rigidbody2D via MovePosition so collisions are respected. This is the
-        /// method that will move behind a ServerRpc (Host-only) once multiplayer input relay exists —
-        /// see ARCHITECTURE_RULES.md Rule 3.
+        /// Applies movement to the Rigidbody2D via MovePosition with smooth acceleration/deceleration
+        /// and smart corner assist. This is the method that will move behind a ServerRpc (Host-only)
+        /// once multiplayer input relay exists — see ARCHITECTURE_RULES.md Rule 3.
         /// </summary>
         private void ApplyMovement(Vector2 direction)
         {
-            Vector2 targetPosition = rb.position + direction * (moveSpeed * Time.fixedDeltaTime);
+            Vector2 targetVelocity = direction * moveSpeed;
+            float rate = direction.sqrMagnitude > 0.0001f ? acceleration : deceleration;
+            currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, rate * Time.fixedDeltaTime);
+
+            Vector2 moveDelta = currentVelocity * Time.fixedDeltaTime;
+
+            if (enableCornerAssist && currentVelocity.sqrMagnitude > 0.01f)
+            {
+                Vector2 nudge = CalculateCornerNudge(currentVelocity.normalized);
+                moveDelta += nudge;
+            }
+
+            Vector2 targetPosition = rb.position + moveDelta;
             rb.MovePosition(targetPosition);
+        }
+
+        private readonly RaycastHit2D[] cornerRaycastBuffer = new RaycastHit2D[8];
+
+        /// <summary>
+        /// Performs a raycast that ignores triggers and the player's own collider,
+        /// returning only solid obstacle hits that would physically block movement.
+        /// </summary>
+        private RaycastHit2D RaycastSolid(Vector2 origin, Vector2 direction, float distance, LayerMask layerMask)
+        {
+            ContactFilter2D filter = new ContactFilter2D();
+            filter.useTriggers = false;
+            filter.SetLayerMask(layerMask);
+
+            int count = Physics2D.Raycast(origin, direction, filter, cornerRaycastBuffer, distance);
+            RaycastHit2D closestHit = default;
+            float minDistance = float.MaxValue;
+
+            for (int i = 0; i < count; i++)
+            {
+                RaycastHit2D hit = cornerRaycastBuffer[i];
+                if (hit.collider != null && !hit.collider.isTrigger && hit.collider != capsuleCollider)
+                {
+                    if (hit.distance < minDistance)
+                    {
+                        minDistance = hit.distance;
+                        closestHit = hit;
+                    }
+                }
+            }
+
+            return closestHit;
+        }
+
+        /// <summary>
+        /// Detects if the player's collider is catching on an obstacle corner/doorframe while the
+        /// other side has open clearance, and calculates a perpendicular nudge vector to slide smoothly.
+        /// </summary>
+        private Vector2 CalculateCornerNudge(Vector2 moveDir)
+        {
+            Vector2 pos = rb.position;
+            Vector2 perp = new Vector2(-moveDir.y, moveDir.x);
+
+            RaycastHit2D leftHit = RaycastSolid(pos - perp * cornerSideOffset, moveDir, cornerRayDistance, collisionLayers);
+            RaycastHit2D rightHit = RaycastSolid(pos + perp * cornerSideOffset, moveDir, cornerRayDistance, collisionLayers);
+
+            // If both sides hit, it's a flat wall or dead end - no nudge
+            if (leftHit.collider != null && rightHit.collider != null)
+            {
+                return Vector2.zero;
+            }
+
+            // Left side caught on corner, right side is open -> nudge right (+perp)
+            if (leftHit.collider != null && rightHit.collider == null)
+            {
+                // Verify nudge path is clear of solid obstacles
+                if (RaycastSolid(pos, perp, cornerSideOffset + 0.1f, collisionLayers).collider == null)
+                {
+                    return perp * (cornerNudgeSpeed * Time.fixedDeltaTime);
+                }
+            }
+            // Right side caught on corner, left side is open -> nudge left (-perp)
+            else if (rightHit.collider != null && leftHit.collider == null)
+            {
+                // Verify nudge path is clear of solid obstacles
+                if (RaycastSolid(pos, -perp, cornerSideOffset + 0.1f, collisionLayers).collider == null)
+                {
+                    return -perp * (cornerNudgeSpeed * Time.fixedDeltaTime);
+                }
+            }
+
+            return Vector2.zero;
         }
 
         /// <summary>
@@ -343,6 +469,17 @@ namespace TheLastSignal.Entities.Player
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, interactionRange);
+
+            if (enableCornerAssist)
+            {
+                Vector2 pos = Application.isPlaying && rb != null ? rb.position : (Vector2)transform.position;
+                Vector2 dir = facingDirection.sqrMagnitude > 0.001f ? facingDirection : Vector2.down;
+                Vector2 perp = new Vector2(-dir.y, dir.x);
+
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawRay(pos - perp * cornerSideOffset, dir * cornerRayDistance);
+                Gizmos.DrawRay(pos + perp * cornerSideOffset, dir * cornerRayDistance);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using TheLastSignal.Entities.Environment;
 using TheLastSignal.Entities.Player;
+using TheLastSignal.Core.EventBus;
 
 namespace TheLastSignal.EditorTools
 {
@@ -73,52 +74,48 @@ namespace TheLastSignal.EditorTools
 
         public static readonly MapBlock[] FacilityBlocks = new[]
         {
-            // --- 10 Rooms (Exact coordinates from Brief) ---
-            new MapBlock("Crew_Quarters", BlockType.Room, -5, 23, 4, 30),
-            new MapBlock("Med_Bay", BlockType.Room, -14, 14, -7, 19),
-            new MapBlock("Console_Alpha", BlockType.Room, 6, 13, 15, 20),
-            new MapBlock("Airlock_Spawn", BlockType.Room, -4, 1, 3, 8),
-            new MapBlock("Mess_Hall", BlockType.Room, -14, -9, -7, -2),
-            new MapBlock("Vent_Shaft", BlockType.Room, 6, -10, 13, -1),
-            new MapBlock("Cargo_Hold", BlockType.Room, -6, -21, 5, -12),
-            new MapBlock("Deep_Storage", BlockType.Room, -15, -39, -6, -32),
-            new MapBlock("Power_Relay_Bay", BlockType.Room, 5, -39, 14, -32),
-            new MapBlock("Reactor_Core", BlockType.Room, 5, -52, 14, -43),
+            // --- 11 Rooms (Kích thước đã chốt ở Đợt 1 & Đợt 2, vị trí dời giãn rộng) ---
+            new MapBlock("Crew_Quarters", BlockType.Room, -5, 38, 4, 47),        // 10x10
+            new MapBlock("Med_Bay", BlockType.Room, -20, 24, -12, 31),           // 9x8
+            new MapBlock("Console_Alpha", BlockType.Room, 11, 23, 20, 32),       // 10x10
+            new MapBlock("Airlock_Spawn", BlockType.Room, -5, 8, 4, 17),         // 10x10
+            new MapBlock("Bedroom", BlockType.Room, -21, 9, -13, 16),            // 9x8
+            new MapBlock("Mess_Hall", BlockType.Room, -19, -8, -12, -1),         // 8x8
+            new MapBlock("Vent_Shaft", BlockType.Room, 12, -9, 20, 1),           // 9x11
+            new MapBlock("Cargo_Hold", BlockType.Room, -6, -24, 5, -15),         // 12x10
+            new MapBlock("Deep_Storage", BlockType.Room, -18, -52, -9, -43),     // 10x10
+            new MapBlock("Power_Relay_Bay", BlockType.Room, 8, -52, 17, -43),    // 10x10
+            new MapBlock("Reactor_Core", BlockType.Room, 7, -69, 18, -60),       // 12x10
 
-            // --- 3 Nodes ---
-            new MapBlock("Node_A", BlockType.Node, -3, 14, 2, 19),
-            new MapBlock("Node_B", BlockType.Node, -3, -9, 2, -2),
-            new MapBlock("Node_C", BlockType.Node, -3, -29, 2, -25),
+            // --- 3 Nodes (Nâng cấp kích thước lớn) ---
+            new MapBlock("Node_A", BlockType.Node, -4, 24, 3, 31),               // 8x8 (tăng từ 6x6)
+            new MapBlock("Node_B", BlockType.Node, -5, -8, 4, 1),                // 10x10 (tăng từ 6x8)
+            new MapBlock("Node_C", BlockType.Node, -4, -38, 3, -31),             // 8x8 (tăng từ 6x5)
 
-            // --- Corridors on Main Spine (Standard 2-tile doorway width: X in [-1, 0]) ---
-            new MapBlock("Corridor_Crew_NodeA", BlockType.Corridor, -1, 20, 0, 22),
-            new MapBlock("Corridor_NodeA_Airlock", BlockType.Corridor, -1, 9, 0, 13),
-            new MapBlock("Corridor_Airlock_NodeB", BlockType.Corridor, -1, -1, 0, 0),
-            new MapBlock("Corridor_NodeB_Cargo", BlockType.Corridor, -1, -11, 0, -10),
-            new MapBlock("Corridor_Cargo_NodeC", BlockType.Corridor, -1, -24, 0, -22),
+            // --- Corridors on Main Spine (Dài 6 ô tiêu chuẩn, trục X: [-1, 0]) ---
+            new MapBlock("Corridor_Crew_NodeA", BlockType.Corridor, -1, 32, 0, 37),       // 2x6
+            new MapBlock("Corridor_NodeA_Airlock", BlockType.Corridor, -1, 18, 0, 23),    // 2x6
+            new MapBlock("Corridor_Airlock_NodeB", BlockType.Corridor, -1, 2, 0, 7),      // 2x6
+            new MapBlock("Corridor_NodeB_Cargo", BlockType.Corridor, -1, -14, 0, -9),     // 2x6
+            new MapBlock("Corridor_Cargo_NodeC", BlockType.Corridor, -1, -30, 0, -25),    // 2x6
+            new MapBlock("Corridor_C_Stem", BlockType.Corridor, -1, -47, 0, -39),         // 2x9
 
-            // --- Lateral Corridors (East-West) ---
-            new MapBlock("Corridor_MedBay_NodeA", BlockType.Corridor, -6, 16, -4, 17),
-            new MapBlock("Corridor_NodeA_Console", BlockType.Corridor, 3, 16, 5, 17),
-            new MapBlock("Corridor_MessHall_NodeB", BlockType.Corridor, -6, -4, -4, -3),
-            new MapBlock("Corridor_NodeB_VentShaft", BlockType.Corridor, 3, -4, 5, -3),
+            // --- Lateral Corridors (Cánh Đông & Tây, dài 6-7 ô) ---
+            new MapBlock("Corridor_MedBay_NodeA", BlockType.Corridor, -11, 27, -5, 28),     // 7x2
+            new MapBlock("Corridor_NodeA_Console", BlockType.Corridor, 4, 27, 10, 28),      // 7x2
+            new MapBlock("Corridor_Bedroom_Airlock", BlockType.Corridor, -12, 12, -6, 13),  // 7x2
+            new MapBlock("Corridor_MessHall_NodeB", BlockType.Corridor, -11, -5, -6, -4),   // 6x2
+            new MapBlock("Corridor_NodeB_VentShaft", BlockType.Corridor, 5, -5, 11, -4),    // 7x2
+            new MapBlock("Corridor_C_Branch_West", BlockType.Corridor, -8, -47, -2, -46),   // 7x2
+            new MapBlock("Corridor_C_Branch_East", BlockType.Corridor, 1, -47, 7, -46),     // 7x2
+            new MapBlock("Corridor_Relay_Reactor", BlockType.Corridor, 12, -59, 13, -53),   // 2x7
 
-            // --- Node C Stem & T-Branch Corridors ---
-            new MapBlock("Corridor_C_Stem", BlockType.Corridor, -1, -36, 0, -30),
-            new MapBlock("Corridor_C_Branch_West", BlockType.Corridor, -5, -36, -2, -35),
-            new MapBlock("Corridor_C_Branch_East", BlockType.Corridor, 1, -36, 4, -35),
-
-            // --- Power Relay to Reactor Core Corridor ---
-            new MapBlock("Corridor_Relay_Reactor", BlockType.Corridor, 9, -42, 10, -40),
-
-            // --- Facility Loop Corridors (Vent Shaft South -> Node C East) ---
-            new MapBlock("Loop_Vertical", BlockType.Corridor, 14, -28, 15, -10),
-            new MapBlock("Loop_Horizontal_Bend", BlockType.Corridor, 3, -28, 14, -27),
-
-            // --- Facility West Loop Corridors (Med Bay West -> Deep Storage West) ---
-            new MapBlock("Loop_West_Vertical", BlockType.Corridor, -19, -34, -18, 15),
-            new MapBlock("Loop_West_Bend_North", BlockType.Corridor, -17, 14, -15, 15),
-            new MapBlock("Loop_West_Bend_South", BlockType.Corridor, -17, -34, -16, -33)
+            // --- Facility Loop Corridors (Vòng lặp bao ngoài mở rộng) ---
+            new MapBlock("Loop_Vertical", BlockType.Corridor, 21, -35, 22, -9),             // 2x27
+            new MapBlock("Loop_Horizontal_Bend", BlockType.Corridor, 4, -35, 20, -34),      // 17x2
+            new MapBlock("Loop_West_Vertical", BlockType.Corridor, -25, -47, -24, 25),      // 2x73
+            new MapBlock("Loop_West_Bend_North", BlockType.Corridor, -23, 24, -21, 25),     // 3x2
+            new MapBlock("Loop_West_Bend_South", BlockType.Corridor, -23, -47, -19, -46)    // 5x2
         };
 
         [InitializeOnLoadMethod]
@@ -236,6 +233,9 @@ namespace TheLastSignal.EditorTools
             // Spawn Doors precisely bridging wall frames
             SpawnFacilityDoors();
 
+            // Spawn 4 Bedroom Intro Beds (cosmetic placeholders)
+            SpawnBedroomBeds();
+
             // Spawn Obstacles (Crates, Tables, Equipment, Structure)
             SpawnFacilityObstacles();
 
@@ -245,18 +245,26 @@ namespace TheLastSignal.EditorTools
             // Spawn Gameplay Task Locations (Markers for 9 rooms)
             SpawnFacilityTaskLocations();
 
-            // Move Player to exact P1 Spawn Point (-1.5, 4.5, 0)
+            // Move Player to exact P1 Spawn Point (0, 13, 0) in the middle of Airlock
             GameObject playerGo = GameObject.Find("Player");
             if (playerGo != null)
             {
                 Undo.RecordObject(playerGo.transform, "Position Player at P1 Spawn");
-                playerGo.transform.position = new Vector3(-1.5f, 4.5f, 0f);
+                playerGo.transform.position = new Vector3(0.0f, 13.0f, 0f);
 
                 SpriteRenderer playerSr = playerGo.GetComponent<SpriteRenderer>();
                 if (playerSr != null)
                 {
                     playerSr.sortingLayerName = "Characters";
                 }
+            }
+
+            // Move Exit_Zone to Airlock_Spawn center if present
+            GameObject exitGo = GameObject.Find("Exit_Zone");
+            if (exitGo != null)
+            {
+                Undo.RecordObject(exitGo.transform, "Position Exit_Zone at Airlock Center");
+                exitGo.transform.position = new Vector3(0.0f, 13.0f, 0f);
             }
 
             // Deactivate old primitives & test interactables if present
@@ -338,7 +346,7 @@ namespace TheLastSignal.EditorTools
             wallMap.RefreshAllTiles();
 
             // 3. Verify Connectivity
-            VerifyConnectivity(floorPositions, new Vector3Int(0, 3, 0));
+            VerifyConnectivity(floorPositions, new Vector3Int(0, 10, 0));
         }
 
         public static void SpawnFacilityDoors()
@@ -361,44 +369,83 @@ namespace TheLastSignal.EditorTools
             Sprite hSprite = AssetDatabase.LoadAssetAtPath<Sprite>(DoorHPngPath);
             Sprite vSprite = AssetDatabase.LoadAssetAtPath<Sprite>(DoorVPngPath);
 
-            // --- 12 Facility Entrance Doors (Precisely centered in wall openings between perimeter walls) ---
-            // 1. Crew Quarters South Door: wall opening row Y=22, span X in [-1, 0] (bounds [-1.0, 1.0]), wall Left: (-2, 22), Right: (1, 22)
-            CreateDoorInstance("Door_CrewQuarters", doorsRoot.transform, new Vector3(0.0f, 22.5f, 0f), true, hSprite);
+            // --- 13 Facility Entrance Doors (Precisely centered in wall openings between perimeter walls) ---
+            // 1. Crew Quarters South Door: wall opening row Y=37, span X in [-1, 0]
+            CreateDoorInstance("Door_CrewQuarters", doorsRoot.transform, new Vector3(0.0f, 37.5f, 0f), true, hSprite);
 
-            // 2. Med Bay East Door: wall opening col X=-6, span Y in [16, 17] (bounds [16.0, 18.0]), wall Bottom: (-6, 15), Top: (-6, 18)
-            CreateDoorInstance("Door_MedBay", doorsRoot.transform, new Vector3(-5.5f, 17.0f, 0f), false, vSprite);
+            // 2. Med Bay East Door: wall opening col X=-11, span Y in [27, 28]
+            CreateDoorInstance("Door_MedBay", doorsRoot.transform, new Vector3(-10.5f, 28.0f, 0f), false, vSprite);
 
-            // 3. Console Alpha West Door: wall opening col X=5, span Y in [16, 17] (bounds [16.0, 18.0]), wall Bottom: (5, 15), Top: (5, 18)
-            CreateDoorInstance("Door_ConsoleAlpha", doorsRoot.transform, new Vector3(5.5f, 17.0f, 0f), false, vSprite);
+            // 3. Console Alpha West Door: wall opening col X=10, span Y in [27, 28]
+            CreateDoorInstance("Door_ConsoleAlpha", doorsRoot.transform, new Vector3(10.5f, 28.0f, 0f), false, vSprite);
 
-            // 4. Airlock North Door: wall opening row Y=9, span X in [-1, 0] (bounds [-1.0, 1.0]), wall Left: (-2, 9), Right: (1, 9)
-            CreateDoorInstance("Door_Airlock_North", doorsRoot.transform, new Vector3(0.0f, 9.5f, 0f), true, hSprite);
+            // 4. Airlock North Door: wall opening row Y=18, span X in [-1, 0]
+            CreateDoorInstance("Door_Airlock_North", doorsRoot.transform, new Vector3(0.0f, 18.5f, 0f), true, hSprite);
 
-            // 5. Airlock South Door: wall opening row Y=0, span X in [-1, 0] (bounds [-1.0, 1.0]), wall Left: (-2, 0), Right: (1, 0)
-            CreateDoorInstance("Door_Airlock_South", doorsRoot.transform, new Vector3(0.0f, 0.5f, 0f), true, hSprite);
+            // 5. Airlock South Door: wall opening row Y=7, span X in [-1, 0]
+            CreateDoorInstance("Door_Airlock_South", doorsRoot.transform, new Vector3(0.0f, 7.5f, 0f), true, hSprite);
 
-            // 6. Mess Hall East Door: wall opening col X=-6, span Y in [-4, -3] (bounds [-4.0, -2.0]), wall Bottom: (-6, -5), Top: (-6, -2)
-            CreateDoorInstance("Door_MessHall", doorsRoot.transform, new Vector3(-5.5f, -3.0f, 0f), false, vSprite);
+            // 6. Mess Hall East Door: wall opening col X=-11, span Y in [-5, -4]
+            CreateDoorInstance("Door_MessHall", doorsRoot.transform, new Vector3(-10.5f, -4.0f, 0f), false, vSprite);
 
-            // 7. Vent Shaft West Door: wall opening col X=5, span Y in [-4, -3] (bounds [-4.0, -2.0]), wall Bottom: (5, -5), Top: (5, -2)
-            CreateDoorInstance("Door_VentShaft", doorsRoot.transform, new Vector3(5.5f, -3.0f, 0f), false, vSprite);
+            // 7. Vent Shaft West Door: wall opening col X=11, span Y in [-5, -4]
+            CreateDoorInstance("Door_VentShaft", doorsRoot.transform, new Vector3(11.5f, -4.0f, 0f), false, vSprite);
 
-            // 8. Cargo Hold North Door: wall opening row Y=-11, span X in [-1, 0] (bounds [-1.0, 1.0]), wall Left: (-2, -11), Right: (1, -11)
-            CreateDoorInstance("Door_CargoHold_North", doorsRoot.transform, new Vector3(0.0f, -10.5f, 0f), true, hSprite);
+            // 8. Cargo Hold North Door: wall opening row Y=-14, span X in [-1, 0]
+            CreateDoorInstance("Door_CargoHold_North", doorsRoot.transform, new Vector3(0.0f, -13.5f, 0f), true, hSprite);
 
-            // 9. Cargo Hold South Door: wall opening row Y=-22, span X in [-1, 0] (bounds [-1.0, 1.0]), wall Left: (-2, -22), Right: (1, -22)
-            CreateDoorInstance("Door_CargoHold_South", doorsRoot.transform, new Vector3(0.0f, -21.5f, 0f), true, hSprite);
+            // 9. Cargo Hold South Door: wall opening row Y=-25, span X in [-1, 0]
+            CreateDoorInstance("Door_CargoHold_South", doorsRoot.transform, new Vector3(0.0f, -24.5f, 0f), true, hSprite);
 
-            // 10. Deep Storage East Door: wall opening col X=-5, span Y in [-36, -35] (bounds [-36.0, -34.0]), wall Bottom: (-5, -37), Top: (-5, -34)
-            CreateDoorInstance("Door_DeepStorage", doorsRoot.transform, new Vector3(-4.5f, -35.0f, 0f), false, vSprite);
+            // 10. Deep Storage East Door: wall opening col X=-8, span Y in [-47, -46]
+            CreateDoorInstance("Door_DeepStorage", doorsRoot.transform, new Vector3(-7.5f, -46.0f, 0f), false, vSprite);
 
-            // 11. Power Relay Bay West Door: wall opening col X=4, span Y in [-36, -35] (bounds [-36.0, -34.0]), wall Bottom: (4, -37), Top: (4, -34)
-            CreateDoorInstance("Door_PowerRelayBay", doorsRoot.transform, new Vector3(4.5f, -35.0f, 0f), false, vSprite);
+            // 11. Power Relay Bay West Door: wall opening col X=7, span Y in [-47, -46]
+            CreateDoorInstance("Door_PowerRelayBay", doorsRoot.transform, new Vector3(7.5f, -46.0f, 0f), false, vSprite);
 
-            // 12. Reactor Core North Door: wall opening row Y=-42, span X in [9, 10] (bounds [9.0, 11.0]), wall Left: (8, -42), Right: (11, -42)
-            CreateDoorInstance("Door_ReactorCore", doorsRoot.transform, new Vector3(10.0f, -41.5f, 0f), true, hSprite);
+            // 12. Reactor Core North Door: wall opening row Y=-59, span X in [12, 13]
+            CreateDoorInstance("Door_ReactorCore", doorsRoot.transform, new Vector3(13.0f, -58.5f, 0f), true, hSprite);
+
+            // 13. Airlock West Door: wall opening col X=-6, span Y in [12, 13]
+            CreateDoorInstance("Door_Airlock_West", doorsRoot.transform, new Vector3(-5.5f, 13.0f, 0f), false, vSprite);
         }
 
+        public static void SpawnBedroomBeds()
+        {
+            GameObject oldBeds = GameObject.Find("Bedroom_Beds");
+            if (oldBeds != null)
+            {
+                Undo.DestroyObjectImmediate(oldBeds);
+            }
+
+            GameObject bedsRoot = new GameObject("Bedroom_Beds");
+            Undo.RegisterCreatedObjectUndo(bedsRoot, "Create Bedroom Beds");
+
+            Sprite bedSprite = AssetDatabase.LoadAssetAtPath<Sprite>(TablePngPath);
+
+            // 4 cosmetic intro beds (Transform + SpriteRenderer, NO collider, NO TaskLocation)
+            CreateBedInstance("Bed_P1", bedsRoot.transform, new Vector3(-19.5f, 15.0f, 0f), bedSprite);
+            CreateBedInstance("Bed_P2", bedsRoot.transform, new Vector3(-14.5f, 15.0f, 0f), bedSprite);
+            CreateBedInstance("Bed_P3", bedsRoot.transform, new Vector3(-19.5f, 10.0f, 0f), bedSprite);
+            CreateBedInstance("Bed_P4", bedsRoot.transform, new Vector3(-14.5f, 10.0f, 0f), bedSprite);
+        }
+
+        private static GameObject CreateBedInstance(string name, Transform parent, Vector3 position, Sprite sprite)
+        {
+            GameObject bedGo = new GameObject(name);
+            bedGo.transform.SetParent(parent, false);
+            bedGo.transform.position = position;
+
+            SpriteRenderer sr = bedGo.AddComponent<SpriteRenderer>();
+            sr.sprite = sprite;
+            sr.color = new Color(0.85f, 0.92f, 1f, 1f); // Soft cosmetic tint for bed
+            sr.sortingLayerName = "Obstacles";
+            sr.sortingOrder = 1;
+
+            return bedGo;
+        }
+
+        [MenuItem("Tools/Facility/Spawn Facility Obstacles", false, 3)]
         public static void SpawnFacilityObstacles()
         {
             GameObject oldObstacles = GameObject.Find("Facility_Obstacles");
@@ -416,59 +463,84 @@ namespace TheLastSignal.EditorTools
             obstaclesRoot = new GameObject("Obstacles");
             Undo.RegisterCreatedObjectUndo(obstaclesRoot, "Create Obstacles");
 
+            EnsureSpriteMeshTypeFullRect(CratePngPath);
+            EnsureSpriteMeshTypeFullRect(CrateStackPngPath);
+            EnsureSpriteMeshTypeFullRect(TablePngPath);
+            EnsureSpriteMeshTypeFullRect(EquipmentPngPath);
+            EnsureSpriteMeshTypeFullRect(StructurePngPath);
+
             Sprite crateSprite = AssetDatabase.LoadAssetAtPath<Sprite>(CratePngPath);
             Sprite tableSprite = AssetDatabase.LoadAssetAtPath<Sprite>(TablePngPath);
             Sprite equipSprite = AssetDatabase.LoadAssetAtPath<Sprite>(EquipmentPngPath);
-
             Sprite structSprite = AssetDatabase.LoadAssetAtPath<Sprite>(StructurePngPath);
+            Sprite crateStackSprite = AssetDatabase.LoadAssetAtPath<Sprite>(CrateStackPngPath) ?? crateSprite;
 
-            // 1. Obstacle_MedBay_Crate: room [-14,14,-7,19], pos (-9.0, 16.5), box (2, 2) - doubled from 1x1, sits along route to TaskLoc_MedBay, >= 2 tiles from East Door (-6, 16..17)
-            CreateObstacleInstance("Obstacle_MedBay_Crate", obstaclesRoot.transform, new Vector3(-9.0f, 16.5f, 0f), new Vector2(2.0f, 2.0f), crateSprite);
+            // --- 1. Cargo_Hold (12x10, X: [-6, 5], Y: [-24, -15]) ---
+            // Z-shaped forklift aisles with heavy pallet containers & crates (breaks North-South straight sightline)
+            CreateObstacleInstance("Obstacle_CargoHold_Pallet_West", obstaclesRoot.transform, new Vector3(-3.0f, -17.5f, 0f), new Vector2(2.0f, 3.0f), crateStackSprite);
+            CreateObstacleInstance("Obstacle_CargoHold_Pallet_East", obstaclesRoot.transform, new Vector3(2.5f, -21.5f, 0f), new Vector2(2.0f, 2.0f), crateStackSprite);
+            CreateObstacleInstance("Obstacle_CargoHold_Crate_NE", obstaclesRoot.transform, new Vector3(3.5f, -16.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            CreateObstacleInstance("Obstacle_CargoHold_Shelf_East", obstaclesRoot.transform, new Vector3(4.5f, -19.5f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
 
-            // 2. Obstacle_DeepStorage_Equipment: room [-15,-39,-6,-32], pos (-8.0, -35.5), box (2, 3) - doubled from 1x2, sits along route to TaskLoc_DeepStorage, >= 2 tiles from East Door (-5, -36..-35)
-            CreateObstacleInstance("Obstacle_DeepStorage_Equipment", obstaclesRoot.transform, new Vector3(-8.0f, -35.5f, 0f), new Vector2(2.0f, 3.0f), equipSprite);
+            // --- 2. Mess_Hall (8x8, X: [-19, -12], Y: [-8, -1]) ---
+            // Canteen counter bar in NW + dual parallel dining tables forming a U-loop
+            CreateObstacleInstance("Obstacle_MessHall_Counter_North", obstaclesRoot.transform, new Vector3(-16.5f, -1.5f, 0f), new Vector2(3.0f, 1.0f), tableSprite);
+            CreateObstacleInstance("Obstacle_MessHall_Table_West", obstaclesRoot.transform, new Vector3(-17.0f, -6.0f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+            CreateObstacleInstance("Obstacle_MessHall_Table_East", obstaclesRoot.transform, new Vector3(-13.5f, -6.0f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
 
-            // 3-5. Cargo Hold Obstacle Cluster: 3 objects forming a horizontal bar spanning 4 tiles East-West at Y=-15.5 across the central spine
-            // Forces player entering from North (-1..0, -11) or South (-1..0, -22) to navigate around left or right.
-            CreateObstacleInstance("Obstacle_CargoHold_Crate_01", obstaclesRoot.transform, new Vector3(-2.0f, -15.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
-            CreateObstacleInstance("Obstacle_CargoHold_Table_02", obstaclesRoot.transform, new Vector3(-0.5f, -15.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
-            CreateObstacleInstance("Obstacle_CargoHold_Crate_03", obstaclesRoot.transform, new Vector3(1.0f, -15.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            // --- 3. Crew_Quarters (10x10, X: [-5, 4], Y: [38, 47]) ---
+            // Lockers on East wall + partition in NW bunk nook + center lounge table
+            CreateObstacleInstance("Obstacle_CrewQuarters_Lockers", obstaclesRoot.transform, new Vector3(3.5f, 43.5f, 0f), new Vector2(1.0f, 3.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_CrewQuarters_Partition", obstaclesRoot.transform, new Vector3(-3.5f, 45.5f, 0f), new Vector2(2.0f, 1.0f), structSprite);
+            CreateObstacleInstance("Obstacle_CrewQuarters_LoungeTable", obstaclesRoot.transform, new Vector3(-3.0f, 40.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
 
-            // --- 3 Evacuation Friction Obstacles (Adds gentle chicane/turning without blocking any doorway or corridor) ---
-            // 6. Obstacle_Loop_Chicane: Loop_Horizontal_Bend [3..14, -28..-27], placed on North row (Y=-26.5), leaves South row fully open (100% passable chicane)
-            CreateObstacleInstance("Obstacle_Loop_Chicane", obstaclesRoot.transform, new Vector3(8.5f, -26.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            // --- 4. Deep_Storage (10x10, X: [-18, -9], Y: [-52, -43]) ---
+            // Parallel vertical storage racks / archive shelves + SW pallet crate
+            CreateObstacleInstance("Obstacle_DeepStorage_Rack_West", obstaclesRoot.transform, new Vector3(-15.5f, -46.5f, 0f), new Vector2(1.0f, 4.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_DeepStorage_Rack_East", obstaclesRoot.transform, new Vector3(-11.5f, -48.5f, 0f), new Vector2(1.0f, 4.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_DeepStorage_Crate_SW", obstaclesRoot.transform, new Vector3(-16.5f, -50.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
 
-            // 7. Obstacle_NodeC_Center: Node_C [-3..2, -29..-25], placed in NW corner at (-2.5, -25.5), clear of North spine (-1..0), South spine (-1..0), and East bend (2)
-            CreateObstacleInstance("Obstacle_NodeC_Center", obstaclesRoot.transform, new Vector3(-2.5f, -25.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            // --- 5. Console_Alpha (10x10, X: [11, 20], Y: [23, 32]) ---
+            // 2 Server racks flanking console station + SE cable box + East auxiliary terminal
+            CreateObstacleInstance("Obstacle_ConsoleAlpha_ServerRack_North", obstaclesRoot.transform, new Vector3(15.5f, 31.0f, 0f), new Vector2(3.0f, 1.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_ConsoleAlpha_ServerRack_South", obstaclesRoot.transform, new Vector3(15.5f, 24.5f, 0f), new Vector2(3.0f, 1.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_ConsoleAlpha_CableBox", obstaclesRoot.transform, new Vector3(19.0f, 24.5f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_ConsoleAlpha_AuxRack_East", obstaclesRoot.transform, new Vector3(19.5f, 28.5f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
 
-            // 8. Obstacle_NodeB_Center: Node_B [-3..2, -8..-3], placed in SW corner at (-2.5, -6.5), clear of North spine (-1..0), South spine (-1..0), West corridor (-4..-3), and East corridor (-4..-3)
-            CreateObstacleInstance("Obstacle_NodeB_Center", obstaclesRoot.transform, new Vector3(-2.5f, -6.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            // --- 6. Vent_Shaft (9x11, X: [12, 20], Y: [-9, 1]) ---
+            // Center industrial exhaust turbine + SE duct pipe + NW air filter box
+            CreateObstacleInstance("Obstacle_VentShaft_Turbine_Center", obstaclesRoot.transform, new Vector3(16.5f, -1.0f, 0f), new Vector2(2.0f, 2.0f), structSprite);
+            CreateObstacleInstance("Obstacle_VentShaft_Duct_SE", obstaclesRoot.transform, new Vector3(18.5f, -7.0f, 0f), new Vector2(2.0f, 1.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_VentShaft_Filter_NW", obstaclesRoot.transform, new Vector3(13.5f, 0.0f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
 
-            // --- 4 Balancing Obstacles for Empty Rooms & Node A ---
-            // 9. Obstacle_CrewQuarters_Table: Crew_Quarters [-5..4, 23..30], placed at West (-3.0, 26.5) with size (2x1), off-axis from South door (-1..0) to TaskLoc (-0.5)
-            CreateObstacleInstance("Obstacle_CrewQuarters_Table", obstaclesRoot.transform, new Vector3(-3.0f, 26.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+            // --- 7. Power_Relay_Bay (10x10, X: [8, 17], Y: [-52, -43]) ---
+            // East wall conduit racks + SW substation transformer
+            CreateObstacleInstance("Obstacle_PowerRelay_Conduit_North", obstaclesRoot.transform, new Vector3(16.5f, -44.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_PowerRelay_Conduit_South", obstaclesRoot.transform, new Vector3(16.5f, -50.5f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_PowerRelay_Transformer_SW", obstaclesRoot.transform, new Vector3(10.0f, -50.0f, 0f), new Vector2(2.0f, 1.5f), structSprite);
 
-            // 10. Obstacle_MessHall_Table: Mess_Hall [-14..-7, -9..-2], placed at North (-10.5, -3.5) with size (2x1), off-axis from East door (-6, -6..-5) to TaskLoc (-10.5, -5.5)
-            CreateObstacleInstance("Obstacle_MessHall_Table", obstaclesRoot.transform, new Vector3(-10.5f, -3.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+            // --- 8. Reactor_Core (12x10, X: [7, 18], Y: [-69, -60]) ---
+            // West/East coolant tanks + South base pipe + NW/NE heavy conduits
+            CreateObstacleInstance("Obstacle_ReactorCore_CoolantTank_West", obstaclesRoot.transform, new Vector3(8.5f, -64.5f, 0f), new Vector2(1.0f, 2.0f), structSprite);
+            CreateObstacleInstance("Obstacle_ReactorCore_CoolantTank_East", obstaclesRoot.transform, new Vector3(17.5f, -64.5f, 0f), new Vector2(1.0f, 2.0f), structSprite);
+            CreateObstacleInstance("Obstacle_ReactorCore_BasePipe_South", obstaclesRoot.transform, new Vector3(12.5f, -68.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+            CreateObstacleInstance("Obstacle_ReactorCore_Conduit_NW", obstaclesRoot.transform, new Vector3(9.0f, -61.5f, 0f), new Vector2(1.5f, 1.0f), equipSprite);
+            CreateObstacleInstance("Obstacle_ReactorCore_Conduit_NE", obstaclesRoot.transform, new Vector3(17.0f, -61.5f, 0f), new Vector2(1.5f, 1.0f), equipSprite);
 
-            // 11. Obstacle_VentShaft_Equipment: Vent_Shaft [6..13, -10..-1], placed at North (9.5, -3.0) with size (2x1), off-axis from West door (5, -6..-5) to TaskLoc (9.5, -5.5), clear of South Loop entrance (Y=-10)
-            CreateObstacleInstance("Obstacle_VentShaft_Equipment", obstaclesRoot.transform, new Vector3(9.5f, -3.0f, 0f), new Vector2(2.0f, 1.0f), equipSprite);
+            // --- 9. Med_Bay & Evacuation Route Friction Obstacles ---
+            CreateObstacleInstance("Obstacle_MedBay_Crate", obstaclesRoot.transform, new Vector3(-14.5f, 27.5f, 0f), new Vector2(2.0f, 2.0f), crateSprite);
+            CreateObstacleInstance("Obstacle_Loop_Chicane", obstaclesRoot.transform, new Vector3(12.5f, -33.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            CreateObstacleInstance("Obstacle_NodeC_Center", obstaclesRoot.transform, new Vector3(-2.5f, -32.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            CreateObstacleInstance("Obstacle_NodeB_Center", obstaclesRoot.transform, new Vector3(-3.5f, -1.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            CreateObstacleInstance("Obstacle_NodeA_Center", obstaclesRoot.transform, new Vector3(-2.5f, 30.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
 
-            // 12. Obstacle_NodeA_Center: Node_A [-3..2, 14..19], placed in NW corner at (-2.5, 18.5) with size (1x1), matching Node B & C pattern, clear of all 4 doorway axes
-            CreateObstacleInstance("Obstacle_NodeA_Center", obstaclesRoot.transform, new Vector3(-2.5f, 18.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
+            var activeScene = UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene();
+            if (activeScene.IsValid())
+            {
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(activeScene);
+            }
 
-            // --- 6 Obstacles for 3 Dual Console Rooms (Difficulty Tiered) ---
-            // 13. Console Alpha (Easy): 1 technical cable box (1x2) in SE corner, far from Door and TaskLoc
-            CreateObstacleInstance("Obstacle_ConsoleAlpha_CableBox", obstaclesRoot.transform, new Vector3(14.0f, 14.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
-
-            // 14-15. Power Relay Bay (Medium): 2 conduit/equipment racks (1x2) placed symmetrically on North and South flanks at East wall
-            CreateObstacleInstance("Obstacle_PowerRelay_Conduit_North", obstaclesRoot.transform, new Vector3(13.5f, -33.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
-            CreateObstacleInstance("Obstacle_PowerRelay_Conduit_South", obstaclesRoot.transform, new Vector3(13.5f, -38.0f, 0f), new Vector2(1.0f, 2.0f), equipSprite);
-
-            // 16-18. Reactor Core (Finale): 3 coolant tanks / structural supports filling out 10x10 space without blocking doorway or TaskLoc
-            CreateObstacleInstance("Obstacle_ReactorCore_CoolantTank_West", obstaclesRoot.transform, new Vector3(6.0f, -47.5f, 0f), new Vector2(1.0f, 2.0f), structSprite);
-            CreateObstacleInstance("Obstacle_ReactorCore_CoolantTank_East", obstaclesRoot.transform, new Vector3(13.5f, -47.5f, 0f), new Vector2(1.0f, 2.0f), structSprite);
-            CreateObstacleInstance("Obstacle_ReactorCore_BasePipe_South", obstaclesRoot.transform, new Vector3(9.5f, -51.5f, 0f), new Vector2(2.0f, 1.0f), tableSprite);
+            Debug.Log("<color=green>[FacilityObstacles] Đã bố trí thành công hệ thống vật cản chiến thuật cho toàn bộ cơ sở!</color>");
         }
 
         private static GameObject CreateObstacleInstance(string name, Transform parent, Vector3 position, Vector2 colliderSize, Sprite sprite)
@@ -487,6 +559,12 @@ namespace TheLastSignal.EditorTools
             sr.sprite = sprite;
             sr.sortingLayerName = "Obstacles";
             sr.sortingOrder = 2;
+
+            if (colliderSize.x != 1f || colliderSize.y != 1f)
+            {
+                sr.drawMode = SpriteDrawMode.Tiled;
+                sr.size = colliderSize;
+            }
 
             BoxCollider2D boxCol = obstacleGo.AddComponent<BoxCollider2D>();
             boxCol.size = colliderSize;
@@ -507,13 +585,14 @@ namespace TheLastSignal.EditorTools
             Undo.RegisterCreatedObjectUndo(spawnRoot, "Create Spawn Points");
             SpawnManager spawnManager = spawnRoot.AddComponent<SpawnManager>();
 
-            // 1-4 Player Spawn Points arranged in a 2x2 grid inside Airlock Spawn room (X: [-4, 3], Y: [1, 8])
-            // P1: Top-Left (-1.5, 4.5), P2: Top-Right (1.5, 4.5)
-            // P3: Bottom-Left (-1.5, 2.5), P4: Bottom-Right (1.5, 2.5)
-            CreateSpawnPointInstance("SpawnPoint_P1", spawnRoot.transform, new Vector3(-1.5f, 4.5f, 0f), 0);
-            CreateSpawnPointInstance("SpawnPoint_P2", spawnRoot.transform, new Vector3(1.5f, 4.5f, 0f), 1);
-            CreateSpawnPointInstance("SpawnPoint_P3", spawnRoot.transform, new Vector3(-1.5f, 2.5f, 0f), 2);
-            CreateSpawnPointInstance("SpawnPoint_P4", spawnRoot.transform, new Vector3(1.5f, 2.5f, 0f), 3);
+            // 1-4 Player Spawn Points inside Airlock Spawn room (X: [-5, 4], Y: [8, 17])
+            // Center of Airlock is (0.0f, 13.0f)
+            // P1 is positioned at the exact center (0.0, 13.0) for single-player / primary spawn
+            // P2-P4 are positioned symmetrically around the center
+            CreateSpawnPointInstance("SpawnPoint_P1", spawnRoot.transform, new Vector3(0.0f, 13.0f, 0f), 0);
+            CreateSpawnPointInstance("SpawnPoint_P2", spawnRoot.transform, new Vector3(2.0f, 13.0f, 0f), 1);
+            CreateSpawnPointInstance("SpawnPoint_P3", spawnRoot.transform, new Vector3(-2.0f, 13.0f, 0f), 2);
+            CreateSpawnPointInstance("SpawnPoint_P4", spawnRoot.transform, new Vector3(0.0f, 11.0f, 0f), 3);
 
             spawnManager.RefreshSpawnPoints();
         }
@@ -543,16 +622,24 @@ namespace TheLastSignal.EditorTools
 
             // 10 Task Locations across the facility (excluding Airlock Spawn per brief)
             // Group 2: Dual Console rooms (ConsoleAlpha, PowerRelayBay, ReactorCore) enlarged to 2x2 physical colliders
-            CreateTaskLocationInstance("TaskLoc_CrewQuarters", taskLocsRoot.transform, new Vector3(-0.5f, 26.5f, 0f), cpSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_MedBay", taskLocsRoot.transform, new Vector3(-10.5f, 16.5f, 0f), compSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_ConsoleAlpha", taskLocsRoot.transform, new Vector3(10.5f, 16.5f, 0f), cpSprite, new Vector2(2.0f, 2.0f));
-            CreateTaskLocationInstance("TaskLoc_MessHall", taskLocsRoot.transform, new Vector3(-10.5f, -5.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_VentShaft", taskLocsRoot.transform, new Vector3(9.5f, -5.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_CargoHold", taskLocsRoot.transform, new Vector3(-0.5f, -16.5f, 0f), exitSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_CargoHold_02", taskLocsRoot.transform, new Vector3(-4.0f, -19.0f, 0f), exitSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_DeepStorage", taskLocsRoot.transform, new Vector3(-10.5f, -35.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_PowerRelayBay", taskLocsRoot.transform, new Vector3(9.5f, -35.5f, 0f), genSprite, new Vector2(2.0f, 2.0f));
-            CreateTaskLocationInstance("TaskLoc_ReactorCore", taskLocsRoot.transform, new Vector3(9.5f, -47.5f, 0f), genSprite, new Vector2(2.0f, 2.0f));
+            CreateTaskLocationInstance("TaskLoc_CrewQuarters", taskLocsRoot.transform, new Vector3(-0.5f, 42.5f, 0f), cpSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_MedBay", taskLocsRoot.transform, new Vector3(-16.5f, 27.5f, 0f), compSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_ConsoleAlpha", taskLocsRoot.transform, new Vector3(15.5f, 27.5f, 0f), cpSprite, new Vector2(2.0f, 2.0f));
+            CreateTaskLocationInstance("TaskLoc_MessHall", taskLocsRoot.transform, new Vector3(-15.5f, -4.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_VentShaft", taskLocsRoot.transform, new Vector3(16.5f, -4.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_CargoHold", taskLocsRoot.transform, new Vector3(-0.5f, -19.5f, 0f), exitSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_CargoHold_02", taskLocsRoot.transform, new Vector3(-4.0f, -22.0f, 0f), exitSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_DeepStorage", taskLocsRoot.transform, new Vector3(-13.5f, -47.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
+            CreateTaskLocationInstance("TaskLoc_PowerRelayBay", taskLocsRoot.transform, new Vector3(12.5f, -47.5f, 0f), genSprite, new Vector2(2.0f, 2.0f));
+            GameObject reactorGo = CreateTaskLocationInstance("TaskLoc_ReactorCore", taskLocsRoot.transform, new Vector3(12.5f, -64.5f, 0f), genSprite, new Vector2(2.0f, 2.0f));
+            ReactorCoreConsole reactorConsole = reactorGo.AddComponent<ReactorCoreConsole>();
+            GameSessionStateEventChannelSO sessionChannel = AssetDatabase.LoadAssetAtPath<GameSessionStateEventChannelSO>("Assets/_Project/Scripts/4_Data/Events/OnGameSessionStateChanged.asset");
+            if (sessionChannel != null)
+            {
+                SerializedObject consoleSo = new SerializedObject(reactorConsole);
+                consoleSo.FindProperty("onGameSessionStateChanged").objectReferenceValue = sessionChannel;
+                consoleSo.ApplyModifiedPropertiesWithoutUndo();
+            }
         }
 
         private static GameObject CreateTaskLocationInstance(string name, Transform parent, Vector3 position, Sprite markerSprite = null, Vector2? colliderSize = null)
@@ -595,6 +682,9 @@ namespace TheLastSignal.EditorTools
 
             SpawnPoint sp = spGo.AddComponent<SpawnPoint>();
             sp.Initialize(playerIndex);
+
+            PlayerSpawnPoint psp = spGo.AddComponent<PlayerSpawnPoint>();
+            psp.Configure(playerIndex);
 
             return spGo;
         }
@@ -676,9 +766,9 @@ namespace TheLastSignal.EditorTools
             // 2. Flood-Fill with all 3 doors CLOSED (Verify no soft-locks on main spine and loop)
             HashSet<Vector3Int> doorTiles = new HashSet<Vector3Int>
             {
-                new Vector3Int(6, 16, 0), new Vector3Int(6, 17, 0),       // Door_ConsoleAlpha
-                new Vector3Int(5, -36, 0), new Vector3Int(5, -35, 0),    // Door_PowerRelayBay
-                new Vector3Int(9, -43, 0), new Vector3Int(10, -43, 0)     // Door_ReactorCore
+                new Vector3Int(10, 27, 0), new Vector3Int(10, 28, 0),    // Door_ConsoleAlpha
+                new Vector3Int(7, -47, 0), new Vector3Int(7, -46, 0),    // Door_PowerRelayBay
+                new Vector3Int(12, -59, 0), new Vector3Int(13, -59, 0)   // Door_ReactorCore
             };
 
             HashSet<Vector3Int> openTiles = new HashSet<Vector3Int>(allFloorTiles);
@@ -704,7 +794,7 @@ namespace TheLastSignal.EditorTools
             }
 
             // Verify all non-door rooms remain 100% interconnected
-            string[] nonDoorRooms = new[] { "Crew_Quarters", "Med_Bay", "Airlock_Spawn", "Mess_Hall", "Vent_Shaft", "Cargo_Hold", "Deep_Storage" };
+            string[] nonDoorRooms = new[] { "Crew_Quarters", "Med_Bay", "Airlock_Spawn", "Mess_Hall", "Vent_Shaft", "Cargo_Hold", "Deep_Storage", "Bedroom" };
             bool allNonDoorReachable = true;
             foreach (var block in FacilityBlocks)
             {
@@ -747,8 +837,8 @@ namespace TheLastSignal.EditorTools
                 }
             }
 
-            Vector3Int medBayWestTile = new Vector3Int(-14, 14, 0);
-            Vector3Int deepStorageWestTile = new Vector3Int(-15, -34, 0);
+            Vector3Int medBayWestTile = new Vector3Int(-20, 24, 0);
+            Vector3Int deepStorageWestTile = new Vector3Int(-18, -47, 0);
 
             // Test Direction 1: Med_Bay -> Deep_Storage
             queue.Clear();
@@ -817,7 +907,7 @@ namespace TheLastSignal.EditorTools
                 Directory.CreateDirectory(TileDir);
             }
 
-            if (!File.Exists(FloorPngPath))
+            if (!IsValidPng(FloorPngPath))
             {
                 Texture2D floorTex = CreateBorderedTexture(32, 32, new Color(0.85f, 0.88f, 0.90f, 1f), new Color(0.70f, 0.73f, 0.76f, 1f));
                 File.WriteAllBytes(FloorPngPath, floorTex.EncodeToPNG());
@@ -825,7 +915,7 @@ namespace TheLastSignal.EditorTools
                 ConfigureTextureAsSprite(FloorPngPath);
             }
 
-            if (!File.Exists(WallPngPath))
+            if (!IsValidPng(WallPngPath))
             {
                 Texture2D wallTex = CreateBorderedTexture(32, 32, new Color(0.18f, 0.20f, 0.23f, 1f), new Color(0.08f, 0.09f, 0.11f, 1f));
                 File.WriteAllBytes(WallPngPath, wallTex.EncodeToPNG());
@@ -833,7 +923,7 @@ namespace TheLastSignal.EditorTools
                 ConfigureTextureAsSprite(WallPngPath);
             }
 
-            if (!File.Exists(NodePngPath))
+            if (!IsValidPng(NodePngPath))
             {
                 Texture2D nodeTex = CreateBorderedTexture(32, 32, new Color(0.74f, 0.84f, 0.92f, 1f), new Color(0.58f, 0.70f, 0.80f, 1f));
                 File.WriteAllBytes(NodePngPath, nodeTex.EncodeToPNG());
@@ -846,35 +936,73 @@ namespace TheLastSignal.EditorTools
 
             AssetDatabase.Refresh();
 
-            if (!File.Exists(FloorTilePath))
+            Tile floorTile = AssetDatabase.LoadAssetAtPath<Tile>(FloorTilePath);
+            if (floorTile == null)
             {
                 Sprite floorSprite = AssetDatabase.LoadAssetAtPath<Sprite>(FloorPngPath);
-                Tile floorTile = ScriptableObject.CreateInstance<Tile>();
+                floorTile = ScriptableObject.CreateInstance<Tile>();
                 floorTile.sprite = floorSprite;
                 floorTile.colliderType = Tile.ColliderType.None;
                 AssetDatabase.CreateAsset(floorTile, FloorTilePath);
             }
+            else if (floorTile.sprite == null)
+            {
+                floorTile.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(FloorPngPath);
+                EditorUtility.SetDirty(floorTile);
+            }
 
-            if (!File.Exists(WallTilePath))
+            Tile wallTile = AssetDatabase.LoadAssetAtPath<Tile>(WallTilePath);
+            if (wallTile == null)
             {
                 Sprite wallSprite = AssetDatabase.LoadAssetAtPath<Sprite>(WallPngPath);
-                Tile wallTile = ScriptableObject.CreateInstance<Tile>();
+                wallTile = ScriptableObject.CreateInstance<Tile>();
                 wallTile.sprite = wallSprite;
                 wallTile.colliderType = Tile.ColliderType.Grid;
                 AssetDatabase.CreateAsset(wallTile, WallTilePath);
             }
+            else if (wallTile.sprite == null)
+            {
+                wallTile.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(WallPngPath);
+                EditorUtility.SetDirty(wallTile);
+            }
 
-            if (!File.Exists(NodeTilePath))
+            Tile nodeTile = AssetDatabase.LoadAssetAtPath<Tile>(NodeTilePath);
+            if (nodeTile == null)
             {
                 Sprite nodeSprite = AssetDatabase.LoadAssetAtPath<Sprite>(NodePngPath);
-                Tile nodeTile = ScriptableObject.CreateInstance<Tile>();
+                nodeTile = ScriptableObject.CreateInstance<Tile>();
                 nodeTile.sprite = nodeSprite;
                 nodeTile.colliderType = Tile.ColliderType.None;
                 AssetDatabase.CreateAsset(nodeTile, NodeTilePath);
             }
+            else if (nodeTile.sprite == null)
+            {
+                nodeTile.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(NodePngPath);
+                EditorUtility.SetDirty(nodeTile);
+            }
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        private static bool IsValidPng(string path)
+        {
+            if (!File.Exists(path)) return false;
+            try
+            {
+                using (FileStream fs = File.OpenRead(path))
+                {
+                    if (fs.Length < 8) return false;
+                    byte[] header = new byte[8];
+                    fs.Read(header, 0, 8);
+                    return header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47 &&
+                           header[4] == 0x0D && header[5] == 0x0A && header[6] == 0x1A && header[7] == 0x0A;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static void RecreateTileAssets()
@@ -940,6 +1068,22 @@ namespace TheLastSignal.EditorTools
             return tex;
         }
 
+        public static void EnsureSpriteMeshTypeFullRect(string path)
+        {
+            TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer != null)
+            {
+                TextureImporterSettings tis = new TextureImporterSettings();
+                importer.ReadTextureSettings(tis);
+                if (tis.spriteMeshType != SpriteMeshType.FullRect)
+                {
+                    tis.spriteMeshType = SpriteMeshType.FullRect;
+                    importer.SetTextureSettings(tis);
+                    importer.SaveAndReimport();
+                }
+            }
+        }
+
         private static void ConfigureTextureAsSprite(string path)
         {
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
@@ -950,6 +1094,12 @@ namespace TheLastSignal.EditorTools
                 importer.spritePixelsPerUnit = 32;
                 importer.filterMode = FilterMode.Point;
                 importer.textureCompression = TextureImporterCompression.Uncompressed;
+
+                TextureImporterSettings tis = new TextureImporterSettings();
+                importer.ReadTextureSettings(tis);
+                tis.spriteMeshType = SpriteMeshType.FullRect;
+                importer.SetTextureSettings(tis);
+
                 importer.SaveAndReimport();
             }
         }

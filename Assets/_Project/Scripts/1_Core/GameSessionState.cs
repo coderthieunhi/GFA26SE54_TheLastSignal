@@ -11,6 +11,7 @@ namespace TheLastSignal.Core
         SpawnPlayer,
         InitializeObjective,
         Gameplay,
+        Evacuation,
         Win,
         Lose,
         GameComplete,

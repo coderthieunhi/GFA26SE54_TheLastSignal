@@ -23,6 +23,7 @@ namespace TheLastSignal.EditorTools
         private const string ScenePath = "Assets/Scenes/SampleScene.unity";
         private const string ObjectiveChannelPath = EventsDir + "/OnObjectiveChanged.asset";
         private const string SessionChannelPath = EventsDir + "/OnGameSessionStateChanged.asset";
+        private const string TimerChannelPath = EventsDir + "/OnEvacuationTimerTicked.asset";
         private const string PlayerPrefabPath = PrefabDir + "/Player.prefab";
 
         [MenuItem("Tools/Facility/Setup Game Session Prototype", false, 2)]
@@ -43,6 +44,7 @@ namespace TheLastSignal.EditorTools
 
             ObjectiveDataEventChannelSO objectiveChannel = LoadOrCreate<ObjectiveDataEventChannelSO>(ObjectiveChannelPath);
             GameSessionStateEventChannelSO sessionChannel = LoadOrCreate<GameSessionStateEventChannelSO>(SessionChannelPath);
+            FloatEventChannelSO timerChannel = LoadOrCreate<FloatEventChannelSO>(TimerChannelPath);
 
             Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
 
@@ -74,9 +76,11 @@ namespace TheLastSignal.EditorTools
 
             SerializedObject gmSo = new SerializedObject(gameManager);
             gmSo.FindProperty("startSessionOnPlay").boolValue = true;
+            gmSo.FindProperty("evacuationDuration").floatValue = 45f;
             gmSo.FindProperty("playerSpawner").objectReferenceValue = spawner;
             gmSo.FindProperty("onGameSessionStateChanged").objectReferenceValue = sessionChannel;
             gmSo.FindProperty("onObjectiveChanged").objectReferenceValue = objectiveChannel;
+            gmSo.FindProperty("onEvacuationTimerTicked").objectReferenceValue = timerChannel;
             gmSo.ApplyModifiedPropertiesWithoutUndo();
 
             GameObject spawnArea = GameObject.Find("SpawnArea");
@@ -86,14 +90,14 @@ namespace TheLastSignal.EditorTools
                 Undo.RegisterCreatedObjectUndo(spawnArea, "Create SpawnArea");
             }
 
-            spawnArea.transform.position = new Vector3(-0.5f, 3.5f, 0f);
+            spawnArea.transform.position = new Vector3(0.0f, 13.0f, 0f);
 
             Vector2[] slots =
             {
-                new Vector2(-1.5f, 4.5f),
-                new Vector2(0.5f, 4.5f),
-                new Vector2(-1.5f, 2.5f),
-                new Vector2(0.5f, 2.5f)
+                new Vector2(0.0f, 13.0f),
+                new Vector2(2.0f, 13.0f),
+                new Vector2(-2.0f, 13.0f),
+                new Vector2(0.0f, 11.0f)
             };
 
             for (int i = 0; i < slots.Length; i++)
@@ -120,7 +124,8 @@ namespace TheLastSignal.EditorTools
                 Undo.RegisterCreatedObjectUndo(exitGo, "Create Exit_Zone");
             }
 
-            exitGo.transform.position = new Vector3(-0.5f, 31.5f, 0f);
+            // Move Exit_Zone to Airlock_Spawn center with standard 3.0x3.0 size
+            exitGo.transform.position = new Vector3(0.0f, 13.0f, 0f);
             BoxCollider2D box = GetOrAddComponent<BoxCollider2D>(exitGo);
             box.isTrigger = true;
             box.size = new Vector2(3f, 3f);
@@ -136,6 +141,16 @@ namespace TheLastSignal.EditorTools
 
             sr.color = new Color(0.25f, 1f, 0.4f, 0.85f);
             sr.sortingOrder = 5;
+
+            // Wire ReactorCoreConsole onto TaskLoc_ReactorCore
+            GameObject reactorGo = GameObject.Find("TaskLoc_ReactorCore");
+            if (reactorGo != null)
+            {
+                TheLastSignal.Entities.Environment.ReactorCoreConsole console = GetOrAddComponent<TheLastSignal.Entities.Environment.ReactorCoreConsole>(reactorGo);
+                SerializedObject consoleSo = new SerializedObject(console);
+                consoleSo.FindProperty("onGameSessionStateChanged").objectReferenceValue = sessionChannel;
+                consoleSo.ApplyModifiedPropertiesWithoutUndo();
+            }
 
             GameObject hazardGo = GameObject.Find("Hazard_Zone");
             if (hazardGo == null)
@@ -160,12 +175,13 @@ namespace TheLastSignal.EditorTools
             hazardSr.color = new Color(1f, 0.25f, 0.25f, 0.85f);
             hazardSr.sortingOrder = 5;
 
-            EnsureHud(objectiveChannel, sessionChannel);
+            EnsureDoors();
+            EnsureHud(objectiveChannel, sessionChannel, timerChannel);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log("[GameSessionPrototypeSetup] SampleScene wired: GameSession, SpawnArea P1-P4, Exit_Zone, Hazard_Zone, HUD.");
+            Debug.Log("[GameSessionPrototypeSetup] SampleScene wired: GameSession, SpawnArea P1-P4, Exit_Zone (Airlock), ReactorCoreConsole, HUD with Countdown.");
         }
 
         private static T GetOrAddComponent<T>(GameObject go) where T : Component
@@ -199,7 +215,8 @@ namespace TheLastSignal.EditorTools
 
         private static void EnsureHud(
             ObjectiveDataEventChannelSO objectiveChannel,
-            GameSessionStateEventChannelSO sessionChannel)
+            GameSessionStateEventChannelSO sessionChannel,
+            FloatEventChannelSO timerChannel)
         {
             GameObject canvasGo = GameObject.Find("HUD_Canvas");
             if (canvasGo == null)
@@ -219,13 +236,19 @@ namespace TheLastSignal.EditorTools
                 canvasGo.transform, "ObjectiveText", new Vector2(20f, -20f), TextAlignmentOptions.TopLeft);
             TextMeshProUGUI statusText = FindOrCreateText(
                 canvasGo.transform, "SessionStatusText", new Vector2(0f, -80f), TextAlignmentOptions.Top);
+            TextMeshProUGUI countdownText = FindOrCreateText(
+                canvasGo.transform, "CountdownText", new Vector2(0f, -140f), TextAlignmentOptions.Top);
+            countdownText.fontSize = 42;
+            countdownText.color = new Color(1f, 0.4f, 0.2f, 1f);
 
             HUDManager hud = GetOrAddComponent<HUDManager>(canvasGo);
             SerializedObject so = new SerializedObject(hud);
             so.FindProperty("onObjectiveChanged").objectReferenceValue = objectiveChannel;
             so.FindProperty("onGameSessionStateChanged").objectReferenceValue = sessionChannel;
+            so.FindProperty("onEvacuationTimerTicked").objectReferenceValue = timerChannel;
             so.FindProperty("objectiveText").objectReferenceValue = objectiveText;
             so.FindProperty("sessionStatusText").objectReferenceValue = statusText;
+            so.FindProperty("countdownText").objectReferenceValue = countdownText;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
@@ -257,6 +280,19 @@ namespace TheLastSignal.EditorTools
             tmp.textWrappingMode = TextWrappingModes.NoWrap;
             tmp.raycastTarget = false;
             return tmp;
+        }
+
+        private static void EnsureDoors()
+        {
+            GameObject doorsParent = GameObject.Find("Doors");
+            if (doorsParent == null) return;
+
+            for (int i = 0; i < doorsParent.transform.childCount; i++)
+            {
+                Transform doorTf = doorsParent.transform.GetChild(i);
+                TheLastSignal.Entities.Environment.DoorController ctrl = GetOrAddComponent<TheLastSignal.Entities.Environment.DoorController>(doorTf.gameObject);
+                ctrl.Initialize(doorTf.name, TheLastSignal.Entities.Environment.DoorState.Closed);
+            }
         }
     }
 }
