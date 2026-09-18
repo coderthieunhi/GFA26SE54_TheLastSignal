@@ -1,39 +1,120 @@
+using System;
+using System.Threading.Tasks;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
 using UnityEngine;
 
 namespace TheLastSignal.Core
 {
     /// <summary>
-    /// Thin wrapper over Unity Netcode's NetworkManager. Centralizes StartHost/StartClient/Shutdown
-    /// calls and connection-approval hookup so the rest of the project never talks to NetworkManager
-    /// directly.
+    /// Thin wrapper over Unity Netcode's NetworkManager. Centralizes Relay allocation plus
+    /// StartHost/StartClient/Shutdown so the rest of the project never talks to NetworkManager or
+    /// UnityTransport directly.
+    /// Story 3.1 scope: Relay + transport wiring only. Lobby/session browsing is Story 3.2.
     /// </summary>
     [RequireComponent(typeof(NetworkManager))]
     public class NetworkManagerExt : MonoBehaviour
     {
+        /// <summary>Relay counts peers excluding the host, so 3 here means a 4-player session.</summary>
+        private const int DefaultMaxConnections = 3;
+
+        /// <summary>Encrypted UDP. Relay also accepts "udp" and "wss"; dtls is the recommended default.</summary>
+        private const string RelayConnectionType = "dtls";
+
+        [SerializeField, Range(1, 15)] private int maxConnections = DefaultMaxConnections;
+
         private NetworkManager networkManager;
+        private UnityTransport transport;
+
+        /// <summary>Join code from the most recent CreateRelay / JoinRelay call, or null.</summary>
+        public string JoinCode { get; private set; }
 
         private void Awake()
         {
             networkManager = GetComponent<NetworkManager>();
+            transport = networkManager.NetworkConfig?.NetworkTransport as UnityTransport;
+
+            if (transport == null)
+            {
+                transport = GetComponent<UnityTransport>();
+            }
+
+            if (transport == null)
+            {
+                Debug.LogError("[NetworkManagerExt] No UnityTransport found on the NetworkManager. " +
+                               "Relay cannot be wired up.");
+            }
+        }
+
+        /// <summary>
+        /// Allocates a Relay server, applies it to UnityTransport, and returns the join code other
+        /// players type in. Region is left unset so Relay picks the default for this account.
+        /// Requires an anonymous sign-in to have completed first (see GameManager).
+        /// </summary>
+        public async Task<string> CreateRelay()
+        {
+            if (transport == null)
+            {
+                throw new InvalidOperationException("UnityTransport is missing; cannot create a Relay allocation.");
+            }
+
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
+            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+
+            transport.SetRelayServerData(allocation.ToRelayServerData(RelayConnectionType));
+
+            JoinCode = joinCode;
+            Debug.Log($"[NetworkManagerExt] Relay allocation created. Join code: {joinCode}");
+            return joinCode;
+        }
+
+        /// <summary>
+        /// Joins an existing Relay allocation by code and applies it to UnityTransport.
+        /// Requires an anonymous sign-in to have completed first (see GameManager).
+        /// </summary>
+        public async Task JoinRelay(string joinCode)
+        {
+            if (transport == null)
+            {
+                throw new InvalidOperationException("UnityTransport is missing; cannot join a Relay allocation.");
+            }
+
+            if (string.IsNullOrWhiteSpace(joinCode))
+            {
+                throw new ArgumentException("Join code is empty.", nameof(joinCode));
+            }
+
+            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode.Trim());
+
+            transport.SetRelayServerData(joinAllocation.ToRelayServerData(RelayConnectionType));
+
+            JoinCode = joinCode.Trim();
+            Debug.Log($"[NetworkManagerExt] Joined Relay allocation with code: {JoinCode}");
         }
 
         /// <summary>Starts this instance as the Host (listen server) for a Host-Client session.</summary>
-        public void StartHost()
+        public bool StartHost()
         {
-            // TODO: configure Unity Transport connection data, then call networkManager.StartHost().
+            return networkManager.StartHost();
         }
 
-        /// <summary>Starts this instance as a Client connecting to a Host.</summary>
-        public void StartClient()
+        /// <summary>Starts this instance as a Client connecting to the Relay-allocated Host.</summary>
+        public bool StartClient()
         {
-            // TODO: configure Unity Transport connection data, then call networkManager.StartClient().
+            return networkManager.StartClient();
         }
 
         /// <summary>Shuts down the active Netcode session, whether Host or Client.</summary>
         public void Shutdown()
         {
-            // TODO: call networkManager.Shutdown() and clean up session state.
+            if (networkManager != null && networkManager.IsListening)
+            {
+                networkManager.Shutdown();
+            }
+
+            JoinCode = null;
         }
     }
 }

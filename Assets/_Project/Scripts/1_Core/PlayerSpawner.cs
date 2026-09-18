@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using TheLastSignal.Entities.Player;
 
@@ -23,6 +24,14 @@ namespace TheLastSignal.Core
         public IReadOnlyList<PlayerController> SpawnedPlayers => spawnedPlayers;
 
         public int PlayersToSpawn => playersToSpawn;
+
+        /// <summary>
+        /// Story 3.1: when an NGO session is running, NetworkManager owns player lifetime (it spawns
+        /// one Player per connected client) and each owner places itself. This spawner must then not
+        /// Instantiate anything, or every peer would get a second, non-networked ghost player.
+        /// </summary>
+        private static bool IsNetworkSessionActive =>
+            NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
 
         private void Awake()
         {
@@ -61,6 +70,12 @@ namespace TheLastSignal.Core
             CollectSpawnPoints();
             spawnedPlayers.Clear();
 
+            if (IsNetworkSessionActive)
+            {
+                AdoptNetworkedPlayers();
+                return;
+            }
+
             List<PlayerController> existing = new List<PlayerController>(
                 FindObjectsByType<PlayerController>(FindObjectsInactive.Include));
 
@@ -85,6 +100,22 @@ namespace TheLastSignal.Core
             }
         }
 
+        /// <summary>
+        /// Tracks the NGO-spawned players so the session flow has a roster to work with. NetworkManager
+        /// created these, so nothing is instantiated or destroyed here.
+        /// </summary>
+        private void AdoptNetworkedPlayers()
+        {
+            PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsInactive.Include);
+            for (int i = 0; i < players.Length; i++)
+            {
+                if (players[i] != null && players[i].IsSpawned)
+                {
+                    spawnedPlayers.Add(players[i]);
+                }
+            }
+        }
+
         public void ResetSpawnedPlayers()
         {
             CollectSpawnPoints();
@@ -92,6 +123,12 @@ namespace TheLastSignal.Core
             {
                 PlayerController player = spawnedPlayers[i];
                 if (player == null)
+                {
+                    continue;
+                }
+
+                // Owner-authoritative transforms: only the owner may reposition its own body.
+                if (IsNetworkSessionActive && !player.IsOwner)
                 {
                     continue;
                 }
@@ -104,10 +141,19 @@ namespace TheLastSignal.Core
         {
             for (int i = 0; i < spawnedPlayers.Count; i++)
             {
-                if (spawnedPlayers[i] != null)
+                if (spawnedPlayers[i] == null)
                 {
-                    spawnedPlayers[i].SetControlEnabled(enabled);
+                    continue;
                 }
+
+                // `controlEnabled` is a local input gate, so the Host must not toggle it on bodies
+                // owned by remote clients — each owner manages its own.
+                if (IsNetworkSessionActive && !spawnedPlayers[i].IsOwner)
+                {
+                    continue;
+                }
+
+                spawnedPlayers[i].SetControlEnabled(enabled);
             }
         }
 
