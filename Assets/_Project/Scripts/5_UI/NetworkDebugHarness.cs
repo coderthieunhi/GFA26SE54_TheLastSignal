@@ -23,6 +23,15 @@ namespace TheLastSignal.UI
         private string status = "Starting Unity Services…";
         private bool busy;
 
+        // GUILayout.Window auto-sizes to its content height, unlike a fixed-height BeginArea Rect
+        // (which silently clips anything past its height — e.g. the join-code line at the bottom
+        // once the status text wraps to more lines than expected).
+        private Rect windowRect = new Rect(10f, 10f, 320f, 10f);
+
+        // Fixed id: only one of these exists per scene, and GUILayout.Window just needs a value
+        // stable across frames — no need for a real per-object identity API here.
+        private const int WindowId = 3100731;
+
         private void Awake()
         {
             if (networkManagerExt == null)
@@ -33,10 +42,13 @@ namespace TheLastSignal.UI
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(10f, 10f, 320f, 260f), GUI.skin.box);
+            windowRect = GUILayout.Window(WindowId, windowRect, DrawWindow, "TEMP DEBUG — Story 3.1");
+        }
 
-            GUILayout.Label("<b>TEMP DEBUG — Story 3.1</b>\nNot the Lobby (that is Story 3.2).",
-                new GUIStyle(GUI.skin.label) { richText = true, wordWrap = true });
+        private void DrawWindow(int windowId)
+        {
+            GUILayout.Label("Not the Lobby (that is Story 3.2).",
+                new GUIStyle(GUI.skin.label) { wordWrap = true });
 
             GUILayout.Space(4f);
             GUILayout.Label($"Services: {DescribeServices()}");
@@ -80,7 +92,6 @@ namespace TheLastSignal.UI
                 GUILayout.TextField(hostJoinCode);
             }
 
-            GUILayout.EndArea();
         }
 
         private async void HostAsync()
