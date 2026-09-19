@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TheLastSignal.Core;
+using Unity.Services.Relay;
 
 namespace TheLastSignal.UI
 {
@@ -42,6 +44,8 @@ namespace TheLastSignal.UI
         [Header("Status")]
         [SerializeField] private TextMeshProUGUI statusText;
         [SerializeField] private TMP_InputField joinCodeDisplayField;
+        [SerializeField] private Button copyCodeButton;
+        [SerializeField] private TextMeshProUGUI copyButtonText;
         [SerializeField] private TextMeshProUGUI allReadyText;
 
         [Header("Player List")]
@@ -51,6 +55,8 @@ namespace TheLastSignal.UI
         private string localJoinMessage = string.Empty;
         private bool subscribedToRoster;
         private readonly List<GameObject> spawnedRows = new List<GameObject>();
+        private Coroutine copyFeedbackCoroutine;
+        private Coroutine connectionTimeoutCoroutine;
 
         private void Awake()
         {
@@ -72,6 +78,28 @@ namespace TheLastSignal.UI
             if (joinButton != null)
             {
                 joinButton.onClick.AddListener(OnJoinButtonPressed);
+            }
+
+            if (joinCodeInputField != null)
+            {
+                joinCodeInputField.characterLimit = 12;
+                joinCodeInputField.onValueChanged.AddListener(OnJoinCodeInputChanged);
+                joinCodeInputField.onSubmit.AddListener(_ => OnJoinButtonPressed());
+            }
+
+            if (copyCodeButton != null)
+            {
+                copyCodeButton.onClick.AddListener(OnCopyCodeButtonPressed);
+            }
+            else if (joinCodeDisplayField != null)
+            {
+                CreateDynamicCopyButton();
+            }
+
+            if (joinCodeDisplayField != null)
+            {
+                joinCodeDisplayField.readOnly = true;
+                joinCodeDisplayField.onSelect.AddListener(_ => OnCopyCodeButtonPressed());
             }
 
             SubscribeToRoster();
@@ -106,6 +134,16 @@ namespace TheLastSignal.UI
             if (joinButton != null)
             {
                 joinButton.onClick.RemoveListener(OnJoinButtonPressed);
+            }
+
+            if (joinCodeInputField != null)
+            {
+                joinCodeInputField.onValueChanged.RemoveListener(OnJoinCodeInputChanged);
+            }
+
+            if (copyCodeButton != null)
+            {
+                copyCodeButton.onClick.RemoveListener(OnCopyCodeButtonPressed);
             }
 
             if (subscribedToRoster && sessionManager != null)
@@ -161,8 +199,14 @@ namespace TheLastSignal.UI
 
                 if (joinCodeDisplayField != null)
                 {
-                    joinCodeDisplayField.text = joinCode;
+                    joinCodeDisplayField.text = joinCode.ToUpperInvariant();
+                    joinCodeDisplayField.pointSize = 20;
                 }
+            }
+            catch (RelayServiceException relayEx)
+            {
+                SetLocalStatus(LocalJoinStatus.Failed, $"Relay error ({relayEx.Reason}): {relayEx.Message}");
+                SetControlsInteractable(true);
             }
             catch (Exception ex)
             {
@@ -181,7 +225,13 @@ namespace TheLastSignal.UI
                 return;
             }
 
-            string code = joinCodeInputField.text;
+            string code = joinCodeInputField.text?.Trim().ToUpperInvariant();
+            if (string.IsNullOrEmpty(code))
+            {
+                SetLocalStatus(LocalJoinStatus.Failed, "Please enter a room code.");
+                return;
+            }
+
             SetLocalStatus(LocalJoinStatus.Connecting, "Connecting...");
             SetControlsInteractable(false);
 
@@ -189,8 +239,20 @@ namespace TheLastSignal.UI
             {
                 await networkManagerExt.JoinRelay(code);
 
+                if (connectionTimeoutCoroutine != null)
+                {
+                    StopCoroutine(connectionTimeoutCoroutine);
+                }
+                connectionTimeoutCoroutine = StartCoroutine(ConnectionTimeoutRoutine());
+
                 if (!networkManagerExt.StartClient())
                 {
+                    if (connectionTimeoutCoroutine != null)
+                    {
+                        StopCoroutine(connectionTimeoutCoroutine);
+                        connectionTimeoutCoroutine = null;
+                    }
+
                     SetLocalStatus(LocalJoinStatus.Failed, "Could not start Client.");
                     SetControlsInteractable(true);
                     return;
@@ -199,23 +261,78 @@ namespace TheLastSignal.UI
                 // Deliberately still "Connecting": we only clear it once our own entry appears in the
                 // shared roster (HandlePlayersChanged) - that presence itself is "Connected."
             }
+            catch (RelayServiceException relayEx)
+            {
+                if (connectionTimeoutCoroutine != null)
+                {
+                    StopCoroutine(connectionTimeoutCoroutine);
+                    connectionTimeoutCoroutine = null;
+                }
+
+                string friendlyMessage = ParseRelayException(relayEx);
+                SetLocalStatus(LocalJoinStatus.Failed, friendlyMessage);
+                SetControlsInteractable(true);
+            }
             catch (Exception ex)
             {
-                SetLocalStatus(LocalJoinStatus.Failed, $"Join failed: {ex.Message}");
+                if (connectionTimeoutCoroutine != null)
+                {
+                    StopCoroutine(connectionTimeoutCoroutine);
+                    connectionTimeoutCoroutine = null;
+                }
+
+                string friendlyMessage = ParseGenericException(ex);
+                SetLocalStatus(LocalJoinStatus.Failed, friendlyMessage);
                 SetControlsInteractable(true);
             }
         }
 
         private void HandleLocalDisconnected(ulong clientId)
         {
+            if (connectionTimeoutCoroutine != null)
+            {
+                StopCoroutine(connectionTimeoutCoroutine);
+                connectionTimeoutCoroutine = null;
+            }
+
             // A client is only ever notified about its OWN disconnection, so no id check is needed here.
             // Catches a join attempt that never produced a roster entry (bad code, timeout, refusal).
             if (localJoinStatus == LocalJoinStatus.Connecting)
             {
-                SetLocalStatus(LocalJoinStatus.Failed, "Disconnected before joining.");
+                string reason = NetworkManager.Singleton != null ? NetworkManager.Singleton.DisconnectReason : string.Empty;
+                if (!string.IsNullOrEmpty(reason))
+                {
+                    if (reason.Contains("disconnected by server") || reason.IndexOf("full", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        SetLocalStatus(LocalJoinStatus.Failed, "Room is full (maximum 4 players).");
+                    }
+                    else
+                    {
+                        SetLocalStatus(LocalJoinStatus.Failed, reason);
+                    }
+                }
+                else
+                {
+                    SetLocalStatus(LocalJoinStatus.Failed, "Room is full (maximum 4 players).");
+                }
+
+                networkManagerExt?.Shutdown();
             }
 
             SetControlsInteractable(true);
+        }
+
+        private IEnumerator ConnectionTimeoutRoutine()
+        {
+            yield return new WaitForSeconds(10f);
+            if (localJoinStatus == LocalJoinStatus.Connecting)
+            {
+                Debug.LogWarning("[LobbyUI] Connection attempt timed out after 10 seconds.");
+                networkManagerExt?.Shutdown();
+                SetLocalStatus(LocalJoinStatus.Failed, "Connection timed out. Please check room code or network.");
+                SetControlsInteractable(true);
+            }
+            connectionTimeoutCoroutine = null;
         }
 
         private bool CanAttemptConnection()
@@ -235,6 +352,12 @@ namespace TheLastSignal.UI
 
             if (localJoinStatus == LocalJoinStatus.Connecting && HasLocalEntry())
             {
+                if (connectionTimeoutCoroutine != null)
+                {
+                    StopCoroutine(connectionTimeoutCoroutine);
+                    connectionTimeoutCoroutine = null;
+                }
+
                 SetLocalStatus(LocalJoinStatus.Idle, string.Empty);
                 SetControlsInteractable(true);
             }
@@ -427,10 +550,10 @@ namespace TheLastSignal.UI
             switch (localJoinStatus)
             {
                 case LocalJoinStatus.Connecting:
-                    joinLine = "Connecting...";
+                    joinLine = "<color=#FFFF55>Connecting...</color>";
                     break;
                 case LocalJoinStatus.Failed:
-                    joinLine = $"Failed: {localJoinMessage}";
+                    joinLine = $"<color=#FF5555>Failed: {localJoinMessage}</color>";
                     break;
                 default:
                     joinLine = string.Empty;
@@ -438,6 +561,156 @@ namespace TheLastSignal.UI
             }
 
             statusText.text = string.IsNullOrEmpty(joinLine) ? servicesLine : $"{servicesLine}\n{joinLine}";
+        }
+
+        private string ParseRelayException(RelayServiceException relayEx)
+        {
+            // Case 1: Wrong or non-existent code
+            if (relayEx.Reason == RelayExceptionReason.JoinCodeNotFound ||
+                relayEx.Reason == RelayExceptionReason.EntityNotFound ||
+                relayEx.Reason == RelayExceptionReason.InvalidArgument ||
+                relayEx.Reason == RelayExceptionReason.InvalidRequest)
+            {
+                return "Room code does not exist or is invalid. Please check and try again.";
+            }
+
+            // Case 2: Expired code
+            if (relayEx.Reason == RelayExceptionReason.AllocationNotFound ||
+                relayEx.Reason == RelayExceptionReason.Gone ||
+                relayEx.Reason == RelayExceptionReason.RequestTimeOut)
+            {
+                return "Room code has expired or the session has ended.";
+            }
+
+            // Case 3: Room full (4 players)
+            if (relayEx.Reason == RelayExceptionReason.Conflict ||
+                relayEx.Reason == RelayExceptionReason.PreconditionFailed ||
+                relayEx.Reason == RelayExceptionReason.NoSuitableRelay)
+            {
+                return "Room is full (maximum 4 players).";
+            }
+
+            string msg = relayEx.Message != null ? relayEx.Message.ToLowerInvariant() : string.Empty;
+            if (msg.Contains("full") || msg.Contains("capacity") || msg.Contains("limit") || msg.Contains("exceeded"))
+            {
+                return "Room is full (maximum 4 players).";
+            }
+            if (msg.Contains("not found") || msg.Contains("invalid") || msg.Contains("bad"))
+            {
+                return "Room code does not exist or is invalid. Please check and try again.";
+            }
+            if (msg.Contains("expire") || msg.Contains("timeout"))
+            {
+                return "Room code has expired or the session has ended.";
+            }
+
+            return $"Relay error ({relayEx.Reason}): {relayEx.Message}";
+        }
+
+        private string ParseGenericException(Exception ex)
+        {
+            string msg = ex.Message != null ? ex.Message.ToLowerInvariant() : string.Empty;
+            if (msg.Contains("full") || msg.Contains("capacity") || msg.Contains("limit") || msg.Contains("exceeded"))
+            {
+                return "Room is full (maximum 4 players).";
+            }
+            if (msg.Contains("not found") || msg.Contains("invalid") || msg.Contains("empty"))
+            {
+                return "Room code does not exist or is invalid. Please check and try again.";
+            }
+            if (msg.Contains("expire") || msg.Contains("timeout"))
+            {
+                return "Room code has expired or the session has ended.";
+            }
+
+            return $"Join failed: {ex.Message}";
+        }
+
+        private void OnJoinCodeInputChanged(string val)
+        {
+            if (val == null || joinCodeInputField == null) return;
+            string upper = val.ToUpperInvariant();
+            if (val != upper)
+            {
+                joinCodeInputField.text = upper;
+            }
+        }
+
+        public void OnCopyCodeButtonPressed()
+        {
+            string code = joinCodeDisplayField != null ? joinCodeDisplayField.text : networkManagerExt?.JoinCode;
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return;
+            }
+
+            GUIUtility.systemCopyBuffer = code.Trim();
+            Debug.Log($"[LobbyUI] Room code copied to clipboard: {code.Trim()}");
+
+            if (copyFeedbackCoroutine != null)
+            {
+                StopCoroutine(copyFeedbackCoroutine);
+            }
+            copyFeedbackCoroutine = StartCoroutine(CopyFeedbackRoutine());
+        }
+
+        private IEnumerator CopyFeedbackRoutine()
+        {
+            if (copyButtonText != null)
+            {
+                string original = copyButtonText.text;
+                Color originalColor = copyButtonText.color;
+                copyButtonText.text = "Copied!";
+                copyButtonText.color = new Color(0.3f, 1f, 0.4f);
+                yield return new WaitForSeconds(2f);
+                copyButtonText.text = original;
+                copyButtonText.color = originalColor;
+            }
+        }
+
+        private void CreateDynamicCopyButton()
+        {
+            if (joinCodeDisplayField == null) return;
+
+            RectTransform fieldRect = joinCodeDisplayField.GetComponent<RectTransform>();
+            Transform parent = fieldRect.parent;
+            if (parent == null) return;
+
+            Vector2 fieldPos = fieldRect.anchoredPosition;
+            Vector2 fieldSize = fieldRect.sizeDelta;
+            fieldRect.sizeDelta = new Vector2(Mathf.Max(120f, fieldSize.x - 70f), fieldSize.y);
+
+            GameObject buttonGo = new GameObject("Btn_CopyCode", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+            buttonGo.transform.SetParent(parent, false);
+
+            RectTransform btnRect = buttonGo.GetComponent<RectTransform>();
+            btnRect.anchorMin = fieldRect.anchorMin;
+            btnRect.anchorMax = fieldRect.anchorMax;
+            btnRect.pivot = fieldRect.pivot;
+            btnRect.anchoredPosition = new Vector2(fieldPos.x + fieldRect.sizeDelta.x + 8f, fieldPos.y);
+            btnRect.sizeDelta = new Vector2(62f, fieldSize.y);
+
+            Image img = buttonGo.GetComponent<Image>();
+            img.color = new Color(0.2f, 0.4f, 0.8f, 1f);
+
+            copyCodeButton = buttonGo.GetComponent<Button>();
+            copyCodeButton.targetGraphic = img;
+            copyCodeButton.onClick.AddListener(OnCopyCodeButtonPressed);
+
+            GameObject textGo = new GameObject("Text", typeof(RectTransform));
+            textGo.transform.SetParent(buttonGo.transform, false);
+            RectTransform textRect = textGo.GetComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.sizeDelta = Vector2.zero;
+
+            copyButtonText = textGo.AddComponent<TextMeshProUGUI>();
+            copyButtonText.text = "Copy";
+            copyButtonText.fontSize = 15;
+            copyButtonText.fontStyle = FontStyles.Bold;
+            copyButtonText.alignment = TextAlignmentOptions.Center;
+            copyButtonText.color = Color.white;
+            copyButtonText.raycastTarget = false;
         }
     }
 }

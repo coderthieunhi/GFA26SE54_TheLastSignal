@@ -20,8 +20,8 @@ namespace TheLastSignal.Core
         /// <summary>Relay counts peers excluding the host, so 3 here means a 4-player session.</summary>
         private const int DefaultMaxConnections = 3;
 
-        /// <summary>Encrypted UDP. Relay also accepts "udp" and "wss"; dtls is the recommended default.</summary>
-        private const string RelayConnectionType = "dtls";
+        /// <summary>Raw UDP. Relay also accepts "dtls" and "wss"; udp avoids TLS cert issues in dev.</summary>
+        private const string RelayConnectionType = "udp";
 
         [SerializeField, Range(1, 15)] private int maxConnections = DefaultMaxConnections;
 
@@ -97,13 +97,13 @@ namespace TheLastSignal.Core
         /// <summary>Starts this instance as the Host (listen server) for a Host-Client session.</summary>
         public bool StartHost()
         {
-            return networkManager.StartHost();
+            return networkManager != null && networkManager.StartHost();
         }
 
         /// <summary>Starts this instance as a Client connecting to the Relay-allocated Host.</summary>
         public bool StartClient()
         {
-            return networkManager.StartClient();
+            return networkManager != null && networkManager.StartClient();
         }
 
         /// <summary>Shuts down the active Netcode session, whether Host or Client.</summary>

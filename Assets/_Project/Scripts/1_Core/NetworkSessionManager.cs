@@ -30,6 +30,23 @@ namespace TheLastSignal.Core
     /// </summary>
     public class NetworkSessionManager : NetworkBehaviour
     {
+        [Header("Room Capacity & Testing")]
+        [SerializeField, Range(1, 4)] private int maxPlayers = 4;
+        [Tooltip("When enabled on Host, rejects incoming clients to simulate 'Room is full' (Test 5).")]
+        [SerializeField] private bool testRoomFullSimulation = false;
+
+        public bool TestRoomFullSimulation
+        {
+            get => testRoomFullSimulation;
+            set => testRoomFullSimulation = value;
+        }
+
+        public int MaxPlayers
+        {
+            get => maxPlayers;
+            set => maxPlayers = value;
+        }
+
         private readonly NetworkList<LobbyPlayerData> players = new NetworkList<LobbyPlayerData>();
 
         /// <summary>Read-only view of the shared lobby roster. Subscribe to Players.OnListChanged to react.</summary>
@@ -95,8 +112,19 @@ namespace TheLastSignal.Core
                 return;
             }
 
+            Debug.Log($"[NetworkSessionManager] HandleClientConnected: clientId={clientId}, LocalClientId={NetworkManager.LocalClientId}, players.Count={players.Count}, maxPlayers={maxPlayers}, testRoomFullSimulation={testRoomFullSimulation}");
+
             if (IndexOfClient(clientId) >= 0)
             {
+                return;
+            }
+
+            // Reject if room is already at capacity or test simulation is active (Host is never rejected)
+            int effectiveMax = maxPlayers > 0 ? maxPlayers : 4;
+            if (clientId != NetworkManager.LocalClientId && (testRoomFullSimulation || players.Count >= effectiveMax))
+            {
+                Debug.LogWarning($"[NetworkSessionManager] Room full rejection ({players.Count}/{effectiveMax}, testRoomFullSimulation={testRoomFullSimulation}). Disconnecting client {clientId}.");
+                NetworkManager.DisconnectClient(clientId, "Room is full (maximum 4 players).");
                 return;
             }
 

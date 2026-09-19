@@ -2771,8 +2771,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: 0}
-  m_SizeDelta: {x: 480, y: 620}
+  m_AnchoredPosition: {x: 36, y: -24}
+  m_SizeDelta: {x: 598.6189, y: 905.4899}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &343415827
 MonoBehaviour:
@@ -4942,7 +4942,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -319}
+  m_AnchoredPosition: {x: 3, y: -452.74}
   m_SizeDelta: {x: -32, y: 22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &624619127
@@ -6547,7 +6547,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -248}
+  m_AnchoredPosition: {x: 3, y: -335}
   m_SizeDelta: {x: -32, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &781951232
@@ -6597,8 +6597,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -7203,7 +7203,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 16, y: -262}
+  m_AnchoredPosition: {x: 19, y: -349}
   m_SizeDelta: {x: 200, y: 36}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &939828735
@@ -9116,7 +9116,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -290}
+  m_AnchoredPosition: {x: 3, y: -377}
   m_SizeDelta: {x: -32, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1105256992
@@ -9579,6 +9579,8 @@ MonoBehaviour:
   joinCodeInputField: {fileID: 733403820}
   statusText: {fileID: 1759569609}
   joinCodeDisplayField: {fileID: 939828737}
+  copyCodeButton: {fileID: 0}
+  copyButtonText: {fileID: 0}
   allReadyText: {fileID: 1105256993}
   playerListContainer: {fileID: 1865034258}
 --- !u!114 &1268739699
@@ -11751,6 +11753,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Core.NetworkSessionManager
   ShowTopMostFoldoutHeaderGroup: 1
+  maxPlayers: 4
+  testRoomFullSimulation: 0
 --- !u!28 &1621358576
 Texture2D:
   m_ObjectHideFlags: 0
@@ -12768,8 +12772,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -205}
-  m_SizeDelta: {x: -32, y: 30}
+  m_AnchoredPosition: {x: 0, y: -214}
+  m_SizeDelta: {x: -32, y: 48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1759569608
 CanvasRenderer:
@@ -13224,8 +13228,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -160}
-  m_SizeDelta: {x: -32, y: -352}
+  m_AnchoredPosition: {x: 0, y: -227.8917}
+  m_SizeDelta: {x: -32, y: -487.7833}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1865034259
 MonoBehaviour:
