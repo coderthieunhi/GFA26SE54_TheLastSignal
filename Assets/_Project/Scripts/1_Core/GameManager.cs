@@ -1,5 +1,9 @@
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
 using TheLastSignal.Core.EventBus;
 using TheLastSignal.Entities;
 using TheLastSignal.Systems;
@@ -27,9 +31,25 @@ namespace TheLastSignal.Core
         [SerializeField] private ObjectiveDataEventChannelSO onObjectiveChanged;
         [SerializeField] private FloatEventChannelSO onEvacuationTimerTicked;
 
+        /// <summary>Lifecycle of the Unity Gaming Services bring-up (Story 3.1).</summary>
+        public enum ServicesStatus
+        {
+            Uninitialized,
+            Initializing,
+            SignedIn,
+            Failed
+        }
+
         private GameSessionState currentState = GameSessionState.GameStart;
         private SimpleObjectiveSystem objectiveSystem;
         private IGameSystem[] activeSystems = System.Array.Empty<IGameSystem>();
+        private ServicesStatus servicesStatus = ServicesStatus.Uninitialized;
+
+        /// <summary>Current state of Unity Services init + anonymous sign-in.</summary>
+        public ServicesStatus ServicesState => servicesStatus;
+
+        /// <summary>True once anonymous sign-in has completed and Relay calls are allowed.</summary>
+        public bool IsSignedIn => servicesStatus == ServicesStatus.SignedIn;
 
         public GameSessionState CurrentState => currentState;
         public bool IsPlaying => currentState == GameSessionState.Gameplay || currentState == GameSessionState.Evacuation;
@@ -65,9 +85,53 @@ namespace TheLastSignal.Core
 
         private void Start()
         {
+            // Story 3.1: kicked off without awaiting so the Epic 1 single-player session start is not
+            // delayed behind a network round-trip. Relay calls gate on IsSignedIn instead.
+            _ = InitializeUnityServicesAsync();
+
             if (startSessionOnPlay)
             {
                 StartSession();
+            }
+        }
+
+        /// <summary>
+        /// Story 3.1: brings up Unity Gaming Services and signs in anonymously so Relay can allocate.
+        /// Runs once. On failure it logs and stops — it deliberately does not retry in a loop, because
+        /// the usual causes (project not linked, Relay/Authentication service not enabled on the Unity
+        /// Dashboard) are configuration problems a retry cannot fix.
+        /// </summary>
+        private async Task InitializeUnityServicesAsync()
+        {
+            if (servicesStatus != ServicesStatus.Uninitialized)
+            {
+                return;
+            }
+
+            servicesStatus = ServicesStatus.Initializing;
+
+            try
+            {
+                if (UnityServices.State != ServicesInitializationState.Initialized)
+                {
+                    await UnityServices.InitializeAsync();
+                }
+
+                if (!AuthenticationService.Instance.IsSignedIn)
+                {
+                    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                }
+
+                servicesStatus = ServicesStatus.SignedIn;
+                Debug.Log($"[GameManager] Unity Services ready. Signed in anonymously as PlayerId: {AuthenticationService.Instance.PlayerId}");
+            }
+            catch (Exception ex)
+            {
+                servicesStatus = ServicesStatus.Failed;
+                Debug.LogError(
+                    $"[GameManager] Unity Services init / anonymous sign-in FAILED ({ex.GetType().Name}): {ex.Message}\n" +
+                    "Hosting and joining are disabled. Check that the project is linked to a Unity Dashboard " +
+                    "project and that Authentication + Relay are enabled for it.");
             }
         }
 

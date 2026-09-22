@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TheLastSignal.Entities.Camera;
@@ -14,8 +15,17 @@ namespace TheLastSignal.Entities.Player
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(CapsuleCollider2D))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : NetworkBehaviour
     {
+        /// <summary>
+        /// True when an NGO session is actually running. Used so every ownership check degrades
+        /// cleanly to single-player behaviour in the Epic 1 scene, which has no NetworkManager.
+        /// Qualified because inside a NetworkBehaviour, `NetworkManager` is the instance property.
+        /// </summary>
+        private static bool IsNetworkSessionActive =>
+            Unity.Netcode.NetworkManager.Singleton != null &&
+            Unity.Netcode.NetworkManager.Singleton.IsListening;
+
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 3.5f;
         [SerializeField] private float acceleration = 18f;
@@ -116,7 +126,58 @@ namespace TheLastSignal.Entities.Player
 
         private void Start()
         {
+            // When NGO is running, ownership is not known yet at Start — OnNetworkSpawn binds the
+            // camera instead, so a remote player's instance never steals this client's camera.
+            if (IsNetworkSessionActive)
+            {
+                return;
+            }
+
             BindLocalCamera();
+        }
+
+        /// <summary>
+        /// Story 3.1: the locally owned instance claims this client's camera and enables its own input.
+        /// Remote instances stay input-dead and are driven by NetworkTransform replication.
+        /// </summary>
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            // Owner-authoritative NetworkTransform means the Host cannot teleport a client-owned body,
+            // so each owner places itself on its own spawn slot. The slot is derived from OwnerClientId
+            // so no extra RPC or Host coordination is needed for this story.
+            BindSlot((int)OwnerClientId);
+            ResetState(ResolveNetworkSpawnPosition(slotIndex));
+
+            // Control is enabled locally by the owner because `controlEnabled` is a client-side input
+            // gate, and GameManager.StartSession only runs on the Host.
+            // TODO (Story 3.2+): drive this from replicated session state so control follows
+            // Gameplay/Win/Lose for every client instead of being enabled on spawn.
+            SetControlEnabled(true);
+        }
+
+        /// <summary>
+        /// Finds this slot's <see cref="PlayerSpawnPoint"/> in the loaded scene. Falls back to the
+        /// current position so a scene without spawn points never teleports the player to the origin.
+        /// </summary>
+        private Vector2 ResolveNetworkSpawnPosition(int slot)
+        {
+            PlayerSpawnPoint[] points = FindObjectsByType<PlayerSpawnPoint>();
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i] != null && points[i].SlotIndex == slot)
+                {
+                    return points[i].Position;
+                }
+            }
+
+            return transform.position;
         }
 
         /// <summary>Assigns this instance to a spawn slot so co-op can address P1–P4 later.</summary>
@@ -165,11 +226,20 @@ namespace TheLastSignal.Entities.Player
         private void BindLocalCamera()
         {
             // Hand this player's Transform to the local camera as its follow target. Deliberately not
-            // a scene-wide "find the player" lookup on the camera's side (ARCHITECTURE_RULES.md): in a
-            // future co-op version, each client's camera must target only its own local player, so the
-            // player is the one announcing itself here rather than the camera searching for one.
-            if (slotIndex != 0)
+            // a scene-wide "find the player" lookup on the camera's side (ARCHITECTURE_RULES.md): each
+            // client's camera must target only its own local player, so the player is the one
+            // announcing itself here rather than the camera searching for one.
+            if (IsSpawned)
             {
+                // Networked: only the locally owned instance may claim this client's camera.
+                if (!IsOwner)
+                {
+                    return;
+                }
+            }
+            else if (slotIndex != 0)
+            {
+                // Non-networked (Epic 1): P1 drives the camera.
                 return;
             }
 
@@ -261,6 +331,14 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         private void ReadMovementInput()
         {
+            // Story 3.1 (owner-authoritative / Option A): only the owning client captures input for
+            // this body. Gated on IsSpawned so the non-networked Epic 1 scene, where nothing is ever
+            // NGO-spawned and IsOwner is therefore always false, keeps working unchanged.
+            if (IsSpawned && !IsOwner)
+            {
+                return;
+            }
+
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null)
             {
