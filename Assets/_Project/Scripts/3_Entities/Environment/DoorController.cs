@@ -14,6 +14,7 @@ namespace TheLastSignal.Entities.Environment
     /// Toggles BoxCollider2D blocker and updates visual state when interacted with ([E]).
     /// </summary>
     [RequireComponent(typeof(BoxCollider2D))]
+    [ExecuteAlways]
     public class DoorController : MonoBehaviour, IInteractable
     {
         [Header("State")]
@@ -24,12 +25,23 @@ namespace TheLastSignal.Entities.Environment
         [SerializeField] private BoxCollider2D physicalCollider;
         [SerializeField] private SpriteRenderer spriteRenderer;
 
-        [Header("Visual Feedback")]
+        [Header("Door Sprites")]
+        [SerializeField] private Sprite closedSprite;
+        [SerializeField] private Sprite openSprite;
+
+        [Header("Visual Feedback (Color Fallback)")]
         [SerializeField] private Color closedColor = new Color(0.95f, 0.45f, 0.15f, 1f); // Warning orange/red
         [SerializeField] private Color openColor = new Color(0.2f, 0.8f, 0.4f, 0.35f);    // Translucent green
 
+        public event System.Action<DoorState> OnStateChanged;
+
         public DoorState CurrentState => currentState;
         public bool IsOpen => currentState == DoorState.Open;
+        public string DoorName
+        {
+            get => doorName;
+            set => doorName = value;
+        }
 
         public string InteractionPrompt => currentState == DoorState.Open ? $"Close {doorName}" : $"Open {doorName}";
         public bool CanInteract => true;
@@ -53,6 +65,24 @@ namespace TheLastSignal.Entities.Environment
         {
             doorName = name;
             currentState = initialState;
+            if (physicalCollider == null) physicalCollider = GetComponent<BoxCollider2D>();
+            if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
+            ApplyState();
+        }
+
+        public void SetSprites(Sprite closed, Sprite open)
+        {
+            closedSprite = closed;
+            openSprite = open;
+            if (physicalCollider == null) physicalCollider = GetComponent<BoxCollider2D>();
+            if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
+            ApplyState();
+        }
+
+        public void SetColors(Color closed, Color open)
+        {
+            closedColor = closed;
+            openColor = open;
             ApplyState();
         }
 
@@ -103,8 +133,23 @@ namespace TheLastSignal.Entities.Environment
 
             if (spriteRenderer != null)
             {
-                spriteRenderer.color = isOpen ? openColor : closedColor;
+                if (isOpen && openSprite != null)
+                {
+                    spriteRenderer.sprite = openSprite;
+                    spriteRenderer.color = Color.white;
+                }
+                else if (!isOpen && closedSprite != null)
+                {
+                    spriteRenderer.sprite = closedSprite;
+                    spriteRenderer.color = Color.white;
+                }
+                else
+                {
+                    spriteRenderer.color = isOpen ? openColor : closedColor;
+                }
             }
+
+            OnStateChanged?.Invoke(currentState);
         }
     }
 }
