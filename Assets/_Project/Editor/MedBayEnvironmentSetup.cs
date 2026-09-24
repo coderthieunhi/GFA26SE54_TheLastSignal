@@ -20,7 +20,10 @@ namespace TheLastSignal.EditorTools
         {
             EditorApplication.delayCall += () =>
             {
-                SetupMedBayArt();
+                if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")
+                {
+                    SetupMedBayArt();
+                }
             };
         }
 
@@ -449,7 +452,8 @@ namespace TheLastSignal.EditorTools
                 medBayEastDoor.Initialize("Door_MedBay");
                 medBayEastDoor.SetSprites(doorVClosed, doorVOpen);
 
-                SpriteRenderer dsr = medBayEastDoor.GetComponent<SpriteRenderer>() ?? medBayEastDoor.gameObject.AddComponent<SpriteRenderer>();
+                SpriteRenderer dsr = medBayEastDoor.GetComponent<SpriteRenderer>();
+                if (dsr == null) dsr = medBayEastDoor.gameObject.AddComponent<SpriteRenderer>();
                 Undo.RecordObject(dsr, "Update MedBay East Door Material");
                 if (defaultSpriteMat != null) dsr.sharedMaterial = defaultSpriteMat;
                 dsr.sprite = doorVClosed;
@@ -457,7 +461,8 @@ namespace TheLastSignal.EditorTools
                 dsr.sortingLayerName = "Obstacles";
                 dsr.sortingOrder = 5;
 
-                BoxCollider2D box = medBayEastDoor.GetComponent<BoxCollider2D>() ?? medBayEastDoor.gameObject.AddComponent<BoxCollider2D>();
+                BoxCollider2D box = medBayEastDoor.GetComponent<BoxCollider2D>();
+                if (box == null) box = medBayEastDoor.gameObject.AddComponent<BoxCollider2D>();
                 Undo.RecordObject(box, "Update MedBay East Door Collider");
                 box.size = new Vector2(1.0f, 2.0f);
                 box.offset = Vector2.zero;
@@ -496,7 +501,8 @@ namespace TheLastSignal.EditorTools
                 medBayWestDoor.Initialize("Door_MedBay_West");
                 medBayWestDoor.SetSprites(doorVClosed, doorVOpen);
 
-                SpriteRenderer dsr = medBayWestDoor.GetComponent<SpriteRenderer>() ?? medBayWestDoor.gameObject.AddComponent<SpriteRenderer>();
+                SpriteRenderer dsr = medBayWestDoor.GetComponent<SpriteRenderer>();
+                if (dsr == null) dsr = medBayWestDoor.gameObject.AddComponent<SpriteRenderer>();
                 Undo.RecordObject(dsr, "Update MedBay West Door Material");
                 if (defaultSpriteMat != null) dsr.sharedMaterial = defaultSpriteMat;
                 dsr.sprite = doorVClosed;
@@ -504,7 +510,8 @@ namespace TheLastSignal.EditorTools
                 dsr.sortingLayerName = "Obstacles";
                 dsr.sortingOrder = 5;
 
-                BoxCollider2D box = medBayWestDoor.GetComponent<BoxCollider2D>() ?? medBayWestDoor.gameObject.AddComponent<BoxCollider2D>();
+                BoxCollider2D box = medBayWestDoor.GetComponent<BoxCollider2D>();
+                if (box == null) box = medBayWestDoor.gameObject.AddComponent<BoxCollider2D>();
                 Undo.RecordObject(box, "Update MedBay West Door Collider");
                 box.size = new Vector2(1.0f, 2.0f);
                 box.offset = Vector2.zero;
