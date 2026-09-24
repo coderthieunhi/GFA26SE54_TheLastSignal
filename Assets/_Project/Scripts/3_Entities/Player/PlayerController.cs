@@ -34,22 +34,24 @@ namespace TheLastSignal.Entities.Player
             NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
 
         [Header("Movement")]
-        [SerializeField] private float moveSpeed = 3.5f;
-        [SerializeField] private float acceleration = 18f;
-        [SerializeField] private float deceleration = 25f;
+        [SerializeField] private float moveSpeed = 3f;
+        [SerializeField] private float acceleration = 15.5f;
+        [SerializeField] private float deceleration = 21.5f;
 
         [Header("Corner Assist")]
         [SerializeField] private bool enableCornerAssist = true;
-        [SerializeField] private float cornerRayDistance = 0.5f;
+        [SerializeField] private float cornerRayDistance = 0.45f;
         [SerializeField] private float cornerSideOffset = 0.35f;
-        [SerializeField] private float cornerNudgeSpeed = 3.0f;
+        [SerializeField] private float cornerNudgeSpeed = 2.6f;
         [SerializeField] private LayerMask collisionLayers;
 
-        [Header("Interaction")]
-        [SerializeField] private float interactionRange = 2f;
+        [Header("Interaction Detection")]
+        [SerializeField] private float interactionRange = 0.55f;
         [SerializeField] private LayerMask interactableLayer;
-        [SerializeField, Range(0f, 1f)] private float facingDotThreshold = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float facingDotThreshold = 0.4f;
 
+        public float MoveSpeed => moveSpeed;
+        public float InteractionRange => interactionRange;
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
 
@@ -634,7 +636,8 @@ namespace TheLastSignal.Entities.Player
                     continue;
                 }
 
-                Vector2 toHit = (Vector2)hit.bounds.center - rb.position;
+                Vector2 closestPoint = hit.ClosestPoint(rb.position);
+                Vector2 toHit = closestPoint - rb.position;
                 float sqrDistance = toHit.sqrMagnitude;
 
                 if (sqrDistance < closestSqrDistance)
@@ -643,7 +646,12 @@ namespace TheLastSignal.Entities.Player
                     closestHit = hit;
                 }
 
-                if (sqrDistance > 0.0001f)
+                // If player is directly inside or overlapping the collider (e.g. passing through open door), treat as faced
+                if (sqrDistance <= 0.04f)
+                {
+                    facedHit = hit;
+                }
+                else
                 {
                     float dot = Vector2.Dot(toHit.normalized, facingDirection);
                     if (dot > facedBestDot)
@@ -654,7 +662,8 @@ namespace TheLastSignal.Entities.Player
                 }
             }
 
-            CurrentInteractable = facedHit != null ? facedHit : closestHit;
+            // Only allow interaction if faced directly, or if immediately adjacent/overlapping
+            CurrentInteractable = facedHit != null ? facedHit : (closestSqrDistance <= 0.18f ? closestHit : null);
         }
 
         private void OnDrawGizmosSelected()

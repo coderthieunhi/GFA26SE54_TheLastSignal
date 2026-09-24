@@ -131,16 +131,12 @@ namespace TheLastSignal.EditorTools
             box.size = new Vector2(3f, 3f);
             GetOrAddComponent<ExitZone>(exitGo);
 
-            SpriteRenderer sr = GetOrAddComponent<SpriteRenderer>(exitGo);
-            SpriteRenderer playerSr = player.GetComponent<SpriteRenderer>();
-            if (playerSr != null && playerSr.sprite != null)
+            // Exit_Zone is an invisible trigger volume - ensure no placeholder SpriteRenderer is displayed
+            SpriteRenderer exitSr = exitGo.GetComponent<SpriteRenderer>();
+            if (exitSr != null)
             {
-                sr.sprite = playerSr.sprite;
-                sr.sortingLayerName = playerSr.sortingLayerName;
+                Object.DestroyImmediate(exitSr);
             }
-
-            sr.color = new Color(0.25f, 1f, 0.4f, 0.85f);
-            sr.sortingOrder = 5;
 
             // Wire ReactorCoreConsole onto TaskLoc_ReactorCore
             GameObject reactorGo = GameObject.Find("TaskLoc_ReactorCore");
@@ -165,15 +161,12 @@ namespace TheLastSignal.EditorTools
             hazardBox.size = new Vector2(2f, 2f);
             GetOrAddComponent<HazardZone>(hazardGo);
 
-            SpriteRenderer hazardSr = GetOrAddComponent<SpriteRenderer>(hazardGo);
-            if (playerSr != null && playerSr.sprite != null)
+            // Hazard_Zone is an invisible trigger volume - ensure no placeholder SpriteRenderer is displayed
+            SpriteRenderer hazardSr = hazardGo.GetComponent<SpriteRenderer>();
+            if (hazardSr != null)
             {
-                hazardSr.sprite = playerSr.sprite;
-                hazardSr.sortingLayerName = playerSr.sortingLayerName;
+                Object.DestroyImmediate(hazardSr);
             }
-
-            hazardSr.color = new Color(1f, 0.25f, 0.25f, 0.85f);
-            hazardSr.sortingOrder = 5;
 
             EnsureDoors();
             EnsureHud(objectiveChannel, sessionChannel, timerChannel);

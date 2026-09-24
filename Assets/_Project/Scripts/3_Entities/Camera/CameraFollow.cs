@@ -14,7 +14,7 @@ namespace TheLastSignal.Entities.Camera
     public class CameraFollow : MonoBehaviour
     {
         [Header("Follow")]
-        [SerializeField] private float smoothTime = 0.15f;
+        [SerializeField] private float smoothTime = 0.12f;
 
         [Header("Map Bounds")]
         [Tooltip("Tilemap(s) whose combined bounds define the playable map. Bounds are read from these " +
