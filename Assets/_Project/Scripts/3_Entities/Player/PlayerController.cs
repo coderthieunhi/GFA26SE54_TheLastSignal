@@ -150,6 +150,11 @@ namespace TheLastSignal.Entities.Player
         {
             if (TryGetComponent(out SpriteRenderer sr) && sr.sprite == null)
             {
+                if (TryGetComponent(out PlayerAnimator anim) && anim.IdleSouth != null)
+                {
+                    sr.sprite = anim.IdleSouth;
+                    return;
+                }
                 Texture2D tex = Texture2D.whiteTexture;
                 Sprite placeholder = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 16f);
                 placeholder.name = "Placeholder_Square";
@@ -243,8 +248,19 @@ namespace TheLastSignal.Entities.Player
         {
             if (TryGetComponent(out SpriteRenderer sr))
             {
-                int colorIndex = Mathf.Clamp(slot, 0, SlotColors.Length - 1);
-                sr.color = SlotColors[colorIndex];
+                bool isPlaceholder = sr.sprite == null
+                    || sr.sprite.name.Contains("Placeholder")
+                    || (sr.sprite.texture != null && sr.sprite.texture.width <= 16);
+
+                if (isPlaceholder)
+                {
+                    int colorIndex = Mathf.Clamp(slot, 0, SlotColors.Length - 1);
+                    sr.color = SlotColors[colorIndex];
+                }
+                else
+                {
+                    sr.color = Color.white;
+                }
             }
         }
 

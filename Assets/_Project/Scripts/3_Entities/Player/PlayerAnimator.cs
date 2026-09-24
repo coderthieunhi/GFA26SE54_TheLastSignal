@@ -120,20 +120,46 @@ namespace TheLastSignal.Entities.Player
         private void LoadIdleSpritesFromResources()
         {
             Sprite[] loaded = Resources.LoadAll<Sprite>("Engineer_Idle_8Dir");
-            if (loaded == null || loaded.Length == 0) return;
-
-            foreach (var s in loaded)
+            if (loaded != null && loaded.Length > 0)
             {
-                switch (s.name)
+                foreach (var s in loaded)
                 {
-                    case "Engineer_Idle_South": idleSouth = s; break;
-                    case "Engineer_Idle_SouthEast": idleSouthEast = s; break;
-                    case "Engineer_Idle_East": idleEast = s; break;
-                    case "Engineer_Idle_NorthEast": idleNorthEast = s; break;
-                    case "Engineer_Idle_North": idleNorth = s; break;
-                    case "Engineer_Idle_NorthWest": idleNorthWest = s; break;
-                    case "Engineer_Idle_West": idleWest = s; break;
-                    case "Engineer_Idle_SouthWest": idleSouthWest = s; break;
+                    switch (s.name)
+                    {
+                        case "Engineer_Idle_South": idleSouth = s; break;
+                        case "Engineer_Idle_SouthEast": idleSouthEast = s; break;
+                        case "Engineer_Idle_East": idleEast = s; break;
+                        case "Engineer_Idle_NorthEast": idleNorthEast = s; break;
+                        case "Engineer_Idle_North": idleNorth = s; break;
+                        case "Engineer_Idle_NorthWest": idleNorthWest = s; break;
+                        case "Engineer_Idle_West": idleWest = s; break;
+                        case "Engineer_Idle_SouthWest": idleSouthWest = s; break;
+                    }
+                }
+            }
+
+            // Fallback: If sliced sprites could not be loaded via Resources.LoadAll, slice directly from Texture2D
+            if (idleSouth == null)
+            {
+                Texture2D tex = Resources.Load<Texture2D>("Engineer_Idle_8Dir");
+                if (tex != null)
+                {
+                    idleSouth = Sprite.Create(tex, new Rect(0, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleSouth.name = "Engineer_Idle_South";
+                    idleSouthEast = Sprite.Create(tex, new Rect(92, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleSouthEast.name = "Engineer_Idle_SouthEast";
+                    idleEast = Sprite.Create(tex, new Rect(184, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleEast.name = "Engineer_Idle_East";
+                    idleNorthEast = Sprite.Create(tex, new Rect(276, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleNorthEast.name = "Engineer_Idle_NorthEast";
+                    idleNorth = Sprite.Create(tex, new Rect(368, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleNorth.name = "Engineer_Idle_North";
+                    idleNorthWest = Sprite.Create(tex, new Rect(0, 0, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleNorthWest.name = "Engineer_Idle_NorthWest";
+                    idleWest = Sprite.Create(tex, new Rect(92, 0, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleWest.name = "Engineer_Idle_West";
+                    idleSouthWest = Sprite.Create(tex, new Rect(184, 0, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                    idleSouthWest.name = "Engineer_Idle_SouthWest";
                 }
             }
         }
@@ -141,32 +167,51 @@ namespace TheLastSignal.Entities.Player
         private Sprite[] LoadAnimationFrames(string sheetName)
         {
             Sprite[] loaded = Resources.LoadAll<Sprite>(sheetName);
-            if (loaded == null || loaded.Length == 0) return new Sprite[8];
-
-            int maxIndex = -1;
-            foreach (var s in loaded)
+            if (loaded != null && loaded.Length > 0)
             {
-                int underscore = s.name.LastIndexOf('_');
-                if (underscore >= 0 && int.TryParse(s.name.Substring(underscore + 1), out int parsedIdx))
+                int maxIndex = -1;
+                foreach (var s in loaded)
                 {
-                    if (parsedIdx > maxIndex) maxIndex = parsedIdx;
-                }
-            }
-
-            int total = (maxIndex >= 0) ? (maxIndex + 1) : 8;
-            Sprite[] frames = new Sprite[total];
-            foreach (var s in loaded)
-            {
-                for (int i = 0; i < total; i++)
-                {
-                    if (s.name.EndsWith($"_{i}"))
+                    int underscore = s.name.LastIndexOf('_');
+                    if (underscore >= 0 && int.TryParse(s.name.Substring(underscore + 1), out int parsedIdx))
                     {
-                        frames[i] = s;
-                        break;
+                        if (parsedIdx > maxIndex) maxIndex = parsedIdx;
                     }
                 }
+
+                int total = (maxIndex >= 0) ? (maxIndex + 1) : 8;
+                Sprite[] frames = new Sprite[total];
+                foreach (var s in loaded)
+                {
+                    for (int i = 0; i < total; i++)
+                    {
+                        if (s.name.EndsWith($"_{i}"))
+                        {
+                            frames[i] = s;
+                            break;
+                        }
+                    }
+                }
+                if (frames[0] != null) return frames;
             }
-            return frames;
+
+            // Fallback: Slice directly from Texture2D
+            Texture2D tex = Resources.Load<Texture2D>(sheetName);
+            if (tex != null)
+            {
+                Sprite[] frames = new Sprite[8];
+                frames[0] = Sprite.Create(tex, new Rect(0, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                frames[1] = Sprite.Create(tex, new Rect(92, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                frames[2] = Sprite.Create(tex, new Rect(184, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                frames[3] = Sprite.Create(tex, new Rect(276, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                frames[4] = Sprite.Create(tex, new Rect(368, 92, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                frames[5] = Sprite.Create(tex, new Rect(0, 0, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                frames[6] = Sprite.Create(tex, new Rect(92, 0, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                frames[7] = Sprite.Create(tex, new Rect(184, 0, 92, 92), new Vector2(0.5f, 0.5f), 64f);
+                return frames;
+            }
+
+            return new Sprite[8];
         }
 
         private void Update()

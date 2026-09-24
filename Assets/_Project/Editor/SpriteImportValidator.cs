@@ -11,13 +11,35 @@ namespace TheLastSignal.EditorTools
         {
             EditorApplication.delayCall += () =>
             {
-                ValidateAndSliceSprites();
+                if (IsReadOnlyOrPlayMode()) return;
+                if (!AreSpritesConfigured())
+                {
+                    ValidateAndSliceSprites();
+                }
             };
+        }
+
+        private static bool IsReadOnlyOrPlayMode()
+        {
+            return EditorApplication.isPlayingOrWillChangePlaymode
+                || EditorApplication.isPlaying
+                || System.Environment.CommandLine.IndexOf("-readonly", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || System.Environment.CommandLine.IndexOf("--virtual-project-clone", System.StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static bool AreSpritesConfigured()
+        {
+            string path = "Assets/_Project/Sprites/Characters/Engineer_Idle_8Dir.png";
+            TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null) return false;
+            return importer.spritesheet != null && importer.spritesheet.Length >= 8;
         }
 
         [MenuItem("Tools/Characters/Setup Engineer 8Dir Sprites", false, 10)]
         public static void ValidateAndSliceSprites()
         {
+            if (IsReadOnlyOrPlayMode()) return;
+
             // Idle 8-dir
             SliceIdleFile("Assets/_Project/Sprites/Characters/Engineer_Idle_8Dir.png");
             SliceIdleFile("Assets/_Project/Resources/Engineer_Idle_8Dir.png");
@@ -54,6 +76,10 @@ namespace TheLastSignal.EditorTools
         {
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null) return;
+            if (importer.spritesheet != null && importer.spritesheet.Length >= 8 && importer.spriteImportMode == SpriteImportMode.Multiple)
+            {
+                return;
+            }
 
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Multiple;
@@ -80,6 +106,10 @@ namespace TheLastSignal.EditorTools
         {
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null) return;
+            if (importer.spritesheet != null && importer.spritesheet.Length >= 8 && importer.spriteImportMode == SpriteImportMode.Multiple)
+            {
+                return;
+            }
 
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Multiple;
@@ -105,6 +135,8 @@ namespace TheLastSignal.EditorTools
 
         private static void ApplyToPlayerPrefabAndScene()
         {
+            if (IsReadOnlyOrPlayMode()) return;
+
             string spritePath = "Assets/_Project/Sprites/Characters/Engineer_Idle_8Dir.png";
             Object[] subAssets = AssetDatabase.LoadAllAssetsAtPath(spritePath);
             Sprite southSprite = null;

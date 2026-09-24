@@ -15,11 +15,20 @@ namespace TheLastSignal.EditorTools
         private const string PropsSourceDir = "Assets/_Project/Sprites/Environments/MedBay/Props";
         private const string TileAssetsDir = "Assets/_Project/Tiles/MedBay";
 
+        private static bool IsReadOnlyOrPlayMode()
+        {
+            return EditorApplication.isPlayingOrWillChangePlaymode
+                || EditorApplication.isPlaying
+                || System.Environment.CommandLine.IndexOf("-readonly", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || System.Environment.CommandLine.IndexOf("--virtual-project-clone", System.StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
         [InitializeOnLoadMethod]
         private static void OnEditorLoaded()
         {
             EditorApplication.delayCall += () =>
             {
+                if (IsReadOnlyOrPlayMode()) return;
                 if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")
                 {
                     SetupMedBayArt();

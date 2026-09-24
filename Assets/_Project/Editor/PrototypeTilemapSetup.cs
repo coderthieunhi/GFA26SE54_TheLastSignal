@@ -118,9 +118,18 @@ namespace TheLastSignal.EditorTools
             new MapBlock("Loop_West_Bend_South", BlockType.Corridor, -23, -47, -19, -46)    // 5x2
         };
 
+        private static bool IsReadOnlyOrPlayMode()
+        {
+            return EditorApplication.isPlayingOrWillChangePlaymode
+                || EditorApplication.isPlaying
+                || System.Environment.CommandLine.IndexOf("-readonly", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || System.Environment.CommandLine.IndexOf("--virtual-project-clone", System.StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
         [InitializeOnLoadMethod]
         private static void OnEditorLoaded()
         {
+            if (IsReadOnlyOrPlayMode()) return;
             EnsureTileAssets();
         }
 
@@ -901,6 +910,8 @@ namespace TheLastSignal.EditorTools
 
         public static void EnsureTileAssets()
         {
+            if (IsReadOnlyOrPlayMode()) return;
+
             if (!Directory.Exists(TileDir))
             {
                 Directory.CreateDirectory(TileDir);
@@ -1036,6 +1047,8 @@ namespace TheLastSignal.EditorTools
 
         private static void EnsureObstacleSprites()
         {
+            if (IsReadOnlyOrPlayMode()) return;
+
             string[] obstaclePaths = new[]
             {
                 CratePngPath, CrateStackPngPath, TablePngPath, EquipmentPngPath, StructurePngPath,
@@ -1045,8 +1058,12 @@ namespace TheLastSignal.EditorTools
             {
                 if (File.Exists(path))
                 {
-                    AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
-                    ConfigureTextureAsSprite(path);
+                    TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                    if (importer == null || importer.textureType != TextureImporterType.Sprite)
+                    {
+                        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                        ConfigureTextureAsSprite(path);
+                    }
                 }
             }
         }
