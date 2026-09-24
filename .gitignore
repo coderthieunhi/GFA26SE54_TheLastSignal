@@ -58,3 +58,4 @@ ehthumbs.db
 *.iml
 .local/
 AGENTS.md
+build_cache/
