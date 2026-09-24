@@ -527,8 +527,7 @@ namespace TheLastSignal.EditorTools
             CreateObstacleInstance("Obstacle_ReactorCore_Conduit_NW", obstaclesRoot.transform, new Vector3(9.0f, -61.5f, 0f), new Vector2(1.5f, 1.0f), equipSprite);
             CreateObstacleInstance("Obstacle_ReactorCore_Conduit_NE", obstaclesRoot.transform, new Vector3(17.0f, -61.5f, 0f), new Vector2(1.5f, 1.0f), equipSprite);
 
-            // --- 9. Med_Bay & Evacuation Route Friction Obstacles ---
-            CreateObstacleInstance("Obstacle_MedBay_Crate", obstaclesRoot.transform, new Vector3(-14.5f, 27.5f, 0f), new Vector2(2.0f, 2.0f), crateSprite);
+            // --- 9. Evacuation Route Friction Obstacles (MedBay crate removed per visual redesign) ---
             CreateObstacleInstance("Obstacle_Loop_Chicane", obstaclesRoot.transform, new Vector3(12.5f, -33.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
             CreateObstacleInstance("Obstacle_NodeC_Center", obstaclesRoot.transform, new Vector3(-2.5f, -32.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);
             CreateObstacleInstance("Obstacle_NodeB_Center", obstaclesRoot.transform, new Vector3(-3.5f, -1.5f, 0f), new Vector2(1.0f, 1.0f), crateSprite);

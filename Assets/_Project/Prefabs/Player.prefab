@@ -33,7 +33,7 @@ Transform:
   m_GameObject: {fileID: 1049879264709774039}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.5, y: 4.5, z: 0}
+  m_LocalPosition: {x: 0, y: 13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -88,15 +88,15 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 0}
-  m_Color: {r: 0.2, g: 0.8, b: 1, a: 1}
+  m_Sprite: {fileID: 100001, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
 --- !u!50 &3024654028933960297
@@ -197,22 +197,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f15a8ce28d19c446a2a9a78850c6cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerController
-  ShowTopMostFoldoutHeaderGroup: 1
-  moveSpeed: 3.5
-  acceleration: 18
-  deceleration: 25
+  moveSpeed: 3
+  acceleration: 15.5
+  deceleration: 21.5
   enableCornerAssist: 1
-  cornerRayDistance: 0.5
+  cornerRayDistance: 0.45
   cornerSideOffset: 0.35
-  cornerNudgeSpeed: 3
+  cornerNudgeSpeed: 2.6
   collisionLayers:
     serializedVersion: 2
     m_Bits: 0
-  interactionRange: 2
+  interactionRange: 0.55
   interactableLayer:
     serializedVersion: 2
     m_Bits: 1024
-  facingDotThreshold: 0.5
+  facingDotThreshold: 0.4
 --- !u!114 &1804984172089964199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +225,91 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerAnimator
   playerController: {fileID: 0}
+  spriteRenderer: {fileID: 5881264923978604063}
+  idleSouth: {fileID: 100001, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  idleSouthEast: {fileID: 100002, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  idleEast: {fileID: 100003, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  idleNorthEast: {fileID: 100004, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  idleNorth: {fileID: 100005, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  idleNorthWest: {fileID: 100006, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  idleWest: {fileID: 100007, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  idleSouthWest: {fileID: 100008, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  animationFps: 8.5
+  runEast:
+  - {fileID: -440424509560650048, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  - {fileID: -2559270216640091877, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  - {fileID: -5314736396127091020, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  - {fileID: 185332836936650654, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  - {fileID: 3126431743580718864, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  - {fileID: -9024357405888966434, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  - {fileID: -9135763752700976471, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  - {fileID: 3636012370434694491, guid: f2cb62875d93c45569ab4023a221a389, type: 3}
+  runNorthEast:
+  - {fileID: -9190768300194401181, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  - {fileID: -4046106547611623975, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  - {fileID: 7867324796548989022, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  - {fileID: -6180385588326247757, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  - {fileID: -7661028503176012439, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  - {fileID: -3799075954834390050, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  - {fileID: -7161838113410976183, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  - {fileID: -7403206433625467940, guid: d3b861c52634f43d5a186f883d9d628e, type: 3}
+  runNorth:
+  - {fileID: -6107519063446019805, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  - {fileID: 4984891105490438903, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  - {fileID: 8803024585565528563, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  - {fileID: -5207650998701645281, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  - {fileID: -1648145240877994063, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  - {fileID: -3335021285590697863, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  - {fileID: 6490855214561180645, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  - {fileID: 2899760941184657318, guid: d1a19cfac11a74f18baf2eb6e95e92bf, type: 3}
+  runNorthWest:
+  - {fileID: -3183620519724424133, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  - {fileID: 1093210558443896464, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  - {fileID: -7017487517753174932, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  - {fileID: 2294468395239288352, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  - {fileID: -4344665340065742436, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  - {fileID: 1001663586747526168, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  - {fileID: -6540792963672544742, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  - {fileID: 2815505754649026485, guid: 6c2b815b70b8e42b9895b6457198d674, type: 3}
+  runWest:
+  - {fileID: 1580134888249624099, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  - {fileID: 3046486525943649608, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  - {fileID: -6166233579661236358, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  - {fileID: -7820578754580874953, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  - {fileID: -8786961469297545371, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  - {fileID: -3238679688571902747, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  - {fileID: -5263762534909857723, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  - {fileID: 6005621432762185720, guid: f4949f6cb2e61485487f90bf1f6cad2d, type: 3}
+  runSouthWest:
+  - {fileID: -5511205429001783980, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  - {fileID: -3724416505503229173, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  - {fileID: 7811858990735608484, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  - {fileID: -9001838532637110041, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  - {fileID: 4652475094957218362, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  - {fileID: -6786015599882968522, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  - {fileID: -7595790230306315801, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  - {fileID: 4388025765652676822, guid: 789825ea1f0424d599fd4fdc233e2298, type: 3}
+  runSouth:
+  - {fileID: 5961589740698256685, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  - {fileID: 1246870332644901780, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  - {fileID: 6351514545491143303, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  - {fileID: 8001538475439133326, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  - {fileID: 1743518517663974917, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  - {fileID: 612762788125828039, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  - {fileID: 850387912623662140, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  - {fileID: -6000877367672220527, guid: 748985ba852ad4858af3ba89614b5d54, type: 3}
+  runSouthEast:
+  - {fileID: -8154680405643789470, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  - {fileID: -1330431311897812364, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  - {fileID: 6520085071138741722, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  - {fileID: -3131979207930282114, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  - {fileID: -89277956409194108, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  - {fileID: -2930304525544977485, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  - {fileID: 8944274735381608985, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  - {fileID: -4817929130539425005, guid: ceb8f2ac16d69415fa13af8a65668505, type: 3}
+  enableIdleBreathing: 0
+  breatheFrequency: 2.5
+  breatheAmplitude: 0.025
 --- !u!114 &9013473217080417872
 MonoBehaviour:
   m_ObjectHideFlags: 0
