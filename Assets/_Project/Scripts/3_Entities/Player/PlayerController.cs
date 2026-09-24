@@ -424,15 +424,17 @@ namespace TheLastSignal.Entities.Player
             var allDoors = DoorController.AllDoors;
             if (allDoors.Count == 0) return;
 
-            var names = new string[allDoors.Count];
-            var states = new DoorState[allDoors.Count];
-            int i = 0;
+            var nameList = new System.Collections.Generic.List<string>(allDoors.Count);
+            var stateList = new System.Collections.Generic.List<int>(allDoors.Count);
+
             foreach (var kvp in allDoors)
             {
-                names[i] = kvp.Key;
-                states[i] = kvp.Value.CurrentState;
-                i++;
+                nameList.Add(kvp.Key);
+                stateList.Add((int)kvp.Value.CurrentState);
             }
+
+            string doorNamesCsv = string.Join(",", nameList);
+            int[] states = stateList.ToArray();
 
             ClientRpcParams rpcParams = new ClientRpcParams
             {
@@ -442,18 +444,24 @@ namespace TheLastSignal.Entities.Player
                 }
             };
 
-            SyncAllDoorStatesClientRpc(names, states, rpcParams);
+            SyncAllDoorStatesClientRpc(doorNamesCsv, states, rpcParams);
         }
 
         [ClientRpc]
-        private void SyncAllDoorStatesClientRpc(string[] doorNames, DoorState[] states, ClientRpcParams clientRpcParams = default)
+        private void SyncAllDoorStatesClientRpc(string doorNamesCsv, int[] states, ClientRpcParams clientRpcParams = default)
         {
-            for (int i = 0; i < doorNames.Length; i++)
+            if (string.IsNullOrEmpty(doorNamesCsv) || states == null)
+            {
+                return;
+            }
+
+            string[] doorNames = doorNamesCsv.Split(',');
+            for (int i = 0; i < doorNames.Length && i < states.Length; i++)
             {
                 DoorController door = DoorController.GetDoor(doorNames[i]);
                 if (door != null)
                 {
-                    door.SetState(states[i]);
+                    door.SetState((DoorState)states[i]);
                 }
             }
         }
