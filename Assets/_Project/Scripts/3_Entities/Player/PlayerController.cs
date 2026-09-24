@@ -151,7 +151,9 @@ namespace TheLastSignal.Entities.Player
             if (TryGetComponent(out SpriteRenderer sr) && sr.sprite == null)
             {
                 Texture2D tex = Texture2D.whiteTexture;
-                sr.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 16f);
+                Sprite placeholder = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 16f);
+                placeholder.name = "Placeholder_Square";
+                sr.sprite = placeholder;
             }
         }
 

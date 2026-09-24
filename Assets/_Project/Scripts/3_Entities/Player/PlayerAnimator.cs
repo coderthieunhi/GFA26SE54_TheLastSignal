@@ -110,7 +110,7 @@ namespace TheLastSignal.Entities.Player
                     }
                 }
 
-                if (idleSouth != null && (spriteRenderer.sprite == null || spriteRenderer.sprite.name.Contains("Placeholder")))
+                if (idleSouth != null && (spriteRenderer.sprite == null || spriteRenderer.sprite.name.Contains("Placeholder") || (spriteRenderer.sprite.texture != null && spriteRenderer.sprite.texture.width <= 16)))
                 {
                     spriteRenderer.sprite = idleSouth;
                 }
@@ -212,7 +212,7 @@ namespace TheLastSignal.Entities.Player
                     animTimer = 0f;
                     spriteRenderer.flipX = false;
                     Sprite targetSprite = GetDirectionalSprite(facing);
-                    if (targetSprite != null && spriteRenderer.sprite != targetSprite)
+                    if (targetSprite != null && (spriteRenderer.sprite != targetSprite || spriteRenderer.sprite.name.Contains("Placeholder") || (spriteRenderer.sprite.texture != null && spriteRenderer.sprite.texture.width <= 16)))
                     {
                         spriteRenderer.sprite = targetSprite;
                     }
