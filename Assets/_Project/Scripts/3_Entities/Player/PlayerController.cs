@@ -50,8 +50,6 @@ namespace TheLastSignal.Entities.Player
         [SerializeField] private LayerMask interactableLayer;
         [SerializeField, Range(0f, 1f)] private float facingDotThreshold = 0.4f;
 
-        public float MoveSpeed => moveSpeed;
-        public float InteractionRange => interactionRange;
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
 
@@ -93,6 +91,8 @@ namespace TheLastSignal.Entities.Player
 
         /// <summary>Spawn slot this instance occupies (0 = P1 … 3 = P4).</summary>
         public int SlotIndex => slotIndex;
+
+        public float MoveSpeed => moveSpeed;
 
         public float InteractionRange => interactionRange;
 
