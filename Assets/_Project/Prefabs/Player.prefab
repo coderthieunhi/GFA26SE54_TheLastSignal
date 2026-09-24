@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f15a8ce28d19c446a2a9a78850c6cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerController
+  ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 3
   acceleration: 15.5
   deceleration: 21.5
