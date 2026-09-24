@@ -88,15 +88,15 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 0}
-  m_Color: {r: 0.2, g: 0.8, b: 1, a: 1}
+  m_Sprite: {fileID: 100001, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
 --- !u!50 &3024654028933960297
@@ -226,6 +226,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerAnimator
   playerController: {fileID: 0}
+  spriteRenderer: {fileID: 5881264923978604063}
+  spriteNorth: {fileID: 100005, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  spriteSouth: {fileID: 100001, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  spriteEast: {fileID: 100003, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  spriteWest: {fileID: 100007, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  spriteNorthEast: {fileID: 100004, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  spriteNorthWest: {fileID: 100006, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  spriteSouthEast: {fileID: 100002, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
+  spriteSouthWest: {fileID: 100008, guid: c7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2, type: 3}
 --- !u!114 &9013473217080417872
 MonoBehaviour:
   m_ObjectHideFlags: 0

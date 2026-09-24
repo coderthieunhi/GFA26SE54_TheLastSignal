@@ -8,10 +8,14 @@ namespace TheLastSignal.Core.Interaction
     public interface IInteractable
     {
         /// <summary>
-        /// Gets the prompt message displayed to the player when approaching this object.
-        /// For example: "[E] Repair Generator" or "[E] Open Door".
+        /// Prompt text shown to the player (e.g. "[E] Open Door", "[E] Close Door", "[E] Repair Generator").
         /// </summary>
-        /// <returns>The prompt string to display on the UI.</returns>
+        string InteractionPrompt { get; }
+
+        /// <summary>
+        /// Gets the prompt message displayed to the player when approaching this object.
+        /// Maintained for backward compatibility.
+        /// </summary>
         string GetInteractionPrompt();
 
         /// <summary>

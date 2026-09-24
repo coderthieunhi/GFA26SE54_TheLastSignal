@@ -1,10 +1,11 @@
 using UnityEngine;
-using TheLastSignal.Entities.Interaction;
+using TheLastSignal.Core.Interaction;
+using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.Entities.Environment
 {
     /// <summary>
-    /// Placeholder facility door. Implements IInteractable to hook into PlayerController interaction system.
+    /// Placeholder facility door. Implements unified IInteractable to hook into PlayerController interaction system.
     /// Manages open/closed state, toggling its solid collider to block or allow player passage.
     /// </summary>
     public class Door : MonoBehaviour, IInteractable
@@ -28,8 +29,9 @@ namespace TheLastSignal.Entities.Environment
         public bool IsOpen => isOpen;
 
         public string InteractionPrompt => isOpen ? $"Close {doorName}" : $"Open {doorName}";
+        public string GetInteractionPrompt() => InteractionPrompt;
 
-        public bool CanInteract => true;
+        public bool CanInteract(PlayerController player) => true;
 
         private void Awake()
         {
@@ -56,6 +58,11 @@ namespace TheLastSignal.Entities.Environment
             }
 
             ApplyState(isOpen);
+        }
+
+        public void Interact(PlayerController player)
+        {
+            SetOpen(!isOpen);
         }
 
         public void Interact(GameObject player)

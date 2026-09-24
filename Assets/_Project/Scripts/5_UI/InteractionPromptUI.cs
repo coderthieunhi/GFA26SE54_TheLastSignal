@@ -40,20 +40,12 @@ namespace TheLastSignal.UI
             {
                 string prompt = null;
 
-                if (hit.TryGetComponent(out TheLastSignal.Entities.Interaction.IInteractable entityInteractable) ||
-                    hit.GetComponentInParent<TheLastSignal.Entities.Interaction.IInteractable>() is { } parentEntity && (entityInteractable = parentEntity) != null)
+                if (hit.TryGetComponent(out TheLastSignal.Core.Interaction.IInteractable interactable) ||
+                    hit.GetComponentInParent<TheLastSignal.Core.Interaction.IInteractable>() is { } parent && (interactable = parent) != null)
                 {
-                    if (entityInteractable.CanInteract)
+                    if (interactable.CanInteract(localPlayer))
                     {
-                        prompt = entityInteractable.InteractionPrompt;
-                    }
-                }
-                else if (hit.TryGetComponent(out TheLastSignal.Core.Interaction.IInteractable coreInteractable) ||
-                         hit.GetComponentInParent<TheLastSignal.Core.Interaction.IInteractable>() is { } parentCore && (coreInteractable = parentCore) != null)
-                {
-                    if (coreInteractable.CanInteract(localPlayer))
-                    {
-                        prompt = coreInteractable.GetInteractionPrompt();
+                        prompt = interactable.InteractionPrompt;
                     }
                 }
 

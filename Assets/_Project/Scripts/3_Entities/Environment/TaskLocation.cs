@@ -1,5 +1,6 @@
 using UnityEngine;
-using TheLastSignal.Entities.Interaction;
+using TheLastSignal.Core.Interaction;
+using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.Entities.Environment
 {
@@ -36,7 +37,8 @@ namespace TheLastSignal.Entities.Environment
         public bool IsCompleted => isCompleted;
 
         public string InteractionPrompt => isCompleted ? $"{stationDisplayName} (Finished)" : $"Interact with {stationDisplayName}";
-        public bool CanInteract => !isCompleted;
+        public string GetInteractionPrompt() => InteractionPrompt;
+        public bool CanInteract(PlayerController player) => !isCompleted;
 
         private void Awake()
         {
@@ -52,6 +54,11 @@ namespace TheLastSignal.Entities.Environment
             stationDisplayName = displayName;
             stationType = type;
             isCompleted = false;
+        }
+
+        public void Interact(PlayerController player)
+        {
+            Interact(player != null ? player.gameObject : null);
         }
 
         public void Interact(GameObject player)

@@ -31,6 +31,8 @@ namespace TheLastSignal.Core.Interaction
             set => isAvailable = value; 
         }
 
+        public virtual string InteractionPrompt => GetInteractionPrompt();
+
         public virtual string GetInteractionPrompt()
         {
             return promptMessage;

@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
-using TheLastSignal.Entities.Interaction;
+using TheLastSignal.Core.Interaction;
+using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.Entities.Environment
 {
@@ -10,12 +12,24 @@ namespace TheLastSignal.Entities.Environment
     }
 
     /// <summary>
-    /// Manages state for interactive facility doors. Implements project's existing IInteractable interface.
+    /// Manages state for interactive facility doors. Implements unified IInteractable interface.
     /// Toggles BoxCollider2D blocker and updates visual state when interacted with ([E]).
+    /// Maintains static registry for network synchronization.
     /// </summary>
     [RequireComponent(typeof(BoxCollider2D))]
     public class DoorController : MonoBehaviour, IInteractable
     {
+        private static readonly Dictionary<string, DoorController> doorRegistry = new Dictionary<string, DoorController>();
+
+        public static DoorController GetDoor(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            doorRegistry.TryGetValue(name, out var door);
+            return door;
+        }
+
+        public static IReadOnlyDictionary<string, DoorController> AllDoors => doorRegistry;
+
         [Header("State")]
         [SerializeField] private DoorState currentState = DoorState.Closed;
         [SerializeField] private string doorName = "Door";
@@ -28,11 +42,14 @@ namespace TheLastSignal.Entities.Environment
         [SerializeField] private Color closedColor = new Color(0.95f, 0.45f, 0.15f, 1f); // Warning orange/red
         [SerializeField] private Color openColor = new Color(0.2f, 0.8f, 0.4f, 0.35f);    // Translucent green
 
+        public string DoorName => doorName;
         public DoorState CurrentState => currentState;
         public bool IsOpen => currentState == DoorState.Open;
 
         public string InteractionPrompt => currentState == DoorState.Open ? $"Close {doorName}" : $"Open {doorName}";
-        public bool CanInteract => true;
+        public string GetInteractionPrompt() => InteractionPrompt;
+
+        public bool CanInteract(PlayerController player) => true;
 
         private void Awake()
         {
@@ -46,18 +63,49 @@ namespace TheLastSignal.Entities.Environment
                 spriteRenderer = GetComponent<SpriteRenderer>();
             }
 
+            RegisterDoor();
             ApplyState();
+        }
+
+        private void OnDestroy()
+        {
+            UnregisterDoor();
+        }
+
+        private void RegisterDoor()
+        {
+            string key = string.IsNullOrEmpty(doorName) ? gameObject.name : doorName;
+            doorRegistry[key] = this;
+        }
+
+        private void UnregisterDoor()
+        {
+            string key = string.IsNullOrEmpty(doorName) ? gameObject.name : doorName;
+            if (doorRegistry.TryGetValue(key, out var registered) && registered == this)
+            {
+                doorRegistry.Remove(key);
+            }
         }
 
         public void Initialize(string name, DoorState initialState = DoorState.Closed)
         {
+            UnregisterDoor();
             doorName = name;
             currentState = initialState;
+            RegisterDoor();
             ApplyState();
         }
 
         /// <summary>
-        /// Interaction handler called by PlayerController via IInteractable.
+        /// Interaction handler called by PlayerController via unified IInteractable.
+        /// </summary>
+        public void Interact(PlayerController player)
+        {
+            OnInteract();
+        }
+
+        /// <summary>
+        /// Backward compatibility interaction handler.
         /// </summary>
         public void Interact(GameObject player)
         {

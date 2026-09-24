@@ -2,29 +2,36 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TheLastSignal.Entities.Camera;
-using TheLastSignal.Entities.Interaction;
+using TheLastSignal.Core.Interaction;
+using TheLastSignal.Entities.Environment;
 
 namespace TheLastSignal.Entities.Player
 {
     /// <summary>
-    /// Single-player prototype controller: reads local keyboard input, applies 8-directional
-    /// physics-based movement, and detects nearby interactable objects. Movement application is kept
-    /// separate from input reading (ReadMovementInput vs ApplyMovement) so that when multiplayer lands,
-    /// input capture can stay local while ApplyMovement moves behind a ServerRpc on the Host — see
-    /// ARCHITECTURE_RULES.md Rule 3.
+    /// Player controller supporting both single-player and multiplayer:
+    /// - Local owner reads input, applies 8-directional physics movement, and detects interactables (Client-Side Prediction).
+    /// - Continuous NetworkTransform and NetworkVariables synchronize position, movement state, and facing direction across all peers.
+    /// - Remote instances run as kinematic bodies with smooth interpolation, avoiding physics fighting.
+    /// - Authoritative interactions (doors, consoles) are routed via ServerRpc and replicated down to all clients.
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(CapsuleCollider2D))]
     public class PlayerController : NetworkBehaviour
     {
+        private static readonly Color[] SlotColors = new Color[]
+        {
+            new Color(0.2f, 0.8f, 1.0f, 1f),  // P1 Cyan
+            new Color(1.0f, 0.55f, 0.2f, 1f), // P2 Orange
+            new Color(0.35f, 0.9f, 0.45f, 1f),// P3 Green
+            new Color(0.9f, 0.4f, 0.9f, 1f)   // P4 Magenta
+        };
+
         /// <summary>
         /// True when an NGO session is actually running. Used so every ownership check degrades
         /// cleanly to single-player behaviour in the Epic 1 scene, which has no NetworkManager.
-        /// Qualified because inside a NetworkBehaviour, `NetworkManager` is the instance property.
         /// </summary>
         private static bool IsNetworkSessionActive =>
-            Unity.Netcode.NetworkManager.Singleton != null &&
-            Unity.Netcode.NetworkManager.Singleton.IsListening;
+            NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
 
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 3.5f;
@@ -35,24 +42,33 @@ namespace TheLastSignal.Entities.Player
         [SerializeField] private bool enableCornerAssist = true;
         [SerializeField] private float cornerRayDistance = 0.5f;
         [SerializeField] private float cornerSideOffset = 0.35f;
-        [SerializeField] private float cornerNudgeSpeed = 3f;
+        [SerializeField] private float cornerNudgeSpeed = 3.0f;
         [SerializeField] private LayerMask collisionLayers;
 
-        [Header("Interaction Detection")]
+        [Header("Interaction")]
         [SerializeField] private float interactionRange = 2f;
         [SerializeField] private LayerMask interactableLayer;
         [SerializeField, Range(0f, 1f)] private float facingDotThreshold = 0.5f;
 
-        public float InteractionRange => interactionRange;
-
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
+
         private Vector2 moveInput;
         private Vector2 currentVelocity;
         private Vector2 facingDirection = Vector2.down;
         private PlayerDirection facing = PlayerDirection.Down;
         private bool controlEnabled = false;
         private int slotIndex;
+        private Vector3 lastRemotePosition;
+        private bool isRemoteMoving;
+
+        // Network synchronization variables (Owner writable, replicated to all peers)
+        private readonly NetworkVariable<Vector2> netFacingDirection = new NetworkVariable<Vector2>(
+            Vector2.down, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        private readonly NetworkVariable<bool> netIsMoving = new NetworkVariable<bool>(
+            false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        private readonly NetworkVariable<PlayerDirection> netFacing = new NetworkVariable<PlayerDirection>(
+            PlayerDirection.Down, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         /// <summary>Raw (already clamped to length 1) movement input for this frame.</summary>
         public Vector2 MoveInput => moveInput;
@@ -61,25 +77,27 @@ namespace TheLastSignal.Entities.Player
         public Vector2 CurrentVelocity => currentVelocity;
 
         /// <summary>The last non-zero movement direction; persists while idle so the player keeps facing it.</summary>
-        public Vector2 FacingDirection => facingDirection;
+        public Vector2 FacingDirection => (IsSpawned && !IsOwner) ? netFacingDirection.Value : facingDirection;
 
         /// <summary>
-        /// The last non-zero movement direction collapsed to one of 4 cardinal directions (dominant
-        /// axis wins; ties resolve to horizontal). Persists while idle.
+        /// The last non-zero movement direction collapsed to one of 4 cardinal directions. Persists while idle.
         /// </summary>
-        public PlayerDirection Facing => facing;
+        public PlayerDirection Facing => (IsSpawned && !IsOwner) ? netFacing.Value : facing;
 
         /// <summary>True while the player has non-zero movement input or is decelerating to a stop.</summary>
-        public bool IsMoving => currentVelocity.sqrMagnitude > 0.01f || moveInput.sqrMagnitude > 0.0001f;
+        public bool IsMoving => (IsSpawned && !IsOwner)
+            ? (netIsMoving.Value || isRemoteMoving)
+            : (currentVelocity.sqrMagnitude > 0.01f || moveInput.sqrMagnitude > 0.0001f);
 
         /// <summary>Spawn slot this instance occupies (0 = P1 … 3 = P4).</summary>
         public int SlotIndex => slotIndex;
 
+        public float InteractionRange => interactionRange;
+
         public bool ControlEnabled => controlEnabled;
 
         /// <summary>
-        /// The interactable collider the player should be able to interact with right now, or null if none is
-        /// in range. Recomputed every frame, so it never goes stale when the player moves out of range.
+        /// The interactable collider the player should be able to interact with right now, or null if none is in range.
         /// </summary>
         public Collider2D CurrentInteractable { get; private set; }
 
@@ -122,12 +140,22 @@ namespace TheLastSignal.Entities.Player
                     collisionLayers |= (1 << defaultLayer);
                 }
             }
+
+            EnsureSpriteRenderer();
+        }
+
+        private void EnsureSpriteRenderer()
+        {
+            if (TryGetComponent(out SpriteRenderer sr) && sr.sprite == null)
+            {
+                Texture2D tex = Texture2D.whiteTexture;
+                sr.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 16f);
+            }
         }
 
         private void Start()
         {
-            // When NGO is running, ownership is not known yet at Start — OnNetworkSpawn binds the
-            // camera instead, so a remote player's instance never steals this client's camera.
+            // When NGO is running, ownership is not known yet at Start — OnNetworkSpawn binds the camera instead.
             if (IsNetworkSessionActive)
             {
                 return;
@@ -137,38 +165,48 @@ namespace TheLastSignal.Entities.Player
         }
 
         /// <summary>
-        /// Story 3.1: the locally owned instance claims this client's camera and enables its own input.
-        /// Remote instances stay input-dead and are driven by NetworkTransform replication.
+        /// Initializes player slot, visuals, physics authority, and network synchronization.
         /// </summary>
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
+            int slot = (int)(OwnerClientId % (ulong)PlayerSpawnPoint.MaxSlots);
+            BindSlot(slot);
+
             if (!IsOwner)
             {
+                // Remote proxy: switch to Kinematic so local physics simulation doesn't fight NetworkTransform
+                if (rb != null)
+                {
+                    rb.bodyType = RigidbodyType2D.Kinematic;
+                    rb.linearVelocity = Vector2.zero;
+                }
+
+                // Place initial position at spawn point to prevent jump from default prefab position
+                Vector2 initialSpawnPos = ResolveNetworkSpawnPosition(slotIndex);
+                transform.position = new Vector3(initialSpawnPos.x, initialSpawnPos.y, transform.position.z);
+                lastRemotePosition = transform.position;
                 return;
             }
 
-            // Owner-authoritative NetworkTransform means the Host cannot teleport a client-owned body,
-            // so each owner places itself on its own spawn slot. The slot is derived from OwnerClientId
-            // so no extra RPC or Host coordination is needed for this story.
-            BindSlot((int)OwnerClientId);
+            // Local owner: place body on own spawn slot and enable controls
             ResetState(ResolveNetworkSpawnPosition(slotIndex));
-
-            // Control is enabled locally by the owner because `controlEnabled` is a client-side input
-            // gate, and GameManager.StartSession only runs on the Host.
-            // TODO (Story 3.2+): drive this from replicated session state so control follows
-            // Gameplay/Win/Lose for every client instead of being enabled on spawn.
             SetControlEnabled(true);
+
+            // If server/host, synchronize current door states to this client if remote
+            if (IsServer && OwnerClientId != NetworkManager.ServerClientId)
+            {
+                SyncAllDoorsToClient(OwnerClientId);
+            }
         }
 
         /// <summary>
-        /// Finds this slot's <see cref="PlayerSpawnPoint"/> in the loaded scene. Falls back to the
-        /// current position so a scene without spawn points never teleports the player to the origin.
+        /// Finds this slot's spawn point in the loaded scene. Supports both PlayerSpawnPoint and legacy SpawnPoint.
         /// </summary>
         private Vector2 ResolveNetworkSpawnPosition(int slot)
         {
-            PlayerSpawnPoint[] points = FindObjectsByType<PlayerSpawnPoint>();
+            PlayerSpawnPoint[] points = FindObjectsByType<PlayerSpawnPoint>(FindObjectsSortMode.None);
             for (int i = 0; i < points.Length; i++)
             {
                 if (points[i] != null && points[i].SlotIndex == slot)
@@ -177,14 +215,33 @@ namespace TheLastSignal.Entities.Player
                 }
             }
 
+            SpawnPoint[] legacyPoints = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
+            for (int i = 0; i < legacyPoints.Length; i++)
+            {
+                if (legacyPoints[i] != null && legacyPoints[i].PlayerIndex == slot)
+                {
+                    return legacyPoints[i].Position;
+                }
+            }
+
             return transform.position;
         }
 
-        /// <summary>Assigns this instance to a spawn slot so co-op can address P1–P4 later.</summary>
+        /// <summary>Assigns this instance to a spawn slot so co-op can address P1–P4.</summary>
         public void BindSlot(int slot)
         {
             slotIndex = Mathf.Clamp(slot, 0, PlayerSpawnPoint.MaxSlots - 1);
             gameObject.name = slotIndex == 0 ? "Player" : $"Player_P{slotIndex + 1}";
+            ApplySlotVisuals(slotIndex);
+        }
+
+        public void ApplySlotVisuals(int slot)
+        {
+            if (TryGetComponent(out SpriteRenderer sr))
+            {
+                int colorIndex = Mathf.Clamp(slot, 0, SlotColors.Length - 1);
+                sr.color = SlotColors[colorIndex];
+            }
         }
 
         public void SetControlEnabled(bool enabled)
@@ -198,8 +255,7 @@ namespace TheLastSignal.Entities.Player
         }
 
         /// <summary>
-        /// Teleports the player to <paramref name="worldPosition"/> and clears movement / interactable
-        /// state so a session restart does not inherit the previous run.
+        /// Teleports the player to <paramref name="worldPosition"/> and clears movement / interactable state.
         /// </summary>
         public void ResetState(Vector2 worldPosition)
         {
@@ -219,19 +275,15 @@ namespace TheLastSignal.Entities.Player
             rb.angularVelocity = 0f;
             rb.position = worldPosition;
             transform.position = new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
+            lastRemotePosition = transform.position;
 
             BindLocalCamera();
         }
 
         private void BindLocalCamera()
         {
-            // Hand this player's Transform to the local camera as its follow target. Deliberately not
-            // a scene-wide "find the player" lookup on the camera's side (ARCHITECTURE_RULES.md): each
-            // client's camera must target only its own local player, so the player is the one
-            // announcing itself here rather than the camera searching for one.
             if (IsSpawned)
             {
-                // Networked: only the locally owned instance may claim this client's camera.
                 if (!IsOwner)
                 {
                     return;
@@ -239,7 +291,6 @@ namespace TheLastSignal.Entities.Player
             }
             else if (slotIndex != 0)
             {
-                // Non-networked (Epic 1): P1 drives the camera.
                 return;
             }
 
@@ -252,6 +303,17 @@ namespace TheLastSignal.Entities.Player
 
         private void Update()
         {
+            if (IsSpawned && !IsOwner)
+            {
+                // Remote proxy: derive displacement speed for smooth animation fallback
+                Vector3 currentPos = transform.position;
+                float dt = Time.deltaTime > 0f ? Time.deltaTime : 0.02f;
+                float speedSqr = (currentPos - lastRemotePosition).sqrMagnitude / (dt * dt);
+                isRemoteMoving = speedSqr > 0.01f;
+                lastRemotePosition = currentPos;
+                return;
+            }
+
             if (!controlEnabled)
             {
                 moveInput = Vector2.zero;
@@ -262,6 +324,22 @@ namespace TheLastSignal.Entities.Player
             ReadMovementInput();
             UpdateInteractionDetection();
             HandleInteractionInput();
+
+            // Replicate movement state for other clients to read
+            if (IsSpawned && IsOwner)
+            {
+                bool moving = IsMoving;
+                if (netIsMoving.Value != moving)
+                {
+                    netIsMoving.Value = moving;
+                }
+
+                if ((netFacingDirection.Value - facingDirection).sqrMagnitude > 0.001f)
+                {
+                    netFacingDirection.Value = facingDirection;
+                    netFacing.Value = facing;
+                }
+            }
         }
 
         private void HandleInteractionInput()
@@ -274,8 +352,7 @@ namespace TheLastSignal.Entities.Player
         }
 
         /// <summary>
-        /// Attempts to interact with <see cref="CurrentInteractable"/>. Supports any <see cref="IInteractable"/>
-        /// implementer (e.g. Door) as well as legacy <see cref="Stations.StationView"/>.
+        /// Attempts to interact with <see cref="CurrentInteractable"/>. Synchronizes doors via ServerRpc.
         /// </summary>
         public void TriggerInteraction()
         {
@@ -284,33 +361,100 @@ namespace TheLastSignal.Entities.Player
                 return;
             }
 
-            // Check for IInteractable on the collider or its parents
+            // Check for DoorController (with networked toggle sync)
+            if (CurrentInteractable.TryGetComponent(out DoorController door) ||
+                CurrentInteractable.GetComponentInParent<DoorController>() is { } parentDoor && (door = parentDoor) != null)
+            {
+                if (IsSpawned)
+                {
+                    RequestInteractDoorServerRpc(door.DoorName);
+                }
+                else
+                {
+                    door.Interact(this);
+                }
+                return;
+            }
+
+            // Unified IInteractable (Door, TaskLocation, StationView, InteractableBase)
             if (CurrentInteractable.TryGetComponent(out IInteractable interactable) ||
                 CurrentInteractable.GetComponentInParent<IInteractable>() is { } parentInteractable && (interactable = parentInteractable) != null)
             {
-                if (interactable.CanInteract)
+                if (interactable.CanInteract(this))
                 {
-                    interactable.Interact(gameObject);
+                    interactable.Interact(this);
                 }
                 return;
             }
+        }
 
-            // Check for Core.Interaction.IInteractable (StationView, InteractableBase)
-            if (CurrentInteractable.TryGetComponent(out TheLastSignal.Core.Interaction.IInteractable coreInteractable) ||
-                CurrentInteractable.GetComponentInParent<TheLastSignal.Core.Interaction.IInteractable>() is { } parentCore && (coreInteractable = parentCore) != null)
+        [ServerRpc]
+        private void RequestInteractDoorServerRpc(string targetDoorName)
+        {
+            DoorController targetDoor = DoorController.GetDoor(targetDoorName);
+            if (targetDoor == null)
             {
-                if (coreInteractable.CanInteract(this))
-                {
-                    coreInteractable.Interact(this);
-                }
+                Debug.LogWarning($"[PlayerController] RequestInteractDoorServerRpc: Door '{targetDoorName}' not found.");
                 return;
             }
 
-            // Fallback for StationView if not implementing IInteractable
-            if (CurrentInteractable.TryGetComponent(out Stations.StationView station) ||
-                CurrentInteractable.GetComponentInParent<Stations.StationView>() is { } parentStation && (station = parentStation) != null)
+            float maxDist = interactionRange + 1.2f;
+            if (Vector2.Distance(transform.position, targetDoor.transform.position) > maxDist)
             {
-                station.Interact(this);
+                Debug.LogWarning($"[PlayerController] Rejecting door interaction with '{targetDoorName}': out of range.");
+                return;
+            }
+
+            targetDoor.Toggle();
+            BroadcastDoorStateClientRpc(targetDoorName, targetDoor.CurrentState);
+        }
+
+        [ClientRpc]
+        private void BroadcastDoorStateClientRpc(string targetDoorName, DoorState newState)
+        {
+            DoorController targetDoor = DoorController.GetDoor(targetDoorName);
+            if (targetDoor != null)
+            {
+                targetDoor.SetState(newState);
+            }
+        }
+
+        private void SyncAllDoorsToClient(ulong targetClientId)
+        {
+            var allDoors = DoorController.AllDoors;
+            if (allDoors.Count == 0) return;
+
+            var names = new string[allDoors.Count];
+            var states = new DoorState[allDoors.Count];
+            int i = 0;
+            foreach (var kvp in allDoors)
+            {
+                names[i] = kvp.Key;
+                states[i] = kvp.Value.CurrentState;
+                i++;
+            }
+
+            ClientRpcParams rpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new[] { targetClientId }
+                }
+            };
+
+            SyncAllDoorStatesClientRpc(names, states, rpcParams);
+        }
+
+        [ClientRpc]
+        private void SyncAllDoorStatesClientRpc(string[] doorNames, DoorState[] states, ClientRpcParams clientRpcParams = default)
+        {
+            for (int i = 0; i < doorNames.Length; i++)
+            {
+                DoorController door = DoorController.GetDoor(doorNames[i]);
+                if (door != null)
+                {
+                    door.SetState(states[i]);
+                }
             }
         }
 
@@ -325,15 +469,10 @@ namespace TheLastSignal.Entities.Player
         }
 
         /// <summary>
-        /// Reads raw keyboard state via the new Input System. Kept separate from ApplyMovement so this
-        /// method (and only this method) needs to change when input capture is later relayed to the
-        /// Host instead of applied locally.
+        /// Reads raw keyboard state via the new Input System.
         /// </summary>
         private void ReadMovementInput()
         {
-            // Story 3.1 (owner-authoritative / Option A): only the owning client captures input for
-            // this body. Gated on IsSpawned so the non-networked Epic 1 scene, where nothing is ever
-            // NGO-spawned and IsOwner is therefore always false, keeps working unchanged.
             if (IsSpawned && !IsOwner)
             {
                 return;
@@ -366,8 +505,6 @@ namespace TheLastSignal.Entities.Player
                 y += 1f;
             }
 
-            // Clamp (rather than only normalizing) so single-axis input stays length 1 while
-            // diagonal input is scaled down to length 1 instead of sqrt(2).
             moveInput = Vector2.ClampMagnitude(new Vector2(x, y), 1f);
 
             if (moveInput.sqrMagnitude > 0.0001f)
@@ -377,11 +514,6 @@ namespace TheLastSignal.Entities.Player
             }
         }
 
-        /// <summary>
-        /// Collapses a movement vector to one of 4 cardinal directions by picking the axis with the
-        /// larger absolute component (ties resolve to horizontal), so diagonal input always resolves to
-        /// exactly one unambiguous direction instead of a blended/diagonal state.
-        /// </summary>
         private static PlayerDirection ResolveCardinalDirection(Vector2 input)
         {
             if (Mathf.Abs(input.x) >= Mathf.Abs(input.y))
@@ -392,11 +524,6 @@ namespace TheLastSignal.Entities.Player
             return input.y >= 0f ? PlayerDirection.Up : PlayerDirection.Down;
         }
 
-        /// <summary>
-        /// Applies movement to the Rigidbody2D via MovePosition with smooth acceleration/deceleration
-        /// and smart corner assist. This is the method that will move behind a ServerRpc (Host-only)
-        /// once multiplayer input relay exists — see ARCHITECTURE_RULES.md Rule 3.
-        /// </summary>
         private void ApplyMovement(Vector2 direction)
         {
             Vector2 targetVelocity = direction * moveSpeed;
@@ -417,10 +544,6 @@ namespace TheLastSignal.Entities.Player
 
         private readonly RaycastHit2D[] cornerRaycastBuffer = new RaycastHit2D[8];
 
-        /// <summary>
-        /// Performs a raycast that ignores triggers and the player's own collider,
-        /// returning only solid obstacle hits that would physically block movement.
-        /// </summary>
         private RaycastHit2D RaycastSolid(Vector2 origin, Vector2 direction, float distance, LayerMask layerMask)
         {
             ContactFilter2D filter = new ContactFilter2D();
@@ -447,10 +570,6 @@ namespace TheLastSignal.Entities.Player
             return closestHit;
         }
 
-        /// <summary>
-        /// Detects if the player's collider is catching on an obstacle corner/doorframe while the
-        /// other side has open clearance, and calculates a perpendicular nudge vector to slide smoothly.
-        /// </summary>
         private Vector2 CalculateCornerNudge(Vector2 moveDir)
         {
             Vector2 pos = rb.position;
@@ -459,25 +578,20 @@ namespace TheLastSignal.Entities.Player
             RaycastHit2D leftHit = RaycastSolid(pos - perp * cornerSideOffset, moveDir, cornerRayDistance, collisionLayers);
             RaycastHit2D rightHit = RaycastSolid(pos + perp * cornerSideOffset, moveDir, cornerRayDistance, collisionLayers);
 
-            // If both sides hit, it's a flat wall or dead end - no nudge
             if (leftHit.collider != null && rightHit.collider != null)
             {
                 return Vector2.zero;
             }
 
-            // Left side caught on corner, right side is open -> nudge right (+perp)
             if (leftHit.collider != null && rightHit.collider == null)
             {
-                // Verify nudge path is clear of solid obstacles
                 if (RaycastSolid(pos, perp, cornerSideOffset + 0.1f, collisionLayers).collider == null)
                 {
                     return perp * (cornerNudgeSpeed * Time.fixedDeltaTime);
                 }
             }
-            // Right side caught on corner, left side is open -> nudge left (-perp)
             else if (rightHit.collider != null && leftHit.collider == null)
             {
-                // Verify nudge path is clear of solid obstacles
                 if (RaycastSolid(pos, -perp, cornerSideOffset + 0.1f, collisionLayers).collider == null)
                 {
                     return -perp * (cornerNudgeSpeed * Time.fixedDeltaTime);
@@ -487,12 +601,6 @@ namespace TheLastSignal.Entities.Player
             return Vector2.zero;
         }
 
-        /// <summary>
-        /// Finds interactable colliders within range and selects the one the player is facing; falls
-        /// back to the closest one if none is faced directly. Only selects colliders that actually
-        /// implement <see cref="IInteractable"/> (or legacy <see cref="Stations.StationView"/>),
-        /// ignoring any non-interactive colliders that may share the interactable layer (such as TaskLocationMarker).
-        /// </summary>
         private void UpdateInteractionDetection()
         {
             Collider2D[] hits = Physics2D.OverlapCircleAll(rb.position, interactionRange, interactableLayer);
@@ -510,12 +618,10 @@ namespace TheLastSignal.Entities.Player
 
             foreach (Collider2D hit in hits)
             {
-                // Filter: only consider colliders that have an IInteractable (Entities or Core) or StationView component
-                bool isEntity = hit.TryGetComponent(out IInteractable _) || hit.GetComponentInParent<IInteractable>() != null;
-                bool isCore = hit.TryGetComponent(out TheLastSignal.Core.Interaction.IInteractable _) || hit.GetComponentInParent<TheLastSignal.Core.Interaction.IInteractable>() != null;
-                bool isStation = hit.TryGetComponent(out Stations.StationView _) || hit.GetComponentInParent<Stations.StationView>() != null;
+                bool isInteractable = hit.TryGetComponent(out IInteractable _) || hit.GetComponentInParent<IInteractable>() != null;
+                bool isDoor = hit.TryGetComponent(out DoorController _) || hit.GetComponentInParent<DoorController>() != null;
 
-                if (!isEntity && !isCore && !isStation)
+                if (!isInteractable && !isDoor)
                 {
                     continue;
                 }
