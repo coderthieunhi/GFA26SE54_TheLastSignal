@@ -414,7 +414,7 @@ namespace TheLastSignal.EditorTools
             GameObject oldCrate = GameObject.Find("Obstacle_MedBay_Crate");
             if (oldCrate != null) Undo.DestroyObjectImmediate(oldCrate);
 
-            GameObject[] sceneObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+            GameObject[] sceneObjects = Object.FindObjectsByType<GameObject>();
             foreach (GameObject go in sceneObjects)
             {
                 if (go == null) continue;
@@ -434,7 +434,7 @@ namespace TheLastSignal.EditorTools
 
             // --- DOOR 1: EAST DOOR (Door_MedBay) at (-10.5f, 28.0f) ---
             DoorController medBayEastDoor = null;
-            DoorController[] allDoors = Object.FindObjectsByType<DoorController>(FindObjectsSortMode.None);
+            DoorController[] allDoors = Object.FindObjectsByType<DoorController>();
             foreach (DoorController d in allDoors)
             {
                 if (d.name == "Door_MedBay" || d.name == "Door_MedBay_East")

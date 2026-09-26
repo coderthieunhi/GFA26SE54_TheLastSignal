@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
 namespace TheLastSignal.EditorTools
@@ -97,7 +98,7 @@ namespace TheLastSignal.EditorTools
             sheet[6] = new SpriteMetaData { name = "Engineer_Idle_West", rect = new Rect(92, 0, 92, 92), alignment = (int)SpriteAlignment.Center, pivot = new Vector2(0.5f, 0.5f) };
             sheet[7] = new SpriteMetaData { name = "Engineer_Idle_SouthWest", rect = new Rect(184, 0, 92, 92), alignment = (int)SpriteAlignment.Center, pivot = new Vector2(0.5f, 0.5f) };
 
-            importer.spritesheet = sheet;
+            SetSpriteSheet(importer, sheet);
             EditorUtility.SetDirty(importer);
             importer.SaveAndReimport();
         }
@@ -128,9 +129,33 @@ namespace TheLastSignal.EditorTools
             sheet[6] = new SpriteMetaData { name = $"{prefix}_6", rect = new Rect(92, 0, 92, 92), alignment = (int)SpriteAlignment.Center, pivot = new Vector2(0.5f, 0.5f) };
             sheet[7] = new SpriteMetaData { name = $"{prefix}_7", rect = new Rect(184, 0, 92, 92), alignment = (int)SpriteAlignment.Center, pivot = new Vector2(0.5f, 0.5f) };
 
-            importer.spritesheet = sheet;
+            SetSpriteSheet(importer, sheet);
             EditorUtility.SetDirty(importer);
             importer.SaveAndReimport();
+        }
+
+        private static void SetSpriteSheet(TextureImporter importer, SpriteMetaData[] sheet)
+        {
+            var factory = new SpriteDataProviderFactories();
+            factory.Init();
+            var dataProvider = factory.GetSpriteEditorDataProviderFromObject(importer);
+            dataProvider.InitSpriteEditorDataProvider();
+
+            var spriteRects = new SpriteRect[sheet.Length];
+            for (int i = 0; i < sheet.Length; i++)
+            {
+                spriteRects[i] = new SpriteRect
+                {
+                    name = sheet[i].name,
+                    rect = sheet[i].rect,
+                    alignment = (SpriteAlignment)sheet[i].alignment,
+                    pivot = sheet[i].pivot,
+                    spriteID = GUID.Generate()
+                };
+            }
+
+            dataProvider.SetSpriteRects(spriteRects);
+            dataProvider.Apply();
         }
 
         private static void ApplyToPlayerPrefabAndScene()
