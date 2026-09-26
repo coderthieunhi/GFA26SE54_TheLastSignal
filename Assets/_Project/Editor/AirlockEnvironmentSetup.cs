@@ -340,7 +340,7 @@ namespace TheLastSignal.EditorTools
             GameObject propsRoot = new GameObject("Airlock_Decorations");
             Undo.RegisterCreatedObjectUndo(propsRoot, "Create Airlock Decorations");
 
-            DoorController[] allDoors = Object.FindObjectsByType<DoorController>(FindObjectsSortMode.None);
+            DoorController[] allDoors = Object.FindObjectsByType<DoorController>();
             foreach (DoorController d in allDoors)
             {
                 if (d.name.Contains("Airlock"))
