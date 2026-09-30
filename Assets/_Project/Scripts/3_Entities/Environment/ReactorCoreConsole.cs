@@ -128,5 +128,20 @@ namespace TheLastSignal.Entities.Environment
                 consoleRenderer.color = isActivated ? activatedColor : normalColor;
             }
         }
+
+        /// <summary>
+        /// Story 3.5: applies Host-replicated activation state. Called by NetworkGameState's
+        /// networkReactorActivated NetworkVariable callback on every peer (Host included). This console
+        /// itself can't be a NetworkBehaviour (it extends InteractableBase : MonoBehaviour, a sibling
+        /// hierarchy to NetworkBehaviour), so the authoritative bool lives on NetworkGameState instead —
+        /// this method is the only path that changes isActivated while networked. ProcessInteraction
+        /// below is reached only in single-player, where there's no NetworkGameState at all.
+        /// </summary>
+        public void ApplyNetworkActivation(bool activated)
+        {
+            isActivated = activated;
+            isAvailable = !activated;
+            ApplyVisualState();
+        }
     }
 }

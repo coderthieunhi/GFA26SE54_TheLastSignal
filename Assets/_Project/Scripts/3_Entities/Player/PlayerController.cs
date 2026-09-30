@@ -2,6 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TheLastSignal.Entities.Camera;
+using TheLastSignal.Core;
 using TheLastSignal.Core.Interaction;
 using TheLastSignal.Entities.Environment;
 
@@ -203,11 +204,10 @@ namespace TheLastSignal.Entities.Player
             ResetState(ResolveNetworkSpawnPosition(slotIndex));
             SetControlEnabled(true);
 
-            // If server/host, synchronize current door states to this client if remote
-            if (IsServer && OwnerClientId != NetworkManager.ServerClientId)
-            {
-                SyncAllDoorsToClient(OwnerClientId);
-            }
+            // Story 3.5: doors and the reactor console are now Host-authoritative via their own
+            // NetworkVariables (DoorController, NetworkGameState) — those replicate automatically to
+            // newly-spawned clients as part of NGO's own spawn payload, so no manual per-player sync is
+            // needed here anymore (this used to call SyncAllDoorsToClient).
         }
 
         /// <summary>
@@ -372,7 +372,14 @@ namespace TheLastSignal.Entities.Player
         }
 
         /// <summary>
-        /// Attempts to interact with <see cref="CurrentInteractable"/>. Synchronizes doors via ServerRpc.
+        /// Attempts to interact with <see cref="CurrentInteractable"/>.
+        /// Story 3.5: Door and ReactorCoreConsole are Host-authoritative — Door routes through its own
+        /// NetworkVariable-backed ServerRpc internally (see DoorController.Interact), and
+        /// ReactorCoreConsole is special-cased here to route through NetworkGameState's ServerRpc, since
+        /// its authoritative bool lives there (a console can't itself be a NetworkBehaviour — see
+        /// ReactorCoreConsole.ApplyNetworkActivation). Everything else (TaskLocation, StationView, ...)
+        /// still resolves purely locally per peer.
+        /// // TODO: Task Ticket System synchronization not yet implemented.
         /// </summary>
         public void TriggerInteraction()
         {
@@ -381,22 +388,26 @@ namespace TheLastSignal.Entities.Player
                 return;
             }
 
-            // Check for DoorController (with networked toggle sync)
-            if (CurrentInteractable.TryGetComponent(out DoorController door) ||
-                CurrentInteractable.GetComponentInParent<DoorController>() is { } parentDoor && (door = parentDoor) != null)
+            if (CurrentInteractable.TryGetComponent(out ReactorCoreConsole reactor) ||
+                CurrentInteractable.GetComponentInParent<ReactorCoreConsole>() is { } parentReactor && (reactor = parentReactor) != null)
             {
-                if (IsSpawned)
+                if (!reactor.CanInteract(this))
                 {
-                    RequestInteractDoorServerRpc(door.DoorName);
+                    return;
+                }
+
+                if (IsSpawned && NetworkGameState.Instance != null)
+                {
+                    NetworkGameState.Instance.RequestActivateReactorRpc();
                 }
                 else
                 {
-                    door.Interact(this);
+                    reactor.Interact(this);
                 }
                 return;
             }
 
-            // Unified IInteractable (Door, TaskLocation, StationView, InteractableBase)
+            // Unified IInteractable (Door [self-networked via DoorController], TaskLocation, StationView, InteractableBase)
             if (CurrentInteractable.TryGetComponent(out IInteractable interactable) ||
                 CurrentInteractable.GetComponentInParent<IInteractable>() is { } parentInteractable && (interactable = parentInteractable) != null)
             {
@@ -408,83 +419,6 @@ namespace TheLastSignal.Entities.Player
             }
         }
 
-        [ServerRpc]
-        private void RequestInteractDoorServerRpc(string targetDoorName)
-        {
-            DoorController targetDoor = DoorController.GetDoor(targetDoorName);
-            if (targetDoor == null)
-            {
-                Debug.LogWarning($"[PlayerController] RequestInteractDoorServerRpc: Door '{targetDoorName}' not found.");
-                return;
-            }
-
-            float maxDist = interactionRange + 1.2f;
-            if (Vector2.Distance(transform.position, targetDoor.transform.position) > maxDist)
-            {
-                Debug.LogWarning($"[PlayerController] Rejecting door interaction with '{targetDoorName}': out of range.");
-                return;
-            }
-
-            targetDoor.Toggle();
-            BroadcastDoorStateClientRpc(targetDoorName, targetDoor.CurrentState);
-        }
-
-        [ClientRpc]
-        private void BroadcastDoorStateClientRpc(string targetDoorName, DoorState newState)
-        {
-            DoorController targetDoor = DoorController.GetDoor(targetDoorName);
-            if (targetDoor != null)
-            {
-                targetDoor.SetState(newState);
-            }
-        }
-
-        private void SyncAllDoorsToClient(ulong targetClientId)
-        {
-            var allDoors = DoorController.AllDoors;
-            if (allDoors.Count == 0) return;
-
-            var nameList = new System.Collections.Generic.List<string>(allDoors.Count);
-            var stateList = new System.Collections.Generic.List<int>(allDoors.Count);
-
-            foreach (var kvp in allDoors)
-            {
-                nameList.Add(kvp.Key);
-                stateList.Add((int)kvp.Value.CurrentState);
-            }
-
-            string doorNamesCsv = string.Join(",", nameList);
-            int[] states = stateList.ToArray();
-
-            ClientRpcParams rpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new[] { targetClientId }
-                }
-            };
-
-            SyncAllDoorStatesClientRpc(doorNamesCsv, states, rpcParams);
-        }
-
-        [ClientRpc]
-        private void SyncAllDoorStatesClientRpc(string doorNamesCsv, int[] states, ClientRpcParams clientRpcParams = default)
-        {
-            if (string.IsNullOrEmpty(doorNamesCsv) || states == null)
-            {
-                return;
-            }
-
-            string[] doorNames = doorNamesCsv.Split(',');
-            for (int i = 0; i < doorNames.Length && i < states.Length; i++)
-            {
-                DoorController door = DoorController.GetDoor(doorNames[i]);
-                if (door != null)
-                {
-                    door.SetState((DoorState)states[i]);
-                }
-            }
-        }
 
         private void FixedUpdate()
         {

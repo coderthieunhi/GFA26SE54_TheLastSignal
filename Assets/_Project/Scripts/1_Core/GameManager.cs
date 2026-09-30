@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Services.Authentication;
@@ -45,6 +46,25 @@ namespace TheLastSignal.Core
         private IGameSystem[] activeSystems = System.Array.Empty<IGameSystem>();
         private ServicesStatus servicesStatus = ServicesStatus.Uninitialized;
 
+        /// <summary>
+        /// Client-side mirror of the replicated objective, used only when objectiveSystem is null (a
+        /// pure client never runs InitializeGame/StartSession locally — see IsHostAuthoritative).
+        /// </summary>
+        private ObjectiveData replicatedObjective;
+
+        /// <summary>True when an NGO session is actually running (mirrors PlayerController's own gate).</summary>
+        private static bool IsNetworkSessionActive =>
+            NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
+
+        /// <summary>
+        /// True when this peer is allowed to actually drive session/objective/countdown transitions:
+        /// either there is no network session at all (Epic 1 single-player), or this peer is the Host.
+        /// A non-Host client must never call StartSession/RestartSession or tick the objective system —
+        /// it only mirrors what NetworkGameState replicates (see ApplyReplicated* below).
+        /// </summary>
+        public bool IsHostAuthoritative =>
+            !IsNetworkSessionActive || (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer);
+
         /// <summary>Current state of Unity Services init + anonymous sign-in.</summary>
         public ServicesStatus ServicesState => servicesStatus;
 
@@ -57,7 +77,7 @@ namespace TheLastSignal.Core
         public float EvacuationDuration => evacuationDuration;
 
         public ObjectiveData CurrentObjective =>
-            objectiveSystem != null ? objectiveSystem.CurrentObjective : default;
+            objectiveSystem != null ? objectiveSystem.CurrentObjective : replicatedObjective;
 
         private void Awake()
         {
@@ -137,6 +157,14 @@ namespace TheLastSignal.Core
 
         private void Update()
         {
+            // Story 3.5: a non-Host client never drives its own session — it only ever displays what
+            // NetworkGameState replicates (see ApplyReplicated* below). Ticking, restarting, or the
+            // debug fail-key locally on a client would silently desync it from the Host.
+            if (!IsHostAuthoritative)
+            {
+                return;
+            }
+
             Keyboard keyboard = Keyboard.current;
             if (keyboard != null)
             {
@@ -162,6 +190,12 @@ namespace TheLastSignal.Core
 
         public void StartSession()
         {
+            if (!IsHostAuthoritative)
+            {
+                Debug.LogWarning("[GameManager] StartSession ignored: only the Host may start/restart a networked session.");
+                return;
+            }
+
             SetState(GameSessionState.GameStart);
             ResetTriggerZones();
             InitializeGame();
@@ -176,6 +210,10 @@ namespace TheLastSignal.Core
             StartSession();
         }
 
+        // TODO: ExitZone/HazardZone-triggered Win/Lose transitions below are NOT Host-validated —
+        // Story 3.5 only covers Door and ReactorCoreConsole interactions (per its explicit scope). A
+        // client reaching the exit or hitting a hazard still only updates their OWN local view here,
+        // exactly as before this story; it is not replicated to other peers.
         public void NotifyExitReached()
         {
             if (currentState != GameSessionState.Evacuation)
@@ -193,8 +231,20 @@ namespace TheLastSignal.Core
             HandleWin();
         }
 
+        /// <summary>
+        /// Called ONLY by NetworkGameState.RequestActivateReactorRpc after it has already validated the
+        /// request server-side (not already activated, in Gameplay phase, requester in range) — by the
+        /// time this runs we are guaranteed to be on the Host, since Rpc(SendTo.Server) method bodies
+        /// only ever execute there. The IsHostAuthoritative guard below is defense-in-depth in case this
+        /// is ever called from somewhere else in the future.
+        /// </summary>
         public void NotifyReactorActivated()
         {
+            if (!IsHostAuthoritative)
+            {
+                return;
+            }
+
             if (currentState != GameSessionState.Gameplay)
             {
                 Debug.LogWarning($"[GameManager] NotifyReactorActivated ignored because currentState is {currentState} (expected Gameplay).");
@@ -314,6 +364,13 @@ namespace TheLastSignal.Core
             {
                 onEvacuationTimerTicked.Raise(seconds);
             }
+
+            // Only reached when IsHostAuthoritative (Update() won't tick activeSystems otherwise), so
+            // pushing here is always the Host's own countdown, never a client's.
+            if (IsNetworkSessionActive)
+            {
+                NetworkGameState.Instance?.ServerSetEvacuationSeconds(seconds);
+            }
         }
 
         private void HandleWin()
@@ -330,12 +387,24 @@ namespace TheLastSignal.Core
             SetState(GameSessionState.GameOver);
         }
 
+        /// <summary>
+        /// Sets the local session phase and raises the HUD-facing event exactly as before Story 3.5.
+        /// Additionally, when this peer is Host-authoritative in a live network session, pushes the new
+        /// phase into NetworkGameState so every client observes the same phase at the same time — the
+        /// Host is the only peer that ever reaches this push (see IsHostAuthoritative call sites: this
+        /// method is only invoked from Host-gated code paths).
+        /// </summary>
         private void SetState(GameSessionState newState)
         {
             currentState = newState;
             if (onGameSessionStateChanged != null)
             {
                 onGameSessionStateChanged.Raise(newState);
+            }
+
+            if (IsNetworkSessionActive)
+            {
+                NetworkGameState.Instance?.ServerSetSessionState(newState);
             }
 
             Debug.Log($"[GameManager] State -> {newState}");
@@ -347,6 +416,44 @@ namespace TheLastSignal.Core
             {
                 onObjectiveChanged.Raise(objective);
             }
+
+            if (IsNetworkSessionActive && objectiveSystem != null)
+            {
+                NetworkGameState.Instance?.ServerSetObjective(objectiveSystem.CurrentPhase, objective.Status);
+            }
+        }
+
+        /// <summary>
+        /// Called only by NetworkGameState's session-state NetworkVariable callback, only on non-Host
+        /// peers. Mirrors the replicated phase into local display state (for HUDManager, via the same
+        /// EventChannelSO it already listens to) WITHOUT re-running any Host-only transition side
+        /// effects (spawning, zone resets, etc.) and WITHOUT pushing back to the network.
+        /// </summary>
+        public void ApplyReplicatedSessionState(GameSessionState state)
+        {
+            currentState = state;
+            onGameSessionStateChanged?.Raise(state);
+        }
+
+        /// <summary>
+        /// Called only by NetworkGameState's objective NetworkVariable callbacks, only on non-Host
+        /// peers. Reconstructs the display ObjectiveData from the replicated phase index + status
+        /// (only the phase/status are replicated, not the description text — see NetworkGameState.cs).
+        /// </summary>
+        public void ApplyReplicatedObjective(int phase, ObjectiveStatus status)
+        {
+            replicatedObjective = phase == 0 ? ObjectiveData.ActivateReactor() : ObjectiveData.EvacuateAirlock();
+            replicatedObjective.Status = status;
+            onObjectiveChanged?.Raise(replicatedObjective);
+        }
+
+        /// <summary>
+        /// Called only by NetworkGameState's evacuation-countdown NetworkVariable callback, only on
+        /// non-Host peers, once per Host tick.
+        /// </summary>
+        public void ApplyReplicatedEvacuationSeconds(float seconds)
+        {
+            onEvacuationTimerTicked?.Raise(seconds);
         }
     }
 }
