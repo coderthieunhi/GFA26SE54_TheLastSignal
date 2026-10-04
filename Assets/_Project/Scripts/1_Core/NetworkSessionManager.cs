@@ -27,6 +27,15 @@ namespace TheLastSignal.Core
     /// own ready flag through <see cref="SubmitReadyStateServerRpc"/> (Rule 3: input goes up, state
     /// comes down). Roster membership itself is driven by NetworkManager's connect/disconnect
     /// callbacks, not by anything a client says about itself.
+    ///
+    /// Story 3.6: <see cref="HandleClientDisconnected"/> below is this project's entire disconnect
+    /// handler for the roster — NGO's OnClientDisconnectCallback fires identically whether a client
+    /// left voluntarily or timed out/lost connection, so no separate "clean" vs "dirty" path is
+    /// needed. Removing the row here is itself what every remaining client's LobbyUI reacts to via
+    /// NetworkList's own OnListChanged replication — no second player-tracking list exists anywhere
+    /// else in the project. The player's NetworkObject (the actual in-world body) is a separate
+    /// concern NGO handles on its own: Player.prefab has DontDestroyWithOwner = false, so the
+    /// NetworkObject is despawned on every machine automatically when its owner disconnects.
     /// </summary>
     public class NetworkSessionManager : NetworkBehaviour
     {

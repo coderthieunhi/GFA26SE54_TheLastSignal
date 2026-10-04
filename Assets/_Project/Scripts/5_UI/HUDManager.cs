@@ -115,6 +115,9 @@ namespace TheLastSignal.UI
                 case GameSessionState.GameOver:
                     sessionStatusText.text = "<b><color=#FF4444>GAME OVER</color></b>\n<size=24>Reactor Meltdown / Failed — Press [R] to Restart</size>";
                     break;
+                case GameSessionState.HostDisconnected:
+                    sessionStatusText.text = "<b><color=#FFAA00>HOST DISCONNECTED</color></b>\n<size=24>Session Ended — Return to the Lobby to Host or Join a New Game</size>";
+                    break;
                 default:
                     sessionStatusText.text = string.Empty;
                     break;

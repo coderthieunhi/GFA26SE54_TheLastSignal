@@ -282,6 +282,25 @@ namespace TheLastSignal.Core
             // Future epic hook: UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
 
+        /// <summary>
+        /// Story 3.6: called by LobbyUI on a Client when NGO reports this peer's own connection was
+        /// lost while it had an active roster entry. This project has no Host Migration
+        /// (ARCHITECTURE_RULES.md), so the Host disconnecting ends the session for everyone else.
+        /// Sets <see cref="currentState"/> directly and raises the same EventChannelSOs HUDManager
+        /// already listens to (NOT via SetState(), which would try to push to NetworkGameState with
+        /// Server write permission this client no longer has) so the HUD shows a clear "session
+        /// ended" message instead of freezing on a now-ownerless session, and does not throw.
+        /// </summary>
+        public void HandleHostDisconnected()
+        {
+            playerSpawner?.SetControlEnabled(false);
+
+            currentState = GameSessionState.HostDisconnected;
+            onGameSessionStateChanged?.Raise(currentState);
+            onObjectiveChanged?.Raise(default);
+            onEvacuationTimerTicked?.Raise(0f);
+        }
+
         private void ResetTriggerZones()
         {
             ExitZone[] exitZones = FindObjectsByType<ExitZone>(FindObjectsInactive.Include);

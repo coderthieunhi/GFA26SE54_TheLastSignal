@@ -211,6 +211,19 @@ namespace TheLastSignal.Entities.Player
         }
 
         /// <summary>
+        /// Story 3.6: NGO despawns/destroys this NetworkObject on every machine automatically when its
+        /// owner disconnects (Player.prefab has DontDestroyWithOwner = false), so there is no "ghost
+        /// player" to clean up here. This override exists only to mark the TODO below at the one place
+        /// a held item would actually need to be dropped.
+        /// </summary>
+        public override void OnNetworkDespawn()
+        {
+            // TODO: drop/clear this player's held item once the Inventory/Pin system exists. No such
+            // system exists yet (out of scope for Story 3.6), so there is nothing to drop right now.
+            base.OnNetworkDespawn();
+        }
+
+        /// <summary>
         /// Finds this slot's spawn point in the loaded scene. Supports both PlayerSpawnPoint and legacy SpawnPoint.
         /// </summary>
         private Vector2 ResolveNetworkSpawnPosition(int slot)

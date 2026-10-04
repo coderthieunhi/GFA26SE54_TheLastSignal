@@ -58,6 +58,14 @@ namespace TheLastSignal.UI
         private Coroutine copyFeedbackCoroutine;
         private Coroutine connectionTimeoutCoroutine;
 
+        /// <summary>Story 3.6: true once our own roster entry has ever appeared, i.e. we were genuinely
+        /// in a session rather than merely attempting (and failing) to join one.</summary>
+        private bool hasEverJoinedRoster;
+
+        /// <summary>Story 3.6: which role we last successfully started as, so a disconnect can tell
+        /// "I was a Client and the Host vanished" apart from "I was the Host myself".</summary>
+        private bool wasHost;
+
         private void Awake()
         {
             if (networkManagerExt == null)
@@ -192,6 +200,8 @@ namespace TheLastSignal.UI
                     return;
                 }
 
+                wasHost = true;
+
                 // The Host's own roster entry appears via NetworkSessionManager's
                 // OnClientConnectedCallback hookup, which fires for the Host's local connection too -
                 // no separate "add myself" call is needed here.
@@ -258,6 +268,8 @@ namespace TheLastSignal.UI
                     return;
                 }
 
+                wasHost = false;
+
                 // Deliberately still "Connecting": we only clear it once our own entry appears in the
                 // shared roster (HandlePlayersChanged) - that presence itself is "Connected."
             }
@@ -318,8 +330,38 @@ namespace TheLastSignal.UI
 
                 networkManagerExt?.Shutdown();
             }
+            else if (hasEverJoinedRoster && !wasHost)
+            {
+                // Story 3.6: we were a fully-connected Client with a real roster entry and just lost
+                // our connection mid-session. This project has no Host Migration
+                // (ARCHITECTURE_RULES.md), so the only thing that can cause this is the Host
+                // disconnecting (closed the window, crashed, lost network, etc.) — treat every such
+                // loss identically, whether it looked "clean" or not, per the story's requirement.
+                GameManager.Instance?.HandleHostDisconnected();
+                SetLocalStatus(LocalJoinStatus.Failed, "Host disconnected — session ended. You can host or join a new game.");
+                networkManagerExt?.Shutdown();
+            }
 
+            // Whatever branch above ran, our view of the roster is now stale/inaccessible - never try
+            // to read sessionManager.Players again here, just wipe the displayed rows directly so no
+            // "ghost" row lingers on screen after we ourselves have left.
+            ClearPlayerListDisplay();
+            hasEverJoinedRoster = false;
+            wasHost = false;
             SetControlsInteractable(true);
+        }
+
+        private void ClearPlayerListDisplay()
+        {
+            for (int i = 0; i < spawnedRows.Count; i++)
+            {
+                if (spawnedRows[i] != null)
+                {
+                    Destroy(spawnedRows[i]);
+                }
+            }
+
+            spawnedRows.Clear();
         }
 
         private IEnumerator ConnectionTimeoutRoutine()
@@ -349,6 +391,13 @@ namespace TheLastSignal.UI
         private void HandlePlayersChanged(NetworkListEvent<LobbyPlayerData> changeEvent)
         {
             RefreshPlayerList();
+
+            if (HasLocalEntry())
+            {
+                // Story 3.6: marks us as a genuine session participant so a later disconnect is
+                // correctly attributed to "the Host disconnected" rather than "our join failed".
+                hasEverJoinedRoster = true;
+            }
 
             if (localJoinStatus == LocalJoinStatus.Connecting && HasLocalEntry())
             {
