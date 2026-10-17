@@ -3671,6 +3671,7 @@ GameObject:
   - component: {fileID: 343415826}
   - component: {fileID: 343415828}
   - component: {fileID: 343415827}
+  - component: {fileID: 343415829}
   m_Layer: 0
   m_Name: LobbyPanel
   m_TagString: Untagged
@@ -3745,6 +3746,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 343415825}
   m_CullTransparentMesh: 1
+--- !u!114 &343415829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343415825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269f8fc56d330e44c93101eba2fcdc06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.DirectConnectUI
+  networkManagerExt: {fileID: 0}
 --- !u!1 &348389663
 GameObject:
   m_ObjectHideFlags: 0

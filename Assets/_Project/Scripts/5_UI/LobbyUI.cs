@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TheLastSignal.Core;
+using TheLastSignal.Core.Bootstrap;
 using Unity.Services.Relay;
 
 namespace TheLastSignal.UI
@@ -68,6 +69,14 @@ namespace TheLastSignal.UI
 
         private void Awake()
         {
+            // TLS-E03-S01: this entire Canvas is a client-only view (ARCHITECTURE_RULES.md Rule 2/4) —
+            // a Dedicated Server has no Host/Join buttons to click and must not run this UI at all.
+            if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             if (networkManagerExt == null)
             {
                 networkManagerExt = FindAnyObjectByType<NetworkManagerExt>();

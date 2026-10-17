@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using TheLastSignal.Core;
+using TheLastSignal.Core.Bootstrap;
 using TheLastSignal.Core.EventBus;
 using TheLastSignal.Systems.Objectives;
 
@@ -24,6 +25,14 @@ namespace TheLastSignal.UI
 
         private void OnEnable()
         {
+            // TLS-E03-S01: this entire Canvas is a client-only view (ARCHITECTURE_RULES.md Rule 2/4) —
+            // a Dedicated Server has no local player's HUD to draw and must not run this UI at all.
+            if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             if (onObjectiveChanged != null)
             {
                 onObjectiveChanged.OnEventRaised += HandleObjectiveChanged;

@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using TheLastSignal.Core.Backend;
+using TheLastSignal.Core.Bootstrap;
 using TheLastSignal.Core.EventBus;
 using TheLastSignal.Entities;
 using TheLastSignal.Systems;
@@ -45,6 +47,13 @@ namespace TheLastSignal.Core
         private SimpleObjectiveSystem objectiveSystem;
         private IGameSystem[] activeSystems = System.Array.Empty<IGameSystem>();
         private ServicesStatus servicesStatus = ServicesStatus.Uninitialized;
+
+        // TLS-E03-S02/S03: DedicatedServer-only state. Null in LegacyClientHost/Client modes.
+        private IBackendClient currentBackendClient;
+        private ServerConnectionApproval serverConnectionApproval;
+        private ServerHeartbeatLoop serverHeartbeatLoop;
+        private ServerMatchLifecycle serverMatchLifecycle;
+        private bool matchResultReported;
 
         /// <summary>
         /// Client-side mirror of the replicated objective, used only when objectiveSystem is null (a
@@ -105,6 +114,17 @@ namespace TheLastSignal.Core
 
         private void Start()
         {
+            // TLS-E03-S01: a Dedicated Server never touches Unity Services/Relay (Rule 6) and never
+            // waits on startSessionOnPlay/Keyboard — it binds Unity Transport directly and starts the
+            // match itself. LegacyClientHost and Client both fall through unchanged below; Client mode
+            // has no distinct behavior yet (DirectConnectUI arrives in TLS-E03-S02) so for now it behaves
+            // identically to today's LegacyClientHost Client role.
+            if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                StartDedicatedServer();
+                return;
+            }
+
             // Story 3.1: kicked off without awaiting so the Epic 1 single-player session start is not
             // delayed behind a network round-trip. Relay calls gate on IsSignedIn instead.
             _ = InitializeUnityServicesAsync();
@@ -113,6 +133,77 @@ namespace TheLastSignal.Core
             {
                 StartSession();
             }
+        }
+
+        /// <summary>
+        /// TLS-E03-S01: binds Unity Transport directly (no Relay) via NetworkManagerExt, then starts the
+        /// match with no button press. If either step fails, exits the process (Application.Quit is a
+        /// no-op in the Editor, so this is a deliberate no-op there — real behavior only applies to a
+        /// built Dedicated Server) rather than idling forever doing nothing an orchestrator can observe.
+        /// TLS-E03-S02 will replace the "start immediately" step with "start once the backend/stub has
+        /// approved the expected players" — until then NGO's default ConnectionApproval=false means any
+        /// connecting client is accepted and spawned, which is expected and temporary for this phase.
+        /// </summary>
+        private void StartDedicatedServer()
+        {
+            NetworkManagerExt networkManagerExt = FindAnyObjectByType<NetworkManagerExt>();
+            if (networkManagerExt == null || NetworkManager.Singleton == null)
+            {
+                Debug.LogError("[GameManager] DedicatedServer mode: no NetworkManagerExt/NetworkManager found in the scene. Exiting.");
+                Application.Quit(1);
+                return;
+            }
+
+            // TLS-E03-S02: wire join-token connection approval BEFORE the server starts listening —
+            // NetworkConfig.ConnectionApproval/ConnectionApprovalCallback must be set before StartServer()
+            // so no connection slips through unapproved. Empty BackendUrl selects the local stub (no
+            // backend dependency, matching the spike's goal); a real BackendUrl selects the HTTP client
+            // per docs/pivot/02_BACKEND_CONTRACT.md. ServerSecret is never logged (see ServerBootstrap).
+            currentBackendClient = string.IsNullOrEmpty(GameBootstrap.Config.BackendUrl)
+                ? new StubBackendClient(GameBootstrap.Config.TestJoinToken)
+                : new HttpBackendClient(GameBootstrap.Config.BackendUrl, GameBootstrap.Config.MatchId, GameBootstrap.Config.ServerSecret);
+
+            Debug.Log($"[GameManager] DedicatedServer using {currentBackendClient.GetType().Name} for join-token validation.");
+            serverConnectionApproval = new ServerConnectionApproval(NetworkManager.Singleton, currentBackendClient, GameBootstrap.Config.MaxPlayers);
+            serverConnectionApproval.Attach();
+
+            // TLS-E03-S03: heartbeat (backend unreachable must never crash/end the match — see
+            // ServerHeartbeatLoop) and the empty-server/match-timeout abort watchdog. Both are ticked
+            // from Update() below, DedicatedServer mode only.
+            serverHeartbeatLoop = new ServerHeartbeatLoop(currentBackendClient);
+            serverHeartbeatLoop.ShutdownRequested += HandleBackendShutdownRequested;
+
+            serverMatchLifecycle = new ServerMatchLifecycle(
+                NetworkManager.Singleton, GameBootstrap.Config.EmptyTimeoutSeconds, GameBootstrap.Config.MatchTimeoutSeconds);
+            serverMatchLifecycle.Aborted += HandleMatchAborted;
+
+            bool listening = networkManagerExt.StartServerDirect(GameBootstrap.Config.BindAddress, GameBootstrap.Config.Port);
+            if (!listening)
+            {
+                Debug.LogError($"[GameManager] DedicatedServer mode: failed to start listening on " +
+                                $"{GameBootstrap.Config.BindAddress}:{GameBootstrap.Config.Port}. Exiting.");
+                Application.Quit(1);
+                return;
+            }
+
+            Debug.Log($"[GameManager] DedicatedServer listening on {GameBootstrap.Config.BindAddress}:{GameBootstrap.Config.Port}. Starting match.");
+            ServerStartMatch();
+        }
+
+        /// <summary>
+        /// TLS-E03-S01: headless, keyboard-free entry point that starts a match. Equivalent to the Host
+        /// pressing [R] today (StartSession()/RestartSession()), but callable without any input device —
+        /// the server has no local player and very likely no keyboard at all (Rule 4).
+        /// </summary>
+        public void ServerStartMatch()
+        {
+            if (!IsHostAuthoritative)
+            {
+                Debug.LogWarning("[GameManager] ServerStartMatch ignored: not Host-authoritative.");
+                return;
+            }
+
+            StartSession();
         }
 
         /// <summary>
@@ -163,6 +254,14 @@ namespace TheLastSignal.Core
             if (!IsHostAuthoritative)
             {
                 return;
+            }
+
+            // TLS-E03-S03: heartbeat + empty-server/match-timeout watchdog, DedicatedServer mode only.
+            if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                int connectedCount = NetworkManager.Singleton != null ? NetworkManager.Singleton.ConnectedClientsIds.Count : 0;
+                serverHeartbeatLoop?.Tick(Time.deltaTime, connectedCount, currentState.ToString());
+                serverMatchLifecycle?.Tick(Time.deltaTime);
             }
 
             Keyboard keyboard = Keyboard.current;
@@ -397,6 +496,11 @@ namespace TheLastSignal.Core
             SetState(GameSessionState.Win);
             playerSpawner?.SetControlEnabled(false);
             SetState(GameSessionState.GameComplete);
+
+            if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                ReportResultAndShutdown(MatchOutcome.SurvivorVictory);
+            }
         }
 
         private void HandleLose()
@@ -404,6 +508,109 @@ namespace TheLastSignal.Core
             SetState(GameSessionState.Lose);
             playerSpawner?.SetControlEnabled(false);
             SetState(GameSessionState.GameOver);
+
+            // No Shade entity exists yet (no AI/human Shade implemented) — every current lose condition
+            // (hazard, reactor meltdown) is mapped onto ShadeVictory, the closest fit in the result
+            // contract's vocabulary, without inventing new gameplay (per the brief's scope limits).
+            if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                ReportResultAndShutdown(MatchOutcome.ShadeVictory);
+            }
+        }
+
+        /// <summary>TLS-E03-S03: the heartbeat loop's backend-requested-shutdown directive.</summary>
+        private void HandleBackendShutdownRequested()
+        {
+            Debug.Log("[GameManager] Backend requested shutdown via heartbeat directive.");
+            ReportResultAndShutdown(MatchOutcome.Aborted);
+        }
+
+        /// <summary>TLS-E03-S03: the empty-server-timeout / match-timeout watchdog firing.</summary>
+        private void HandleMatchAborted(ServerMatchLifecycle.AbortCause cause)
+        {
+            Debug.Log($"[GameManager] Match aborted: {cause}.");
+            ReportResultAndShutdown(MatchOutcome.Aborted);
+        }
+
+        /// <summary>
+        /// TLS-E03-S03: builds and sends the match result exactly once — guarded by
+        /// <see cref="matchResultReported"/> so a normal Win/Lose racing against the watchdog (or the
+        /// watchdog firing twice) can never send a second result — then shuts the process down cleanly.
+        /// Per the brief: "send exactly one result per match" and "shut the process down cleanly after
+        /// the result."
+        /// </summary>
+        private void ReportResultAndShutdown(MatchOutcome outcome)
+        {
+            if (matchResultReported)
+            {
+                return;
+            }
+
+            matchResultReported = true;
+            MatchResult result = new MatchResult
+            {
+                Outcome = outcome,
+                DurationSeconds = serverMatchLifecycle != null ? serverMatchLifecycle.MatchElapsedSeconds : 0f,
+                Players = BuildPlayerResults(outcome)
+            };
+
+            _ = PostResultThenQuitAsync(result);
+        }
+
+        /// <summary>
+        /// TLS-E03-S03 simplification: the current game has no per-player health/incapacitation system
+        /// yet (only one shared Win/Lose outcome for the whole session) — every currently-approved player
+        /// gets the same Incapacitated/FinalStatus derived from the overall outcome, not individually
+        /// tracked. Revisit once per-player state exists.
+        /// </summary>
+        private MatchPlayerResult[] BuildPlayerResults(MatchOutcome outcome)
+        {
+            if (serverConnectionApproval == null || serverConnectionApproval.ApprovedPlayers.Count == 0)
+            {
+                return System.Array.Empty<MatchPlayerResult>();
+            }
+
+            bool incapacitated = outcome != MatchOutcome.SurvivorVictory;
+            string finalStatus = outcome == MatchOutcome.SurvivorVictory ? "Evacuated" : "Incapacitated";
+
+            MatchPlayerResult[] players = new MatchPlayerResult[serverConnectionApproval.ApprovedPlayers.Count];
+            int i = 0;
+            foreach (ServerConnectionApproval.ApprovedPlayer player in serverConnectionApproval.ApprovedPlayers)
+            {
+                players[i++] = new MatchPlayerResult
+                {
+                    AccountId = player.AccountId,
+                    Role = player.Role,
+                    Incapacitated = incapacitated,
+                    FinalStatus = finalStatus
+                };
+            }
+
+            return players;
+        }
+
+        private async Task PostResultThenQuitAsync(MatchResult result)
+        {
+            bool reported = false;
+
+            if (currentBackendClient != null)
+            {
+                try
+                {
+                    reported = await currentBackendClient.PostResultAsync(result);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[GameManager] PostResultAsync threw ({ex.GetType().Name}: {ex.Message}) — result may be lost.");
+                }
+            }
+
+            Debug.Log($"[GameManager] Match result ({result.Outcome}) reporting {(reported ? "succeeded" : "did NOT succeed")}. Shutting down.");
+
+            // Application.Quit is a no-op in the Editor (by design, same as StartDedicatedServer's own
+            // Quit calls) — only a built Dedicated Server actually exits here.
+            int exitCode = result.Outcome == MatchOutcome.Aborted ? 2 : 0;
+            Application.Quit(exitCode);
         }
 
         /// <summary>

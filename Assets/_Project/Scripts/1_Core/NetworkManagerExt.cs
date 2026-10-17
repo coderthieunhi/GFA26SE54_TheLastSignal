@@ -100,10 +100,53 @@ namespace TheLastSignal.Core
             return networkManager != null && networkManager.StartHost();
         }
 
+        /// <summary>
+        /// TLS-E03-S01: starts this instance as a headless Dedicated Server, binding Unity Transport
+        /// directly to <paramref name="bindAddress"/>:<paramref name="port"/> — no Relay allocation, no
+        /// Unity Services dependency (ARCHITECTURE_RULES.md Rule 6/decision: direct IP:port only).
+        /// Uses UnityTransport.SetConnectionData's forceOverrideCommandLineArgs=true overload
+        /// deliberately: by default that method also re-parses its own "-port"/"-ip" command-line
+        /// arguments and would silently override whatever is passed here — forcing it off keeps
+        /// ServerBootstrap's parsed LaunchModeConfig as the single source of truth for these values.
+        /// </summary>
+        public bool StartServerDirect(string bindAddress, ushort port)
+        {
+            if (transport == null || networkManager == null)
+            {
+                Debug.LogError("[NetworkManagerExt] Cannot start dedicated server: transport or NetworkManager missing.");
+                return false;
+            }
+
+            transport.SetConnectionData(forceOverrideCommandLineArgs: true, ipv4Address: bindAddress, port: port, listenAddress: bindAddress);
+            return networkManager.StartServer();
+        }
+
         /// <summary>Starts this instance as a Client connecting to the Relay-allocated Host.</summary>
         public bool StartClient()
         {
             return networkManager != null && networkManager.StartClient();
+        }
+
+        /// <summary>
+        /// TLS-E03-S02: connects directly to a Dedicated Server by IP:port, presenting
+        /// <paramref name="joinTokenPayload"/> as the connection approval payload — no Relay, no join
+        /// code. NetworkConfig.ConnectionApproval must be true on the CLIENT too (not just the server):
+        /// NGO's own ConnectionRequestMessage only includes ConnectionData when the sending peer's own
+        /// NetworkConfig.ConnectionApproval is set, so this is set here rather than left to the caller.
+        /// </summary>
+        public bool ConnectDirect(string serverAddress, ushort port, byte[] joinTokenPayload)
+        {
+            if (transport == null || networkManager == null)
+            {
+                Debug.LogError("[NetworkManagerExt] Cannot connect: transport or NetworkManager missing.");
+                return false;
+            }
+
+            transport.SetConnectionData(forceOverrideCommandLineArgs: true, ipv4Address: serverAddress, port: port);
+            networkManager.NetworkConfig.ConnectionApproval = true;
+            networkManager.NetworkConfig.ConnectionData = joinTokenPayload ?? Array.Empty<byte>();
+
+            return networkManager.StartClient();
         }
 
         /// <summary>Shuts down the active Netcode session, whether Host or Client.</summary>

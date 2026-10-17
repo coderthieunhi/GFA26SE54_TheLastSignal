@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TheLastSignal.Core.Bootstrap;
 
 namespace TheLastSignal.Entities.Camera
 {
@@ -30,6 +31,15 @@ namespace TheLastSignal.Entities.Camera
 
         private void Awake()
         {
+            // TLS-E03-S01: no camera/render target exists on a headless Dedicated Server
+            // (ARCHITECTURE_RULES.md Rule 2/4). Disabling this GameObject also disables the Camera,
+            // AudioListener, and URP camera data components that live on the same object.
+            if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             cam = GetComponent<UnityEngine.Camera>();
             ComputeMapBounds();
         }
