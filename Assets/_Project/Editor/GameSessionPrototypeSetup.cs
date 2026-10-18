@@ -149,23 +149,9 @@ namespace TheLastSignal.EditorTools
             }
 
             GameObject hazardGo = GameObject.Find("Hazard_Zone");
-            if (hazardGo == null)
+            if (hazardGo != null)
             {
-                hazardGo = new GameObject("Hazard_Zone");
-                Undo.RegisterCreatedObjectUndo(hazardGo, "Create Hazard_Zone");
-            }
-
-            hazardGo.transform.position = new Vector3(-0.5f, -3f, 0f);
-            BoxCollider2D hazardBox = GetOrAddComponent<BoxCollider2D>(hazardGo);
-            hazardBox.isTrigger = true;
-            hazardBox.size = new Vector2(2f, 2f);
-            GetOrAddComponent<HazardZone>(hazardGo);
-
-            // Hazard_Zone is an invisible trigger volume - ensure no placeholder SpriteRenderer is displayed
-            SpriteRenderer hazardSr = hazardGo.GetComponent<SpriteRenderer>();
-            if (hazardSr != null)
-            {
-                Object.DestroyImmediate(hazardSr);
+                Undo.DestroyObjectImmediate(hazardGo);
             }
 
             EnsureDoors();

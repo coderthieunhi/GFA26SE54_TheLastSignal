@@ -273,12 +273,6 @@ namespace TheLastSignal.Core
                     return;
                 }
 
-                if (IsPlaying && keyboard.kKey.wasPressedThisFrame)
-                {
-                    Debug.Log("[GameManager] Debug fail key [K] pressed.");
-                    NotifyPlayerDied("Debug Key [K]");
-                    return;
-                }
             }
 
             for (int i = 0; i < activeSystems.Length; i++)
@@ -357,6 +351,17 @@ namespace TheLastSignal.Core
 
             Debug.Log("[GameManager] Reactor Core activated! Initiating emergency evacuation countdown.");
             SetState(GameSessionState.Evacuation);
+        }
+
+        public void NotifyAllPlayersDowned()
+        {
+            if (!IsPlaying)
+            {
+                return;
+            }
+
+            Debug.Log("[GameManager] All survivors are downed! The Shade claims victory.");
+            NotifyPlayerDied("All Survivors Downed");
         }
 
         public void NotifyPlayerDied(string reason = "Hazard")

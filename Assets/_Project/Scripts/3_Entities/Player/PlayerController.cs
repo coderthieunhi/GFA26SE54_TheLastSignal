@@ -62,6 +62,7 @@ namespace TheLastSignal.Entities.Player
         private int slotIndex;
         private Vector3 lastRemotePosition;
         private bool isRemoteMoving;
+        private PlayerHealth playerHealth;
 
         // Network synchronization variables (Owner writable, replicated to all peers)
         private readonly NetworkVariable<Vector2> netFacingDirection = new NetworkVariable<Vector2>(
@@ -112,6 +113,17 @@ namespace TheLastSignal.Entities.Player
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
+            playerHealth = GetComponent<PlayerHealth>();
+            if (playerHealth == null)
+            {
+                playerHealth = gameObject.AddComponent<PlayerHealth>();
+            }
+
+            if (GetComponent<PlayerOverheadUI>() == null)
+            {
+                gameObject.AddComponent<PlayerOverheadUI>();
+            }
+
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             if (capsuleCollider != null)
             {
@@ -128,6 +140,7 @@ namespace TheLastSignal.Entities.Player
             if (playerLayer >= 0)
             {
                 gameObject.layer = playerLayer;
+                interactableLayer |= (1 << playerLayer);
             }
 
             if (collisionLayers.value == 0)
@@ -310,6 +323,11 @@ namespace TheLastSignal.Entities.Player
             transform.position = new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
             lastRemotePosition = transform.position;
 
+            if (playerHealth != null)
+            {
+                playerHealth.ResetHealth();
+            }
+
             BindLocalCamera();
         }
 
@@ -396,6 +414,11 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         public void TriggerInteraction()
         {
+            if (playerHealth != null && playerHealth.IsDowned)
+            {
+                return;
+            }
+
             if (CurrentInteractable == null)
             {
                 return;
@@ -501,7 +524,13 @@ namespace TheLastSignal.Entities.Player
 
         private void ApplyMovement(Vector2 direction)
         {
-            Vector2 targetVelocity = direction * moveSpeed;
+            float speed = moveSpeed;
+            if (playerHealth != null && playerHealth.IsDowned)
+            {
+                speed *= playerHealth.DownedCrawlSpeedMultiplier;
+            }
+
+            Vector2 targetVelocity = direction * speed;
             float rate = direction.sqrMagnitude > 0.0001f ? acceleration : deceleration;
             currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, rate * Time.fixedDeltaTime);
 
@@ -593,6 +622,11 @@ namespace TheLastSignal.Entities.Player
 
             foreach (Collider2D hit in hits)
             {
+                if (hit == capsuleCollider || hit.gameObject == gameObject)
+                {
+                    continue;
+                }
+
                 bool isInteractable = hit.TryGetComponent(out IInteractable _) || hit.GetComponentInParent<IInteractable>() != null;
                 bool isDoor = hit.TryGetComponent(out DoorController _) || hit.GetComponentInParent<DoorController>() != null;
 

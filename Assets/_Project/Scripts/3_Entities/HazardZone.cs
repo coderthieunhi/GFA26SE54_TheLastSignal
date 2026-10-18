@@ -12,18 +12,18 @@ namespace TheLastSignal.Entities
     [RequireComponent(typeof(Collider2D))]
     public class HazardZone : MonoBehaviour
     {
+#pragma warning disable CS0414
         [SerializeField] private string hazardName = "Hazard Zone";
+#pragma warning restore CS0414
         private bool isTriggered = false;
 
         public bool IsTriggered => isTriggered;
 
-        private void Reset()
+        private void Awake()
         {
-            Collider2D col = GetComponent<Collider2D>();
-            if (col != null)
-            {
-                col.isTrigger = true;
-            }
+            // Hazard Zone is superseded by PlayerHealth down/revive system.
+            // Self-deactivate so it never affects gameplay or displays visuals.
+            gameObject.SetActive(false);
         }
 
         public void ResetTrigger()
@@ -33,40 +33,12 @@ namespace TheLastSignal.Entities
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (isTriggered)
-            {
-                return;
-            }
-
-            if (other.GetComponent<PlayerController>() == null)
-            {
-                return;
-            }
-
-            if (GameManager.Instance != null && GameManager.Instance.IsPlaying)
-            {
-                isTriggered = true;
-                Debug.Log($"[HazardZone] Player entered {hazardName}; notifying game failure.");
-                GameManager.Instance.NotifyPlayerDied(hazardName);
-            }
+            // Deprecated: Hazard trigger disabled.
         }
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.4f);
-            Collider2D col = GetComponent<Collider2D>();
-            if (col != null)
-            {
-                Gizmos.matrix = col.transform.localToWorldMatrix;
-                if (col is BoxCollider2D box)
-                {
-                    Gizmos.DrawCube(box.offset, box.size);
-                }
-                else
-                {
-                    Gizmos.DrawCube(Vector3.zero, Vector3.one);
-                }
-            }
+            // Gizmo hidden to clean up scene view
         }
     }
 }
