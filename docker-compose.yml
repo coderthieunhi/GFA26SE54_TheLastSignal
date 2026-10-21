@@ -1,12 +1,3 @@
-# THE LAST SIGNAL - local Dedicated Server run, stub backend (TLS-E03-S04)
-#
-# No Spring Boot container here on purpose: omitting "-backendUrl" selects StubBackendClient
-# automatically (see GameManager.StartDedicatedServer / docs/pivot/02_BACKEND_CONTRACT.md).
-# This is for local smoke-testing only, matching the 5-day spike's "zero backend dependency" goal.
-#
-# Usage: docker compose up --build
-#        (Builds/DedicatedServer/Linux/ must already exist — build it first via the Unity Editor menu
-#        TheLastSignal/Build/Dedicated Server (Linux) — this file does not invoke Unity.)
 services:
   game-server:
     build:
@@ -24,5 +15,6 @@ services:
       - "local-dev"
       - "-testToken"
       - "dev-token"
-      # No "-backendUrl": StubBackendClient is used, accepting only the exact token above.
-    restart: "no"
+      - "-emptyTimeoutSeconds"
+      - "3600"
+    restart: "unless-stopped"
