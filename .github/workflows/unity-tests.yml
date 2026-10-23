@@ -1,0 +1,91 @@
+name: Unity Tests
+
+# TLS-E11: runs EditMode and PlayMode tests via GameCI on every PR and push to develop/main. Needs a
+# Unity license activated via UNITY_LICENSE/UNITY_EMAIL/UNITY_PASSWORD secrets - skips (not fails) when
+# they're absent, so this workflow doesn't block every PR before you've set those up. See
+# docs/server/RUNBOOK_SERVER.md "Unity license for CI" for how to obtain/activate one.
+#
+# PlayMode note: this project currently has ZERO EditMode/PlayMode tests (no Tests asmdef exists yet),
+# so "stable headless" can't be verified empirically against a real test run here. GameCI's own image
+# supports headless PlayMode on Linux generally (an embedded virtual framebuffer), so it's included in
+# the matrix - but if the first real PlayMode test ever added turns out to hang/flake in CI, drop
+# "PlayMode" from the matrix below rather than fighting it; EditMode alone still satisfies the brief's
+# minimum ("EditMode (and PlayMode only if it is stable headless)").
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  check-license:
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - id: check
+        run: |
+          if [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::UNITY_LICENSE secret not set - skipping Unity tests. See docs/server/RUNBOOK_SERVER.md 'Unity license for CI'."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: check-license
+    if: needs.check-license.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode: [EditMode, PlayMode]
+    steps:
+      - name: Checkout (with LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # TLS-E11: GameCI's documented caching pattern - the Library folder is huge to regenerate from
+      # scratch every run (full asset reimport), so cache it keyed on exactly what would invalidate it.
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ matrix.testMode }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-${{ matrix.testMode }}-
+            Library-
+
+      # TLS-E11: reads the exact version from ProjectSettings/ProjectVersion.txt rather than a
+      # hardcoded duplicate here, so this workflow never silently drifts from the project's actual
+      # Unity version (currently 6000.6.0f1).
+      - name: Read Unity version from ProjectVersion.txt
+        id: unity-version
+        run: |
+          VERSION=$(grep 'm_EditorVersion:' ProjectSettings/ProjectVersion.txt | awk '{print $2}')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v4
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: ${{ steps.unity-version.outputs.version }}
+          testMode: ${{ matrix.testMode }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
+          retention-days: 14

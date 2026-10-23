@@ -304,11 +304,17 @@ namespace TheLastSignal.UI
 
             Debug.Log($"[RoomLobbyUI] Kết nối vào Dedicated Game Server: {host}:{port}");
 
+            if (string.IsNullOrEmpty(room.yourJoinToken))
+            {
+                Debug.LogError("[RoomLobbyUI] yourJoinToken is missing - cannot connect without a real join token.");
+                ShowErrorMessage("Không nhận được mã kết nối (join token) từ máy chủ. Vui lòng thử lại.");
+                SetBusy(false);
+                return;
+            }
+
             if (networkManagerExt != null)
             {
-                // S? d?ng dev-token cho Dedicated Server local stub
-                string token = "dev-token";
-                byte[] tokenBytes = Encoding.UTF8.GetBytes(token);
+                byte[] tokenBytes = Encoding.UTF8.GetBytes(room.yourJoinToken);
 
                 bool started = networkManagerExt.ConnectDirect(host, port, tokenBytes);
                 if (!started)
@@ -548,6 +554,17 @@ namespace TheLastSignal.UI
                 GameObject canvasGo = new GameObject("RoomLobbyCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
                 canvas = canvasGo.GetComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+                // Without this, CanvasScaler defaults to ConstantPixelSize (scale factor 1), so every
+                // fixed-pixel size below (panel 480x530, fonts in point sizes, etc.) renders tiny and
+                // blurry on anything above ~1080p/HiDPI - ScaleWithScreenSize keeps it crisp and at a
+                // consistent apparent size across resolutions instead.
+                CanvasScaler scaler = canvasGo.GetComponent<CanvasScaler>();
+                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+                scaler.matchWidthOrHeight = 0.5f;
+
                 transform.SetParent(canvasGo.transform, false);
             }
 

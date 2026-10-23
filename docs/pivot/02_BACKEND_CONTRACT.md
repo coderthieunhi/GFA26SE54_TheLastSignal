@@ -175,4 +175,61 @@ A single interface in `1_Core/Backend/`, matching exactly the three endpoints ab
 
 ---
 
+---
+
+## 5. Addendum (TLS-E03-S05): room start → dedicated server launch
+
+This section was out of scope when the rest of this document was written (§0 above explicitly excludes
+`FR-ROOM-*`) but room/matchmaking orchestration now exists on the backend, so it's documented here
+rather than in a separate file, since it's the thing that produces the join token §3 is about.
+
+**`POST /api/rooms/{roomCode}/start`** — called once by the room host. Request: `{"playerId": "<hostPlayerId>"}`.
+Response (on success):
+```json
+{
+  "success": true,
+  "data": {
+    "sessionId": "a1b2c3-...",
+    "serverHost": "127.0.0.1",
+    "serverPort": 7777,
+    "yourJoinToken": "<caller's own opaque token, format per §2>"
+  }
+}
+```
+- `yourJoinToken` is **only ever the calling player's own token** — never any other player's. This is
+  the same opaque join-token credential §2/§3.1 describe; present it to the dedicated server exactly as
+  `HttpBackendClient` already does, never parse it.
+- `serverHost`/`serverPort` is where to dial the real dedicated server (NGO connection), once it's
+  actually listening - see the orchestration lifecycle note below for why "the response came back" does
+  not always mean "the server is ready yet."
+- Validation failures (not host, not enough players, not all ready, double-start) return the existing
+  flat error shape with a `4xx` status, not a new shape.
+
+**`GET /api/rooms/{roomCode}?playerId=<playerId>`** — the existing room-polling endpoint, **now requires
+a `playerId` query param to receive a token at all**. The returned room/player list itself never
+contains any join token, for any player, under any circumstance (checked at the JSON-serialization
+level, not just by convention) — `yourJoinToken` is a separate top-level field, populated only for the
+specific `playerId` the caller passed, and `null` if omitted or unrecognized.
+
+**Unity-side changes this requires (none of this is implemented in `feat-connectserver` today):**
+- `RoomLobbyUI.HandleMatchStarting` currently hardcodes `string token = "dev-token"`. It must instead
+  read `yourJoinToken` from the room-start response (or a subsequent poll) and use that as the real join
+  token presented to the dedicated server. Hardcoding `"dev-token"` only "works" today because
+  `StubBackendClient`'s token check has a separate bug (accepts any token when the server's own
+  `expectedToken` happens to equal its own default `"dev-token"`) — against a real server this path must
+  not be relied on.
+- `RoomManager`'s room-polling call must now pass `?playerId=<thisPlayer'sId>` to ever receive a
+  non-null `yourJoinToken` — passing nothing (today's behavior) always gets `null` back, by design.
+- `RoomManager`'s connect step should dial the room-start response's `serverHost`/`serverPort` rather
+  than any fixed/placeholder value.
+
+**Orchestration lifecycle (for context, not a Unity-side contract change):** a match moves
+`CREATED → STARTING → RUNNING → ENDED|ABORTED|FAILED` server-side. The backend returns the start
+response as soon as the container is launched (`STARTING`), not once it's confirmed running — the
+dedicated server's first heartbeat (§3.2) is what flips it to `RUNNING`. A client dialing immediately
+on receiving `serverHost`/`serverPort` may need to retry its connection briefly while the container
+finishes booting; this draft does not propose a specific client-side retry policy.
+
+---
+
 *End of Deliverable C. All three deliverables (`00_AUDIT.md`, `01_PIVOT_PLAN.md`, `02_BACKEND_CONTRACT.md`) are now in `docs/pivot/`.*

@@ -61,11 +61,17 @@ namespace TheLastSignal.Core.Backend
         }
 
         /// <summary>
-        /// Lấy chi tiết thông tin phòng: GET /api/rooms/{roomCode}
+        /// Lấy chi tiết thông tin phòng: GET /api/rooms/{roomCode}?playerId=...
+        /// TLS-E03-S05: playerId is required to get this caller's own yourJoinToken back once the match
+        /// has started - the backend never returns it without a recognized playerId (see RoomDto.yourJoinToken).
         /// </summary>
-        public async Task<RoomDto> GetRoomAsync(string roomCode)
+        public async Task<RoomDto> GetRoomAsync(string roomCode, string playerId = null)
         {
             string url = $"{baseUrl}/api/rooms/{Uri.EscapeDataString(roomCode.Trim().ToUpperInvariant())}";
+            if (!string.IsNullOrEmpty(playerId))
+            {
+                url += $"?playerId={Uri.EscapeDataString(playerId)}";
+            }
             RoomApiResponse response = await SendRequestAsync<RoomApiResponse>(url, "GET", null);
             return response.data;
         }

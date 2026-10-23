@@ -160,7 +160,7 @@ namespace TheLastSignal.Core
             // backend dependency, matching the spike's goal); a real BackendUrl selects the HTTP client
             // per docs/pivot/02_BACKEND_CONTRACT.md. ServerSecret is never logged (see ServerBootstrap).
             currentBackendClient = string.IsNullOrEmpty(GameBootstrap.Config.BackendUrl)
-                ? new StubBackendClient(GameBootstrap.Config.TestJoinToken)
+                ? new StubBackendClient(GameBootstrap.Config.TestJoinToken, GameBootstrap.Config.StubAcceptAnyToken)
                 : new HttpBackendClient(GameBootstrap.Config.BackendUrl, GameBootstrap.Config.MatchId, GameBootstrap.Config.ServerSecret);
 
             Debug.Log($"[GameManager] DedicatedServer using {currentBackendClient.GetType().Name} for join-token validation.");

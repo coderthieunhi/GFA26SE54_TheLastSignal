@@ -1,0 +1,109 @@
+name: Build and publish dedicated server image
+
+# TLS-E11: manual-trigger (workflow_dispatch) or tag-triggered (push a "v*" tag) - never runs on every
+# ordinary push, since a Unity build + Docker image push is comparatively expensive and not something
+# you want firing on every commit. Builds the Linux Dedicated Server with GameCI's unity-builder, using
+# the EXISTING ServerBuildScript.cs (a custom buildMethod, not unity-builder's own default player-build
+# path) so this produces exactly the same output the Unity Editor menu item does. Needs the same
+# UNITY_LICENSE/UNITY_EMAIL/UNITY_PASSWORD secrets as unity-tests.yml - skips (not fails) when absent.
+#
+# Image name: ghcr.io/coderthieunhi/thelastsignal-server - see docs/server/RUNBOOK_SERVER.md "CI image
+# publishing" for exactly what to set the backend's MATCH_LAUNCHER_IMAGE to.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  check-license:
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - id: check
+        run: |
+          if [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::UNITY_LICENSE secret not set - skipping the server build/image push. See docs/server/RUNBOOK_SERVER.md 'Unity license for CI'."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-and-push:
+    needs: check-license
+    if: needs.check-license.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (with LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-build-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-build-
+            Library-
+
+      - name: Read Unity version from ProjectVersion.txt
+        id: unity-version
+        run: |
+          VERSION=$(grep 'm_EditorVersion:' ProjectSettings/ProjectVersion.txt | awk '{print $2}')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # TLS-E11: buildMethod points at the project's OWN existing build script (ServerBuildScript.cs),
+      # not unity-builder's default player-build pipeline - this produces the exact same
+      # Builds/DedicatedServer/Linux/TheLastSignalServer output the Editor menu item does, with the
+      # same Server build subtarget, so the Dockerfile below needs no changes to find it.
+      - name: Build Linux Dedicated Server
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: ${{ steps.unity-version.outputs.version }}
+          targetPlatform: StandaloneLinux64
+          buildMethod: TheLastSignal.Editor.ServerBuildScript.BuildLinuxDedicatedServer
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # TLS-E11: owner is lowercased explicitly - this repo's actual GitHub owner/name may have
+      # uppercase letters, which github.repository_owner preserves as-is, but Docker/GHCR image
+      # references reject anything but lowercase.
+      - name: Compute image tags
+        id: meta
+        run: |
+          OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')
+          IMAGE="ghcr.io/$OWNER/thelastsignal-server"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            PRIMARY_TAG="${{ github.ref_name }}"
+          else
+            PRIMARY_TAG="${{ github.sha }}"
+          fi
+          {
+            echo "image=$IMAGE"
+            echo "primary_tag=$IMAGE:$PRIMARY_TAG"
+            echo "latest_tag=$IMAGE:latest"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build and push server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.primary_tag }}
+            ${{ steps.meta.outputs.latest_tag }}

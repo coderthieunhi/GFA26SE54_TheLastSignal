@@ -40,6 +40,14 @@ namespace TheLastSignal.Core.Bootstrap
         public string TestJoinToken = "dev-token";
 
         /// <summary>
+        /// TLS-E03-S05: off by default - StubBackendClient fails closed (only TestJoinToken's exact
+        /// value is approved) unless this is explicitly turned on via "-stubAcceptAny true". Only ever
+        /// needed for a demo that has no way to hand out the real per-player token; logs a loud warning
+        /// whenever it's on (see StubBackendClient). Never read by HttpBackendClient.
+        /// </summary>
+        public bool StubAcceptAnyToken = false;
+
+        /// <summary>
         /// TLS-E03-S03: abort the match if zero clients have been connected for this many consecutive
         /// seconds. Configurable via "-emptyTimeoutSeconds". Default 60s.
         /// </summary>

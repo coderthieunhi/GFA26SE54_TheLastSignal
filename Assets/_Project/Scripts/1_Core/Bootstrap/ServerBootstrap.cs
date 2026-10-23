@@ -24,6 +24,9 @@ namespace TheLastSignal.Core.Bootstrap
         /// LaunchModeConfig.TestJoinToken for why this exists (StubBackendClient only).</summary>
         private const string TestTokenArg = "-testToken";
 
+        /// <summary>TLS-E03-S05 — see LaunchModeConfig.StubAcceptAnyToken. Off unless explicitly passed.</summary>
+        private const string StubAcceptAnyArg = "-stubAcceptAny";
+
         /// <summary>TLS-E03-S03 additions — see LaunchModeConfig.EmptyTimeoutSeconds/MatchTimeoutSeconds.</summary>
         private const string EmptyTimeoutArg = "-emptyTimeoutSeconds";
         private const string MatchTimeoutArg = "-matchTimeoutSeconds";
@@ -86,6 +89,11 @@ namespace TheLastSignal.Core.Bootstrap
 
                     case TestTokenArg:
                         config.TestJoinToken = string.IsNullOrEmpty(value) ? config.TestJoinToken : value;
+                        i++;
+                        break;
+
+                    case StubAcceptAnyArg:
+                        config.StubAcceptAnyToken = ParseBool(value, config.StubAcceptAnyToken, StubAcceptAnyArg);
                         i++;
                         break;
 
@@ -160,6 +168,17 @@ namespace TheLastSignal.Core.Bootstrap
             return fallback;
         }
 
+        private static bool ParseBool(string value, bool fallback, string argNameForLog)
+        {
+            if (bool.TryParse(value, out bool parsed))
+            {
+                return parsed;
+            }
+
+            Debug.LogWarning($"[ServerBootstrap] '{argNameForLog}' value \"{value}\" is not a valid bool; defaulting to {fallback}.");
+            return fallback;
+        }
+
         private static int ParseMaxPlayers(string value, int fallback)
         {
             if (!int.TryParse(value, out int parsed))
@@ -191,6 +210,7 @@ namespace TheLastSignal.Core.Bootstrap
                    $"BackendUrl=\"{config.BackendUrl}\", ServerSecret={maskedSecret}, " +
                    $"MaxPlayers={config.MaxPlayers}, BindAddress=\"{config.BindAddress}\", " +
                    $"TestJoinToken=\"{config.TestJoinToken}\" (StubBackendClient only), " +
+                   $"StubAcceptAnyToken={config.StubAcceptAnyToken}, " +
                    $"EmptyTimeoutSeconds={config.EmptyTimeoutSeconds}, MatchTimeoutSeconds={config.MatchTimeoutSeconds}";
         }
     }

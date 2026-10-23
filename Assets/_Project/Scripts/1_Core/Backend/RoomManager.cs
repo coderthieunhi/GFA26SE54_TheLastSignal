@@ -284,6 +284,7 @@ namespace TheLastSignal.Core.Backend
                     CurrentRoom.serverHost = session.serverHost;
                     CurrentRoom.serverPort = session.serverPort;
                     CurrentRoom.sessionId = session.sessionId;
+                    CurrentRoom.yourJoinToken = session.yourJoinToken;
                 }
 
                 StopPolling();
@@ -331,7 +332,7 @@ namespace TheLastSignal.Core.Backend
 
                 if (!IsInRoom || isStartingMatch) break;
 
-                Task<RoomDto> task = apiClient.GetRoomAsync(CurrentRoomCode);
+                Task<RoomDto> task = apiClient.GetRoomAsync(CurrentRoomCode, LocalPlayerId);
                 while (!task.IsCompleted)
                 {
                     yield return null;

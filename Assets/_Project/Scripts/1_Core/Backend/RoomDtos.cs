@@ -65,6 +65,11 @@ namespace TheLastSignal.Core.Backend
         public string sessionId;
         public string relayJoinCode;
 
+        /// <summary>TLS-E03-S05: this caller's OWN join token, populated only when GetRoomAsync passed
+        /// a playerId - never any other player's token (the shared players[] list never carries one at
+        /// all, per the backend contract). Null/empty if this request didn't identify a player.</summary>
+        public string yourJoinToken;
+
         public bool IsInMatch => string.Equals(status, "IN_MATCH", StringComparison.OrdinalIgnoreCase);
         public bool IsWaiting => string.Equals(status, "WAITING", StringComparison.OrdinalIgnoreCase);
         public bool IsStarting => string.Equals(status, "STARTING", StringComparison.OrdinalIgnoreCase);
@@ -98,5 +103,9 @@ namespace TheLastSignal.Core.Backend
         public string serverHost;
         public int serverPort;
         public string startedAt;
+
+        /// <summary>TLS-E03-S05: the host's own join token - returned once, directly from the /start
+        /// call, since the host doesn't need a follow-up poll to learn it.</summary>
+        public string yourJoinToken;
     }
 }

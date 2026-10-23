@@ -78,6 +78,15 @@ namespace TheLastSignal.Editor
             {
                 Debug.LogError($"[ServerBuildScript] Build {report.summary.result} with {report.summary.totalErrors} error(s). See the Console for details.");
             }
+
+            // TLS-E11: without this, a CI run invoking this method via -executeMethod would exit 0
+            // (Unity batch mode's default on -quit) even on a genuinely failed build - nothing else in
+            // this method was signaling failure to the OS process at all. Harmless for the existing
+            // interactive Editor-menu usage (EditorApplication.Exit is a no-op there).
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(report.summary.result == BuildResult.Succeeded ? 0 : 1);
+            }
         }
     }
 }
