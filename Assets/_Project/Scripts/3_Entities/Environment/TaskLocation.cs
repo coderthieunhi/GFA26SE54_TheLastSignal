@@ -58,14 +58,20 @@ namespace TheLastSignal.Entities.Environment
 
         public void Interact(PlayerController player)
         {
-            Interact(player != null ? player.gameObject : null);
+            Debug.Log($"<color=yellow>[TaskLocation]</color> Player interacted with {stationDisplayName} ({stationId} - {stationType})!");
+
+            // TLS-E05-S02: every Survivor can repair any machine; repair speed is role-scaled in
+            // StationRepair itself. Epic 8's Task Ticket System can still replace this with a real
+            // minigame later — this only adds a progress counter to the existing placeholder.
+            if (TryGetComponent(out StationRepair repair))
+            {
+                repair.RequestRepair(player);
+            }
         }
 
         public void Interact(GameObject player)
         {
-            Debug.Log($"<color=yellow>[TaskLocation]</color> Player interacted with {stationDisplayName} ({stationId} - {stationType})!");
-            // Future Epic 8 integration hook:
-            // TaskTicketSystem.Instance.TryStartTask(stationId, player);
+            Interact(player != null ? player.GetComponent<PlayerController>() : null);
         }
 
         public void SetCompleted(bool completed)

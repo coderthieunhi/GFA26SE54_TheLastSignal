@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,8 +10,11 @@ using TheLastSignal.Core.Backend;
 using TheLastSignal.Core.Bootstrap;
 using TheLastSignal.Core.EventBus;
 using TheLastSignal.Entities;
+using TheLastSignal.Entities.Player;
 using TheLastSignal.Systems;
+using TheLastSignal.Systems.Lighting;
 using TheLastSignal.Systems.Objectives;
+using TheLastSignal.Systems.Sanity;
 
 namespace TheLastSignal.Core
 {
@@ -33,6 +37,11 @@ namespace TheLastSignal.Core
         [SerializeField] private GameSessionStateEventChannelSO onGameSessionStateChanged;
         [SerializeField] private ObjectiveDataEventChannelSO onObjectiveChanged;
         [SerializeField] private FloatEventChannelSO onEvacuationTimerTicked;
+        [SerializeField] private SanityThresholdEventChannelSO onSanityThresholdCrossed;
+
+        [Header("Epic 5: Lighting & Sanity")]
+        [SerializeField] private LightingConfigSO lightingConfig;
+        [SerializeField] private SanityConfigSO sanityConfig;
 
         /// <summary>Lifecycle of the Unity Gaming Services bring-up (Story 3.1).</summary>
         public enum ServicesStatus
@@ -45,6 +54,8 @@ namespace TheLastSignal.Core
 
         private GameSessionState currentState = GameSessionState.GameStart;
         private SimpleObjectiveSystem objectiveSystem;
+        private LightingController lightingController;
+        private SanitySystem sanitySystem;
         private IGameSystem[] activeSystems = System.Array.Empty<IGameSystem>();
         private ServicesStatus servicesStatus = ServicesStatus.Uninitialized;
 
@@ -435,7 +446,15 @@ namespace TheLastSignal.Core
                 HandleTimeout,
                 evacuationDuration);
             objectiveSystem.Initialize();
-            activeSystems = new IGameSystem[] { objectiveSystem };
+
+            // Epic 5: lightingController must Tick (and so refresh its source cache) before sanitySystem
+            // reads IsLit each step — array order below is load-bearing, see LightingController.Tick.
+            lightingController = new LightingController(lightingConfig);
+            sanitySystem = new SanitySystem(sanityConfig, lightingController, PublishSanityThresholdCrossed);
+            lightingController.Initialize();
+            sanitySystem.Initialize();
+
+            activeSystems = new IGameSystem[] { objectiveSystem, lightingController, sanitySystem };
 
             PrepareMap();
         }
@@ -461,6 +480,48 @@ namespace TheLastSignal.Core
             }
 
             playerSpawner.SpawnPlayers();
+
+            // Epic 5: hand each spawned player's purely-visual sanity view the threshold config it needs
+            // to classify its own replicated value — PlayerSanityView never owns balance data itself.
+            IReadOnlyList<PlayerController> spawned = playerSpawner.SpawnedPlayers;
+            for (int i = 0; i < spawned.Count; i++)
+            {
+                if (spawned[i] != null && spawned[i].TryGetComponent(out PlayerSanityView sanityView))
+                {
+                    sanityView.SetConfig(sanityConfig);
+                }
+            }
+
+            AssignRoles(spawned);
+        }
+
+        /// <summary>
+        /// TLS-E05-S02: server-side, random, unique role assignment for the three Survivor slots
+        /// (0-2) — slot 3 is always the Shade and never receives one (design brief). Host-authoritative
+        /// only (guarded by the IsHostAuthoritative check in SpawnPlayer's own call chain); clients
+        /// never choose or influence this — they only ever read the replicated PlayerRole.Role.
+        /// </summary>
+        private void AssignRoles(IReadOnlyList<PlayerController> spawnedPlayers)
+        {
+            List<PlayerController> survivors = new List<PlayerController>();
+            for (int i = 0; i < spawnedPlayers.Count; i++)
+            {
+                if (spawnedPlayers[i] != null && spawnedPlayers[i].SlotIndex != 3)
+                {
+                    survivors.Add(spawnedPlayers[i]);
+                }
+            }
+
+            survivors.Sort((a, b) => a.SlotIndex.CompareTo(b.SlotIndex));
+
+            SurvivorRole[] roles = RoleAssignmentUtility.AssignRandomRoles(survivors.Count, new System.Random());
+            for (int i = 0; i < survivors.Count && i < roles.Length; i++)
+            {
+                if (survivors[i].TryGetComponent(out PlayerRole playerRole))
+                {
+                    playerRole.ServerAssignRole(roles[i]);
+                }
+            }
         }
 
         private void InitializeObjective()
@@ -479,6 +540,14 @@ namespace TheLastSignal.Core
 
             Debug.Log("[GameManager] Evacuation countdown reached 0! Reactor meltdown.");
             NotifyPlayerDied("Reactor Meltdown");
+        }
+
+        /// <summary>SanitySystem's threshold-crossed callback. Raises the session-wide EventChannelSO —
+        /// this is "any player's sanity crossed a band," unlike per-player sanity itself (which replicates
+        /// via each player's own PlayerSanityState, not an EventChannelSO — see that class's docs).</summary>
+        private void PublishSanityThresholdCrossed(ulong playerId, SanityLevel level)
+        {
+            onSanityThresholdCrossed?.Raise(new SanityThresholdEvent(playerId, level));
         }
 
         private void PublishTimer(float seconds)

@@ -328,6 +328,11 @@ namespace TheLastSignal.Entities.Player
                 playerHealth.ResetHealth();
             }
 
+            if (TryGetComponent(out PlayerSanityState sanityState))
+            {
+                sanityState.ResetSanity();
+            }
+
             BindLocalCamera();
         }
 

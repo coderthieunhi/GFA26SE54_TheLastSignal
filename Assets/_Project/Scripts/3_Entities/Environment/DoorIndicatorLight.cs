@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using TheLastSignal.Core.Bootstrap;
+using TheLastSignal.Systems.Lighting;
 
 namespace TheLastSignal.Entities.Environment
 {
@@ -29,6 +31,15 @@ namespace TheLastSignal.Entities.Environment
         {
             if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
             if (statusLight == null) statusLight = GetComponent<Light2D>();
+
+            // Epic 5: fixes the gap docs/pivot/01_PIVOT_PLAN.md §1.5 explicitly flagged as deferred
+            // ("candidate for a guard in the post-spike hardening story") — a Dedicated Server never
+            // renders (ARCHITECTURE_RULES.md Rule 2/4), so this cosmetic light/sprite is dead weight on it.
+            if (Application.isPlaying && GameBootstrap.CurrentMode == LaunchMode.DedicatedServer)
+            {
+                Light2DStripper.StripVisuals(gameObject);
+                enabled = false;
+            }
         }
 
         private void OnEnable()

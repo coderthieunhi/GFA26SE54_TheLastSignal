@@ -19,6 +19,13 @@ GameObject:
   - component: {fileID: 4001000000000000002}
   - component: {fileID: 9013473217080417872}
   - component: {fileID: 8334522281401988008}
+  - component: {fileID: 238533244729616912}
+  - component: {fileID: 7956263537137226551}
+  - component: {fileID: 1605362781217715779}
+  - component: {fileID: 5644365860256560892}
+  - component: {fileID: 6330754422184692122}
+  - component: {fileID: 447992180507936879}
+  - component: {fileID: 3485385701247933916}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -38,7 +45,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8192140490197605188}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5881264923978604063
@@ -313,6 +321,42 @@ MonoBehaviour:
   enableIdleBreathing: 0
   breatheFrequency: 2.5
   breatheAmplitude: 0.025
+--- !u!114 &4001000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049879264709774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8e9f2a3c4d51607b8c9d0e1f2a3b4c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerHealth
+  ShowTopMostFoldoutHeaderGroup: 1
+  maxHealth: 100
+  reviveHealthPercent: 0.35
+  downedCrawlSpeedMultiplier: 0.35
+  enableBleedout: 0
+  bleedoutDuration: 60
+  enableDebugKeys: 1
+--- !u!114 &4001000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049879264709774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9f0a3b4d5e62718c9d0e1f2a3b4c5d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerOverheadUI
+  offset: {x: 0, y: 0.95, z: 0}
+  healthyColor: {r: 0.18, g: 0.8, b: 0.44, a: 1}
+  injuredColor: {r: 0.95, g: 0.61, b: 0.07, a: 1}
+  criticalColor: {r: 0.91, g: 0.3, b: 0.24, a: 1}
+  downedColor: {r: 1, g: 0.15, b: 0.15, a: 1}
 --- !u!114 &9013473217080417872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,7 +428,7 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &4001000000000000001
+--- !u!114 &238533244729616912
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -393,16 +437,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049879264709774039}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8e9f2a3c4d51607b8c9d0e1f2a3b4c5, type: 3}
+  m_Script: {fileID: 11500000, guid: da134402d2fb1d3498c084223fa1512f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerHealth
-  maxHealth: 100
-  reviveHealthPercent: 0.35
-  downedCrawlSpeedMultiplier: 0.35
-  enableBleedout: 0
-  bleedoutDuration: 60
-  enableDebugKeys: 1
---- !u!114 &4001000000000000002
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerFlashlight
+  ShowTopMostFoldoutHeaderGroup: 1
+  config: {fileID: 11400000, guid: 2fd6daacca0e1e6488f837423548f454, type: 2}
+  coneSource: {fileID: 1917315777913583551}
+--- !u!114 &7956263537137226551
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -411,12 +452,216 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049879264709774039}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9f0a3b4d5e62718c9d0e1f2a3b4c5d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 317f23e0dfe9dbe4ab98cd41c2571e02, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerOverheadUI
-  offset: {x: 0, y: 0.95, z: 0}
-  healthyColor: {r: 0.18, g: 0.8, b: 0.44, a: 1}
-  injuredColor: {r: 0.95, g: 0.61, b: 0.07, a: 1}
-  criticalColor: {r: 0.91, g: 0.3, b: 0.24, a: 1}
-  downedColor: {r: 1, g: 0.15, b: 0.15, a: 1}
-
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerSanityState
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &1605362781217715779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049879264709774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 082bb18c66469034391b52db906ac976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerSanityView
+  vignetteImage: {fileID: 0}
+  vignetteColor: {r: 0.4, g: 0, b: 0.05, a: 1}
+  maxVignetteAlpha: 0.6
+  hallucinationFlickerSpeed: 7
+  hallucinationShakeAmount: 0.08
+--- !u!114 &5644365860256560892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049879264709774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219b2f392f3aec0459613472ad848815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerRole
+  ShowTopMostFoldoutHeaderGroup: 1
+  roleConfig: {fileID: 11400000, guid: 0e4c9176c7cad4f4784d84fd8607dbc7, type: 2}
+--- !u!114 &6330754422184692122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049879264709774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5329929d29d25a48bc279a740ef9bb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerStamina
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &447992180507936879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049879264709774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1f263a280438d4b812bc987438b1be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.ShadeStunState
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &3485385701247933916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049879264709774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d160ed38336ca5f488689ce2c34ff799, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.LogisticsStunAbility
+  ShowTopMostFoldoutHeaderGroup: 1
+  lightingConfig: {fileID: 11400000, guid: cde358d9fd56c2a4b9bf4acdf60a8fec, type: 2}
+--- !u!1 &1898134321693049805
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8192140490197605188}
+  - component: {fileID: 1917315777913583551}
+  - component: {fileID: 6569586743157974223}
+  - component: {fileID: 3797653618241247102}
+  m_Layer: 0
+  m_Name: FlashlightCone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8192140490197605188
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898134321693049805}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1229739229434830360}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1917315777913583551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898134321693049805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cb989f111c02c842b0608184a4ceec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Systems.Lighting.GameplayLightSource
+  type: 1
+  zoneBounds: {fileID: 0}
+  circleRadius: 3
+  coneRange: 6
+  coneAngleDegrees: 40
+  enabledByDefault: 1
+  ownerId: 
+--- !u!114 &6569586743157974223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898134321693049805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.Light2D
+  m_ComponentVersion: 4
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_Light2DProvider:
+    rid: -2
+  m_SelectionSources:
+    rid: 7339941636788191359
+  m_FalloffIntensity: 0.5
+  m_Color: {r: 1, g: 0.95, b: 0.8, a: 1}
+  m_Intensity: 1.2
+  m_LightVolumeIntensity: 1
+  m_LightVolumeEnabled: 0
+  m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowsEnabled: 1
+  m_ShadowIntensity: 0.75
+  m_ShadowSoftness: 0.3
+  m_ShadowSoftnessFalloffIntensity: 0.5
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_LocalBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_PointLightInnerAngle: 40
+  m_PointLightOuterAngle: 40
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 6
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 7339941636788191359
+      type: {class: Light2DProviderSources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
+      data:
+        m_SelectedHashCode: 3
+        m_SelectedSource:
+          rid: -2
+        m_Provider2DCache:
+          rid: -2
+--- !u!114 &3797653618241247102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898134321693049805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a40e02d068831074ba4e0cf73ae4105c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerFlashlightView
+  flashlight: {fileID: 238533244729616912}
