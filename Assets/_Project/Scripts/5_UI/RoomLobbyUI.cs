@@ -66,6 +66,19 @@ namespace TheLastSignal.UI
         {
             if (GameBootstrap.CurrentMode == LaunchMode.DedicatedServer) return;
 
+#if UNITY_EDITOR
+            // ARCHITECTURE_RULES.md Rule 7 (preserve legacy mode): lets a solo Play session skip the
+            // backend-requiring RoomLobbyUI entirely and fall through to the legacy LobbyPanel +
+            // GameManager.startSessionOnPlay, exactly like before RoomLobbyUI existed. See
+            // "TheLastSignal/Launch Mode/Skip Online Lobby On Next Play".
+            if (UnityEditor.SessionState.GetBool(EditorSkipLobbyKey, false))
+            {
+                Debug.Log("[RoomLobbyUI] Editor override active: skipping auto-spawn for this Play session " +
+                          "(TheLastSignal/Launch Mode/Skip Online Lobby On Next Play).");
+                return;
+            }
+#endif
+
             RoomLobbyUI existing = FindAnyObjectByType<RoomLobbyUI>(FindObjectsInactive.Include);
             if (existing != null) return;
 
@@ -167,6 +180,27 @@ namespace TheLastSignal.UI
         }
 
         // ---------------------------------------------------------------- Hành động người chơi
+
+        /// <summary>
+        /// When GameManager.startSessionOnPlay is on (the legacy default - ARCHITECTURE_RULES.md Rule 7),
+        /// GameManager.Start() (DefaultExecutionOrder -100, runs before this component's own Start)
+        /// already calls StartSession() locally whenever no NGO session is listening, so a playable
+        /// single-player session is usually already running underneath this full-screen canvas the
+        /// moment Play begins. This button also calls StartSession() itself if nothing is playing yet
+        /// (GameManager.IsPlaying false) so solo play works even if that Inspector flag is off, with
+        /// zero backend/room-code/network involvement either way.
+        /// </summary>
+        private void OnPlaySoloClicked()
+        {
+            if (GameManager.Instance != null && !GameManager.Instance.IsPlaying)
+            {
+                Debug.Log("[RoomLobbyUI] Chơi một mình (Offline): chưa có session nào chạy, tự khởi động StartSession().");
+                GameManager.Instance.StartSession();
+            }
+
+            Debug.Log("[RoomLobbyUI] Chơi một mình (Offline): ẩn Lobby để lộ ra session local.");
+            gameObject.SetActive(false);
+        }
 
         private async void OnCreateRoomClicked()
         {
@@ -593,6 +627,11 @@ namespace TheLastSignal.UI
             CreateLabel(menuPanel.transform, "THE LAST SIGNAL", 0, new Color(0.3f, 0.8f, 1f), 24, FontStyles.Bold, TextAlignmentOptions.Center);
             CreateLabel(menuPanel.transform, "Phòng Chờ Trận Đấu", 0, Color.gray, 14, FontStyles.Normal, TextAlignmentOptions.Center);
 
+            Button soloButton = CreateStyledButton(menuPanel.transform, "▶ CHƠI MỘT MÌNH (OFFLINE)", new Color(0.5f, 0.32f, 0.78f), 0, 44f, 16f);
+            soloButton.onClick.AddListener(OnPlaySoloClicked);
+
+            CreateLabel(menuPanel.transform, "─── HOẶC CHƠI ONLINE ───", 0, new Color(0.6f, 0.6f, 0.6f), 12, FontStyles.Normal, TextAlignmentOptions.Center);
+
             CreateLabel(menuPanel.transform, "Tên người chơi:", 0, Color.white, 14);
             nameInputField = CreateInputField(menuPanel.transform, "Nhập tên của bạn...", 24);
 
@@ -864,5 +903,26 @@ namespace TheLastSignal.UI
 
             return btn;
         }
+
+#if UNITY_EDITOR
+        private const string EditorSkipLobbyKey = "TheLastSignal.RoomLobbyUI.SkipOnlineLobby";
+
+        [UnityEditor.MenuItem("TheLastSignal/Launch Mode/Skip Online Lobby On Next Play")]
+        private static void EditorSkipOnlineLobbyNextPlay()
+        {
+            UnityEditor.SessionState.SetBool(EditorSkipLobbyKey, true);
+            Debug.Log("[RoomLobbyUI] Will skip auto-spawning the online lobby on the next Play session in " +
+                      "this Editor session, falling back to the legacy LobbyPanel + GameManager.startSessionOnPlay " +
+                      "for quick solo testing. Use 'Restore Online Lobby' to go back, or just restart the Editor " +
+                      "(this clears automatically).");
+        }
+
+        [UnityEditor.MenuItem("TheLastSignal/Launch Mode/Restore Online Lobby")]
+        private static void EditorRestoreOnlineLobby()
+        {
+            UnityEditor.SessionState.SetBool(EditorSkipLobbyKey, false);
+            Debug.Log("[RoomLobbyUI] Online lobby restored; next Play session shows RoomLobbyUI as normal.");
+        }
+#endif
     }
 }
