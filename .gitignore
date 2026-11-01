@@ -59,3 +59,23 @@ ehthumbs.db
 .local/
 AGENTS.md
 build_cache/
+
+# Local scratch & generation scripts
+/*.py
+/*.log
+/*.txt
+/*.jpg
+/*.png
+/*.swift
+/*.cs
+/*.json
+*.bak*
+/scratch/
+/backup_autopsy_pass/
+/Captures/
+/Docs/
+/tools/
+/Packages/com.coplaydev.unity-mcp/
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+

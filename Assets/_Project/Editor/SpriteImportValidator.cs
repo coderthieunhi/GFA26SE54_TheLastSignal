@@ -28,12 +28,23 @@ namespace TheLastSignal.EditorTools
                 || System.Environment.CommandLine.IndexOf("--virtual-project-clone", System.StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
+        private static bool HasSlices(TextureImporter importer)
+        {
+            if (importer == null) return false;
+            var factory = new SpriteDataProviderFactories();
+            factory.Init();
+            var dataProvider = factory.GetSpriteEditorDataProviderFromObject(importer);
+            if (dataProvider == null) return false;
+            dataProvider.InitSpriteEditorDataProvider();
+            var rects = dataProvider.GetSpriteRects();
+            return rects != null && rects.Length >= 8;
+        }
+
         private static bool AreSpritesConfigured()
         {
             string path = "Assets/_Project/Sprites/Characters/Engineer_Idle_8Dir.png";
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
-            if (importer == null) return false;
-            return importer.spritesheet != null && importer.spritesheet.Length >= 8;
+            return HasSlices(importer);
         }
 
         [MenuItem("Tools/Characters/Setup Engineer 8Dir Sprites", false, 10)]
@@ -77,7 +88,7 @@ namespace TheLastSignal.EditorTools
         {
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null) return;
-            if (importer.spritesheet != null && importer.spritesheet.Length >= 8 && importer.spriteImportMode == SpriteImportMode.Multiple)
+            if (HasSlices(importer) && importer.spriteImportMode == SpriteImportMode.Multiple)
             {
                 return;
             }
@@ -107,7 +118,7 @@ namespace TheLastSignal.EditorTools
         {
             TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null) return;
-            if (importer.spritesheet != null && importer.spritesheet.Length >= 8 && importer.spriteImportMode == SpriteImportMode.Multiple)
+            if (HasSlices(importer) && importer.spriteImportMode == SpriteImportMode.Multiple)
             {
                 return;
             }
@@ -185,9 +196,10 @@ namespace TheLastSignal.EditorTools
                 }
             }
 
-            Shader unlitShader = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default")
+            Shader litShader = Shader.Find("Universal Render Pipeline/2D/Sprite-Lit-Default")
+                              ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default")
                               ?? Shader.Find("Sprites/Default");
-            Material unlitMaterial = unlitShader != null ? new Material(unlitShader) : null;
+            Material litMaterial = litShader != null ? new Material(litShader) : null;
 
             // Update Player Prefab
             string prefabPath = "Assets/_Project/Prefabs/Player.prefab";
@@ -201,7 +213,7 @@ namespace TheLastSignal.EditorTools
                     {
                         if (southSprite != null) sr.sprite = southSprite;
                         sr.color = Color.white;
-                        if (unlitMaterial != null) sr.sharedMaterial = unlitMaterial;
+                        if (litMaterial != null) sr.sharedMaterial = litMaterial;
                     }
 
                     var anim = prefab.GetComponent<TheLastSignal.Entities.Player.PlayerAnimator>();
@@ -247,7 +259,7 @@ namespace TheLastSignal.EditorTools
                 {
                     if (southSprite != null) sr.sprite = southSprite;
                     sr.color = Color.white;
-                    if (unlitMaterial != null) sr.sharedMaterial = unlitMaterial;
+                    if (litMaterial != null) sr.sharedMaterial = litMaterial;
                     EditorUtility.SetDirty(sr);
                 }
 

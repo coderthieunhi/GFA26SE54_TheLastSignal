@@ -1,0 +1,564 @@
+=== TECH SPEC INSPECTION LOG ===
+--- 1. SCENE & GRIDS ---
+Active Scene: SampleScene (Path: Assets/Scenes/SampleScene.unity)
+Total Grids found: 2
+Grid GameObject: CrewQuarters
+  Path in hierarchy: CrewQuarters
+  World Position: (-6.000, 37.000, 0.000)
+  Local Position: (-6.000, 37.000, 0.000)
+  Rotation (Euler): (0.000, 0.000, 0.000)
+  Scale: (1.000, 1.000, 1.000)
+  Cell Size: (1.000, 1.000, 0.000)
+  Cell Gap: (0.000, 0.000, 0.000)
+  Cell Layout: Rectangle
+  Cell Swizzle: XYZ
+  Tilemaps under CrewQuarters (2):
+    Tilemap: Floor (Path: CrewQuarters/Floor)
+      Local Pos: (0.000, 0.000, 0.000), Rot: (0.000, 0.000, 0.000), Scale: (1.000, 1.000, 1.000)
+      Sorting Layer: Floor, Order: 0
+      Tilemap Orientation: XY
+      Tile Anchor: (0.500, 0.500, 0.000)
+      Cell Bounds: Position: (0, 0, 0), Size: (11, 11, 1)
+      Tilemap Collider 2D: None
+      Composite Collider 2D: None
+      Rigidbody 2D: None
+      Layer: Default (0)
+      Total Active Tiles: 102
+    Tilemap: Walls (Path: CrewQuarters/Walls)
+      Local Pos: (0.000, 0.000, 0.000), Rot: (0.000, 0.000, 0.000), Scale: (1.000, 1.000, 1.000)
+      Sorting Layer: Obstacles, Order: 0
+      Tilemap Orientation: XY
+      Tile Anchor: (0.500, 0.500, 0.000)
+      Cell Bounds: Position: (0, 0, 0), Size: (12, 12, 1)
+      Tilemap Collider 2D: Present (usedByComposite=False)
+      Composite Collider 2D: None
+      Rigidbody 2D: None
+      Layer: Obstacle (9)
+      Total Active Tiles: 42
+Grid GameObject: Facility_Grid
+  Path in hierarchy: Facility_Grid
+  World Position: (0.000, 0.000, 0.000)
+  Local Position: (0.000, 0.000, 0.000)
+  Rotation (Euler): (0.000, 0.000, 0.000)
+  Scale: (1.000, 1.000, 1.000)
+  Cell Size: (1.000, 1.000, 0.000)
+  Cell Gap: (0.000, 0.000, 0.000)
+  Cell Layout: Rectangle
+  Cell Swizzle: XYZ
+  Tilemaps under Facility_Grid (2):
+    Tilemap: Floor_Tilemap (Path: Facility_Grid/Floor_Tilemap)
+      Local Pos: (0.000, 0.000, 0.000), Rot: (0.000, 0.000, 0.000), Scale: (1.000, 1.000, 1.000)
+      Sorting Layer: Floor, Order: 0
+      Tilemap Orientation: XY
+      Tile Anchor: (0.500, 0.500, 0.000)
+      Cell Bounds: Position: (-25, -69, 0), Size: (48, 117, 1)
+      Tilemap Collider 2D: None
+      Composite Collider 2D: None
+      Rigidbody 2D: None
+      Layer: Default (0)
+      Total Active Tiles: 1581
+    Tilemap: Wall_Tilemap (Path: Facility_Grid/Wall_Tilemap)
+      Local Pos: (0.000, 0.000, 0.000), Rot: (0.000, 0.000, 0.000), Scale: (1.000, 1.000, 1.000)
+      Sorting Layer: Obstacles, Order: 0
+      Tilemap Orientation: XY
+      Tile Anchor: (0.500, 0.500, 0.000)
+      Cell Bounds: Position: (-26, -70, 0), Size: (50, 119, 1)
+      Tilemap Collider 2D: Present (usedByComposite=True)
+      Composite Collider 2D: Present (geometryType=Polygons)
+      Rigidbody 2D: Present (bodyType=Static)
+      Layer: Obstacle (9)
+      Total Active Tiles: 864
+
+--- 2. CREW QUARTERS BOUNDS & TILES ---
+Found 'CrewQuarters' root GameObject!
+  Position: (-6.000, 37.000, 0.000)
+  Floor Tilemap Cell Bounds: Position: (0, 0, 0), Size: (11, 11, 1)
+  Floor Tile Count: 102
+  Floor Min/Max Local: X=[1..10], Y=[0..10]
+  Wall Tilemap Cell Bounds: Position: (0, 0, 0), Size: (12, 12, 1)
+  Wall Tile Count: 42
+  Wall Min/Max Local: X=[0..11], Y=[0..11]
+Facility_Grid tile inspection in [-6..5, 37..48]:
+  Facility_Grid Floor tiles in CrewQuarters range: 0
+  Facility_Grid Wall tiles in CrewQuarters range: 0
+
+--- 3. CREW DOOR ---
+Door GameObject: Door_CrewQuarters
+  Hierarchy Path: Doors/Door_CrewQuarters
+  World Position: (0.000, 37.500, 0.000)
+  Local Position: (0.000, 37.500, 0.000)
+  Scale: (1.000, 1.000, 1.000)
+  Sprite: 06_Door_CrewQuarters_0
+  Sorting Layer: Obstacles, Order: 5
+  Collider Size: (2.000, 0.500), Offset: (0.000, 0.000), isTrigger: False
+  Physics Layer: Interactable (10)
+
+--- 4. EXISTING FURNITURE & PROPS ---
+Object: 01_Prop_CommunalTable
+  Parent: Furniture
+  World Pos: (-0.500, 42.500, 0.000)
+  Local Pos: (5.500, 5.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 01_Prop_CommunalTable_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(1.800, 1.200), offset=(0.000, 0.000), isTrigger=False
+Object: 02_Prop_Chair
+  Parent: Furniture
+  World Pos: (-1.200, 43.300, 0.000)
+  Local Pos: (4.800, 6.300, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 02_Prop_Chair_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.500, 0.500), offset=(0.000, 0.000), isTrigger=False
+Object: 02_Prop_Chair
+  Parent: Furniture
+  World Pos: (0.200, 43.300, 0.000)
+  Local Pos: (6.200, 6.300, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 02_Prop_Chair_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.500, 0.500), offset=(0.000, 0.000), isTrigger=False
+Object: 02_Prop_Chair
+  Parent: Furniture
+  World Pos: (-1.200, 41.700, 0.000)
+  Local Pos: (4.800, 4.700, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 02_Prop_Chair_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.500, 0.500), offset=(0.000, 0.000), isTrigger=False
+Object: 02_Prop_Chair
+  Parent: Furniture
+  World Pos: (0.200, 41.700, 0.000)
+  Local Pos: (6.200, 4.700, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 02_Prop_Chair_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.500, 0.500), offset=(0.000, 0.000), isTrigger=False
+Object: 05_Prop_Workstation
+  Parent: Furniture
+  World Pos: (-4.200, 47.400, 0.000)
+  Local Pos: (1.800, 10.400, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 05_Prop_Workstation_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(1.000, 0.700), offset=(0.000, -0.100), isTrigger=False
+Object: 07_Prop_VendingMachine
+  Parent: Furniture
+  World Pos: (-2.700, 47.300, 0.000)
+  Local Pos: (3.300, 10.300, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 07_Prop_VendingMachine_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.850, 0.800), offset=(0.000, -0.200), isTrigger=False
+Object: 08_Prop_KitchenStation
+  Parent: Furniture
+  World Pos: (-1.000, 47.300, 0.000)
+  Local Pos: (5.000, 10.300, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 08_Prop_KitchenStation_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(1.400, 0.800), offset=(0.000, -0.200), isTrigger=False
+Object: 03_Prop_Lockers
+  Parent: Furniture
+  World Pos: (0.800, 47.300, 0.000)
+  Local Pos: (6.800, 10.300, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 03_Prop_Lockers_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(1.150, 0.800), offset=(0.000, -0.200), isTrigger=False
+Object: 06_Prop_StorageShelf
+  Parent: Furniture
+  World Pos: (2.400, 47.400, 0.000)
+  Local Pos: (8.400, 10.400, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 06_Prop_StorageShelf_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.900, 0.800), offset=(0.000, -0.200), isTrigger=False
+Object: 04_Prop_Sofa
+  Parent: Furniture
+  World Pos: (4.000, 42.200, 0.000)
+  Local Pos: (10.000, 5.200, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 04_Prop_Sofa_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(1.600, 0.700), offset=(0.000, 0.000), isTrigger=False
+Object: 05_Prop_Workstation
+  Parent: Furniture
+  World Pos: (-4.500, 42.500, 0.000)
+  Local Pos: (1.500, 5.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 05_Prop_Workstation_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(1.000, 0.700), offset=(0.000, 0.000), isTrigger=False
+Object: 09_Prop_CargoCrate
+  Parent: Furniture
+  World Pos: (-4.500, 40.200, 0.000)
+  Local Pos: (1.500, 3.200, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 09_Prop_CargoCrate_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.800, 0.800), offset=(0.000, 0.000), isTrigger=False
+Object: 09_Prop_CargoCrate
+  Parent: Furniture
+  World Pos: (-4.500, 39.000, 0.000)
+  Local Pos: (1.500, 2.000, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 09_Prop_CargoCrate_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.800, 0.800), offset=(0.000, 0.000), isTrigger=False
+Object: 09_Prop_CargoCrate
+  Parent: Furniture
+  World Pos: (3.500, 39.000, 0.000)
+  Local Pos: (9.500, 2.000, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Obstacle (9)
+  Sprite: 09_Prop_CargoCrate_0
+  Sorting Layer: Obstacles, Order: 2
+  BoxCollider2D: size=(0.800, 0.800), offset=(0.000, 0.000), isTrigger=False
+Object: 10_Prop_BulletinBoard
+  Parent: Decoration
+  World Pos: (-4.200, 48.000, 0.000)
+  Local Pos: (1.800, 11.000, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 10_Prop_BulletinBoard_0
+  Sorting Layer: Obstacles, Order: 3
+  Collider: None
+Object: 13_Prop_VentilationFan
+  Parent: Decoration
+  World Pos: (-2.700, 48.000, 0.000)
+  Local Pos: (3.300, 11.000, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 13_Prop_VentilationFan_0
+  Sorting Layer: Obstacles, Order: 3
+  Collider: None
+Object: 11_Prop_PottedPlant
+  Parent: Decoration
+  World Pos: (3.700, 47.400, 0.000)
+  Local Pos: (9.700, 10.400, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 11_Prop_PottedPlant_0
+  Sorting Layer: Obstacles, Order: 2
+  Collider: None
+Object: 11_Prop_PottedPlant
+  Parent: Decoration
+  World Pos: (4.200, 43.600, 0.000)
+  Local Pos: (10.200, 6.600, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 11_Prop_PottedPlant_0
+  Sorting Layer: Obstacles, Order: 2
+  Collider: None
+Object: 11_Prop_PottedPlant
+  Parent: Decoration
+  World Pos: (-3.500, 38.500, 0.000)
+  Local Pos: (2.500, 1.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 11_Prop_PottedPlant_0
+  Sorting Layer: Obstacles, Order: 2
+  Collider: None
+Object: 11_Prop_PottedPlant
+  Parent: Decoration
+  World Pos: (-5.000, 44.500, 0.000)
+  Local Pos: (1.000, 7.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 11_Prop_PottedPlant_0
+  Sorting Layer: Obstacles, Order: 2
+  Collider: None
+Object: 14_Prop_PersonalClutter
+  Parent: Decoration
+  World Pos: (2.900, 41.300, 0.000)
+  Local Pos: (8.900, 4.300, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 14_Prop_PersonalClutter_0
+  Sorting Layer: Obstacles, Order: 2
+  Collider: None
+Object: 14_Prop_PersonalClutter
+  Parent: Decoration
+  World Pos: (-4.500, 41.700, 0.000)
+  Local Pos: (1.500, 4.700, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 14_Prop_PersonalClutter_0
+  Sorting Layer: Obstacles, Order: 2
+  Collider: None
+Object: 12_Prop_WallLight
+  Parent: Decoration
+  World Pos: (-1.000, 48.000, 0.000)
+  Local Pos: (5.000, 11.000, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 12_Prop_WallLight_0
+  Sorting Layer: Obstacles, Order: 3
+  Collider: None
+Object: 12_Prop_WallLight
+  Parent: Decoration
+  World Pos: (-5.500, 44.500, 0.000)
+  Local Pos: (0.500, 7.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 12_Prop_WallLight_0
+  Sorting Layer: Obstacles, Order: 3
+  Collider: None
+Object: 12_Prop_WallLight
+  Parent: Decoration
+  World Pos: (4.500, 44.500, 0.000)
+  Local Pos: (10.500, 7.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 12_Prop_WallLight_0
+  Sorting Layer: Obstacles, Order: 3
+  Collider: None
+Object: 12_Prop_WallLight
+  Parent: Decoration
+  World Pos: (-3.000, 37.500, 0.000)
+  Local Pos: (3.000, 0.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 12_Prop_WallLight_0
+  Sorting Layer: Obstacles, Order: 3
+  Collider: None
+Object: 12_Prop_WallLight
+  Parent: Decoration
+  World Pos: (2.000, 37.500, 0.000)
+  Local Pos: (8.000, 0.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Sprite: 12_Prop_WallLight_0
+  Sorting Layer: Obstacles, Order: 3
+  Collider: None
+Object: Light_CommunalTable
+  Parent: Decoration
+  World Pos: (-0.500, 42.500, 0.000)
+  Local Pos: (5.500, 5.500, 0.000)
+  Local Rot: (0.000, 0.000, 0.000)
+  Local Scale: (1.000, 1.000, 1.000)
+  Layer: Default (0)
+  Collider: None
+
+--- 5. SPRITE IMPORT SETTINGS ---
+Asset: 01_Floor_MainPlates.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/01_Floor_MainPlates.png
+  Texture Width x Height: 64 x 64
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:0.00, y:0.00, width:64.00, height:64.00)
+  Sprite Bounds: (1.000, 1.000, 0.200)
+Asset: 03_Wall_Horizontal.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/03_Wall_Horizontal.png
+  Texture Width x Height: 64 x 64
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:0.00, y:0.00, width:64.00, height:64.00)
+  Sprite Bounds: (1.000, 1.000, 0.200)
+Asset: 06_Door_CrewQuarters.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/06_Door_CrewQuarters.png
+  Texture Width x Height: 96 x 64
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:0.00, y:0.00, width:96.00, height:64.00)
+  Sprite Bounds: (1.500, 1.000, 0.200)
+Asset: 01_Prop_CommunalTable.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/01_Prop_CommunalTable.png
+  Texture Width x Height: 128 x 96
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:1.00, y:2.00, width:126.00, height:92.00)
+  Sprite Bounds: (1.969, 1.438, 0.200)
+Asset: 02_Prop_Chair.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/02_Prop_Chair.png
+  Texture Width x Height: 64 x 64
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:12.00, y:1.00, width:39.00, height:62.00)
+  Sprite Bounds: (0.609, 0.969, 0.200)
+Asset: 03_Prop_Lockers.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/03_Prop_Lockers.png
+  Texture Width x Height: 96 x 96
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:11.00, y:1.00, width:74.00, height:94.00)
+  Sprite Bounds: (1.156, 1.469, 0.200)
+Asset: 04_Prop_Sofa.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/04_Prop_Sofa.png
+  Texture Width x Height: 128 x 64
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:11.00, y:1.00, width:106.00, height:62.00)
+  Sprite Bounds: (1.656, 0.969, 0.200)
+Asset: 05_Prop_Workstation.png
+  Asset Path: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/05_Prop_Workstation.png
+  Texture Width x Height: 96 x 64
+  Pixels Per Unit: 64
+  Filter Mode: Point
+  Texture Compression: Uncompressed
+  Max Texture Size: 2048
+  Wrap Mode: Clamp
+  Sprite Mode: Multiple
+  Sprite Mesh Type: Tight
+  Sprite Extrude: 1
+  Sprite Pivot: (0.500, 0.500)
+  Alpha Is Transparency: True
+  Mipmap Enabled: False
+  Sprite Rect: (x:15.00, y:1.00, width:65.00, height:62.00)
+  Sprite Bounds: (1.016, 0.969, 0.200)
+
+--- 6. PROJECT LAYERS ---
+Sorting Layers in Project:
+  Layer: 'Default', id: 0, value: 0
+  Layer: 'Floor', id: 1845129310, value: 1
+  Layer: 'Obstacles', id: -1753339104, value: 2
+  Layer: 'Characters', id: -1093019173, value: 3
+Physics Layers in Project:
+  Layer 0: 'Default'
+  Layer 1: 'TransparentFX'
+  Layer 2: 'Ignore Raycast'
+  Layer 4: 'Water'
+  Layer 5: 'UI'
+  Layer 8: 'Player'
+  Layer 9: 'Obstacle'
+  Layer 10: 'Interactable'
+
+--- 7. ASSET AUDIT (Requested by User) ---
+  [Main Floor Plate]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/01_Floor_MainPlates.png
+  [Large Floor Panel]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/02_Floor_LargePanel.png
+  [Oil Floor Panel]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/02_Floor_LargePanel_Oil.png
+  [Wall Horizontal]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/03_Wall_Horizontal.png
+  [Wall Vertical]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/04_Wall_Vertical.png
+  [Outer Corner]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/05_Wall_Corner.png
+  [Inner Corner]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/05_Wall_InnerCorner.png
+  [Crew Door]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/06_Door_CrewQuarters.png
+  [Hazard Stripe]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/07_Floor_HazardStripe_H.png
+  [Floor Grate]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/08_Floor_Detail_Grate.png
+  [Vent Louver]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/08_Floor_Detail_Vent.png
+  [Cable Hatch]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/08_Floor_Detail_Hatch.png
+  [Wall Cables]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Tiles/09_Wall_Cables.png
+  [Large Communal Table]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/01_Prop_CommunalTable.png
+  [Industrial Chair]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/02_Prop_Chair.png
+  [Locker Bank]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/03_Prop_Lockers.png
+  [Lounge Sofa]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/04_Prop_Sofa.png
+  [Wall Workstation]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/05_Prop_Workstation.png
+  [Second Workstation]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/15_Prop_SmallWorkstation.png
+  [Tool Shelf]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/06_Prop_StorageShelf.png
+  [Vending Machine]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/07_Prop_VendingMachine.png
+  [Kitchen/Galley]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/08_Prop_KitchenStation.png
+  [Storage Cabinet]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/16_Prop_StorageCabinet.png
+  [Cargo Crate]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/09_Prop_CargoCrate.png
+  [Small Crate]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/17_Prop_SmallCrate.png
+  [Bulletin Board]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/10_Prop_BulletinBoard.png
+  [Potted Plant]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/11_Prop_PottedPlant.png
+  [Wall Light]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/12_Prop_WallLight.png
+  [Vent Fan]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/13_Prop_VentilationFan.png
+  [Personal Clutter]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/14_Prop_PersonalClutter.png
+  [Wall Console]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/18_Prop_WallConsole.png
+  [Small Wall Storage]: Assets/_Project/Sprites/Environments/CrewQuarters_PixelArt/Props/19_Prop_SmallWallStorage.png

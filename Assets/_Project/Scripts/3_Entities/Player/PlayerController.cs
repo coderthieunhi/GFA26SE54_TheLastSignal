@@ -47,9 +47,9 @@ namespace TheLastSignal.Entities.Player
         [SerializeField] private LayerMask collisionLayers;
 
         [Header("Interaction Detection")]
-        [SerializeField] private float interactionRange = 0.55f;
+        [SerializeField] private float interactionRange = 1.4f;
         [SerializeField] private LayerMask interactableLayer;
-        [SerializeField, Range(0f, 1f)] private float facingDotThreshold = 0.4f;
+        [SerializeField, Range(0f, 1f)] private float facingDotThreshold = 0.2f;
 
         private Rigidbody2D rb;
         private CapsuleCollider2D capsuleCollider;
@@ -62,7 +62,24 @@ namespace TheLastSignal.Entities.Player
         private int slotIndex;
         private Vector3 lastRemotePosition;
         private bool isRemoteMoving;
+<<<<<<< HEAD
         private PlayerHealth playerHealth;
+=======
+        [SerializeField] private bool isMonster = false;
+        private float speedMultiplier = 1.0f;
+
+        public bool IsMonster
+        {
+            get => isMonster || CompareTag("Monster") || slotIndex == 3;
+            set => isMonster = value;
+        }
+
+        public float SpeedMultiplier
+        {
+            get => speedMultiplier;
+            set => speedMultiplier = Mathf.Clamp(value, 0.1f, 3.0f);
+        }
+>>>>>>> feat/complete-facility-map
 
         // Network synchronization variables (Owner writable, replicated to all peers)
         private readonly NetworkVariable<Vector2> netFacingDirection = new NetworkVariable<Vector2>(
@@ -241,7 +258,7 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         private Vector2 ResolveNetworkSpawnPosition(int slot)
         {
-            PlayerSpawnPoint[] points = FindObjectsByType<PlayerSpawnPoint>(FindObjectsSortMode.None);
+            PlayerSpawnPoint[] points = FindObjectsByType<PlayerSpawnPoint>(FindObjectsInactive.Exclude);
             for (int i = 0; i < points.Length; i++)
             {
                 if (points[i] != null && points[i].SlotIndex == slot)
@@ -250,7 +267,7 @@ namespace TheLastSignal.Entities.Player
                 }
             }
 
-            SpawnPoint[] legacyPoints = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
+            SpawnPoint[] legacyPoints = FindObjectsByType<SpawnPoint>(FindObjectsInactive.Exclude);
             for (int i = 0; i < legacyPoints.Length; i++)
             {
                 if (legacyPoints[i] != null && legacyPoints[i].PlayerIndex == slot)
@@ -529,6 +546,7 @@ namespace TheLastSignal.Entities.Player
 
         private void ApplyMovement(Vector2 direction)
         {
+<<<<<<< HEAD
             float speed = moveSpeed;
             if (playerHealth != null && playerHealth.IsDowned)
             {
@@ -536,6 +554,9 @@ namespace TheLastSignal.Entities.Player
             }
 
             Vector2 targetVelocity = direction * speed;
+=======
+            Vector2 targetVelocity = direction * (moveSpeed * speedMultiplier);
+>>>>>>> feat/complete-facility-map
             float rate = direction.sqrMagnitude > 0.0001f ? acceleration : deceleration;
             currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, rate * Time.fixedDeltaTime);
 
@@ -544,7 +565,11 @@ namespace TheLastSignal.Entities.Player
             if (enableCornerAssist && currentVelocity.sqrMagnitude > 0.01f)
             {
                 Vector2 nudge = CalculateCornerNudge(currentVelocity.normalized);
-                moveDelta += nudge;
+                if (nudge != Vector2.zero)
+                {
+                    float originalMagnitude = moveDelta.magnitude;
+                    moveDelta = (moveDelta + nudge).normalized * originalMagnitude;
+                }
             }
 
             Vector2 targetPosition = rb.position + moveDelta;
@@ -612,7 +637,10 @@ namespace TheLastSignal.Entities.Player
 
         private void UpdateInteractionDetection()
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(rb.position, interactionRange, interactableLayer);
+            int extraMask = LayerMask.GetMask("Interactable", "Default", "Obstacle", "Obstacles");
+            int effectiveLayerMask = interactableLayer.value != 0 ? (interactableLayer.value | extraMask) : extraMask;
+            Vector2 playerPos = rb != null ? rb.position : (Vector2)transform.position;
+            Collider2D[] hits = Physics2D.OverlapCircleAll(playerPos, interactionRange, effectiveLayerMask);
 
             if (hits.Length == 0)
             {
@@ -640,8 +668,8 @@ namespace TheLastSignal.Entities.Player
                     continue;
                 }
 
-                Vector2 closestPoint = hit.ClosestPoint(rb.position);
-                Vector2 toHit = closestPoint - rb.position;
+                Vector2 closestPoint = hit.ClosestPoint(playerPos);
+                Vector2 toHit = closestPoint - playerPos;
                 float sqrDistance = toHit.sqrMagnitude;
 
                 if (sqrDistance < closestSqrDistance)
@@ -666,8 +694,8 @@ namespace TheLastSignal.Entities.Player
                 }
             }
 
-            // Only allow interaction if faced directly, or if immediately adjacent/overlapping
-            CurrentInteractable = facedHit != null ? facedHit : (closestSqrDistance <= 0.18f ? closestHit : null);
+            // Prefer object faced directly; otherwise pick closest interactable within range
+            CurrentInteractable = facedHit != null ? facedHit : (closestSqrDistance <= (interactionRange * interactionRange) ? closestHit : null);
         }
 
         private void OnDrawGizmosSelected()

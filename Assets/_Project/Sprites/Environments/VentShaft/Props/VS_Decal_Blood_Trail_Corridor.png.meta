@@ -1,0 +1,392 @@
+fileFormatVersion: 2
+guid: df7106c3810414ded87d8ef5d5c9f725
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1070636486777851193
+    second: VS_Decal_Blood_Trail_Corridor_0
+  - first:
+      213: 3913291501029991444
+    second: VS_Decal_Blood_Trail_Corridor_1
+  - first:
+      213: -162426695532616388
+    second: VS_Decal_Blood_Trail_Corridor_2
+  - first:
+      213: 4918862513847630387
+    second: VS_Decal_Blood_Trail_Corridor_3
+  - first:
+      213: -6058118484357869862
+    second: VS_Decal_Blood_Trail_Corridor_4
+  - first:
+      213: -7184627164024978607
+    second: VS_Decal_Blood_Trail_Corridor_5
+  - first:
+      213: 5456020583177002882
+    second: VS_Decal_Blood_Trail_Corridor_6
+  - first:
+      213: -6321988214793792747
+    second: VS_Decal_Blood_Trail_Corridor_7
+  - first:
+      213: 4575904982871086285
+    second: VS_Decal_Blood_Trail_Corridor_8
+  - first:
+      213: -1617974390149504896
+    second: VS_Decal_Blood_Trail_Corridor_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_0
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 4
+        width: 32
+        height: 243
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93d47f5563aabde00800000000000000
+      internalID: 1070636486777851193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_1
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 179
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 414a27df2edce4630800000000000000
+      internalID: 3913291501029991444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_2
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 151
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c35ecbee7c1febdf0800000000000000
+      internalID: -162426695532616388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_3
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 122
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33a7fd4256f434440800000000000000
+      internalID: 4918862513847630387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_4
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 115
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ade0f94f55d3deba0800000000000000
+      internalID: -6058118484357869862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_5
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 69
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1534bacf8a31b4c90800000000000000
+      internalID: -7184627164024978607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_6
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 67
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28f1c7b20dda7bb40800000000000000
+      internalID: 5456020583177002882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_7
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 22
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5139207c639c348a0800000000000000
+      internalID: -6321988214793792747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_8
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 16
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc498f57651e08f30800000000000000
+      internalID: 4575904982871086285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Blood_Trail_Corridor_9
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 7
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 080a5735ddccb89e0800000000000000
+      internalID: -1617974390149504896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      VS_Decal_Blood_Trail_Corridor_0: 1070636486777851193
+      VS_Decal_Blood_Trail_Corridor_1: 3913291501029991444
+      VS_Decal_Blood_Trail_Corridor_2: -162426695532616388
+      VS_Decal_Blood_Trail_Corridor_3: 4918862513847630387
+      VS_Decal_Blood_Trail_Corridor_4: -6058118484357869862
+      VS_Decal_Blood_Trail_Corridor_5: -7184627164024978607
+      VS_Decal_Blood_Trail_Corridor_6: 5456020583177002882
+      VS_Decal_Blood_Trail_Corridor_7: -6321988214793792747
+      VS_Decal_Blood_Trail_Corridor_8: 4575904982871086285
+      VS_Decal_Blood_Trail_Corridor_9: -1617974390149504896
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

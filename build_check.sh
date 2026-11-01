@@ -37,7 +37,7 @@ fi
 # 2. Find the compiler response files (.rsp)
 RSP_FILES=()
 for rsp_name in "Assembly-CSharp.rsp" "Assembly-CSharp-Editor.rsp"; do
-    found=$(find Library/Bee/artifacts -name "$rsp_name" 2>/dev/null | head -n 1)
+    found=$(ls -td Library/Bee/artifacts/*/"$rsp_name" 2>/dev/null | head -n 1)
     if [ -n "$found" ] && [ -f "$found" ]; then
         RSP_FILES+=("$found")
     fi
@@ -56,8 +56,8 @@ ALL_ERRORS=""
 
 for rsp in "${RSP_FILES[@]}"; do
     TARGET_NAME=$(basename "$rsp" .rsp)
-    OUTPUT=$(DOTNET_CLI_HOME=/tmp "$DOTNET_PATH" "$CSC_PATH" @"$rsp" 2>&1)
-    STATUS=$?
+    STATUS=0
+    OUTPUT=$(DOTNET_CLI_HOME=/tmp "$DOTNET_PATH" "$CSC_PATH" @"$rsp" 2>&1) || STATUS=$?
     if [ $STATUS -ne 0 ]; then
         ALL_ERRORS+=$'\n'"--- Errors in $TARGET_NAME ---"$'\n'"$OUTPUT"
     else

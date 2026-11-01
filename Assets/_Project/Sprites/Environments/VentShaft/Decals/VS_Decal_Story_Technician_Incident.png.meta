@@ -1,0 +1,444 @@
+fileFormatVersion: 2
+guid: 7aa9b73aa40604c3db8227875985bbe9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7766465121838739619
+    second: VS_Decal_Story_Technician_Incident_0
+  - first:
+      213: 1163206862296558731
+    second: VS_Decal_Story_Technician_Incident_1
+  - first:
+      213: -8166977347250990278
+    second: VS_Decal_Story_Technician_Incident_2
+  - first:
+      213: -6517806210097382804
+    second: VS_Decal_Story_Technician_Incident_3
+  - first:
+      213: -8424735869533942679
+    second: VS_Decal_Story_Technician_Incident_4
+  - first:
+      213: 1104453650765064388
+    second: VS_Decal_Story_Technician_Incident_5
+  - first:
+      213: -5223459777413823153
+    second: VS_Decal_Story_Technician_Incident_6
+  - first:
+      213: 7228620425624332447
+    second: VS_Decal_Story_Technician_Incident_7
+  - first:
+      213: -1924097968551169011
+    second: VS_Decal_Story_Technician_Incident_8
+  - first:
+      213: 6679297838122955300
+    second: VS_Decal_Story_Technician_Incident_9
+  - first:
+      213: -2257859768593800460
+    second: VS_Decal_Story_Technician_Incident_10
+  - first:
+      213: -1319474588732772174
+    second: VS_Decal_Story_Technician_Incident_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_0
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 130
+        width: 107
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a0b8ab31e608cb60800000000000000
+      internalID: 7766465121838739619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_1
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 119
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8cab737a7a842010800000000000000
+      internalID: 1163206862296558731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_2
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 121
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3351788f5119ae80800000000000000
+      internalID: -8166977347250990278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_3
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 87
+        width: 87
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6a7f44e8c91c85a0800000000000000
+      internalID: -6517806210097382804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_4
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 102
+        width: 20
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96c00f1ec53551b80800000000000000
+      internalID: -8424735869533942679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_5
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 65
+        width: 59
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c82cb46ebec35f00800000000000000
+      internalID: 1104453650765064388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_6
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 44
+        width: 38
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4545bce10b8287b0800000000000000
+      internalID: -5223459777413823153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_7
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 68
+        width: 24
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f98a87d6af7315460800000000000000
+      internalID: 7228620425624332447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_8
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 62
+        width: 28
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d04f477871b3c45e0800000000000000
+      internalID: -1924097968551169011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_9
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 56
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4227a5ecef1a1bc50800000000000000
+      internalID: 6679297838122955300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_10
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 40
+        width: 33
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f2225cc0887aa0e0800000000000000
+      internalID: -2257859768593800460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VS_Decal_Story_Technician_Incident_11
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 31
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b0bd683ad840bde0800000000000000
+      internalID: -1319474588732772174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      VS_Decal_Story_Technician_Incident_0: 7766465121838739619
+      VS_Decal_Story_Technician_Incident_1: 1163206862296558731
+      VS_Decal_Story_Technician_Incident_10: -2257859768593800460
+      VS_Decal_Story_Technician_Incident_11: -1319474588732772174
+      VS_Decal_Story_Technician_Incident_2: -8166977347250990278
+      VS_Decal_Story_Technician_Incident_3: -6517806210097382804
+      VS_Decal_Story_Technician_Incident_4: -8424735869533942679
+      VS_Decal_Story_Technician_Incident_5: 1104453650765064388
+      VS_Decal_Story_Technician_Incident_6: -5223459777413823153
+      VS_Decal_Story_Technician_Incident_7: 7228620425624332447
+      VS_Decal_Story_Technician_Incident_8: -1924097968551169011
+      VS_Decal_Story_Technician_Incident_9: 6679297838122955300
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

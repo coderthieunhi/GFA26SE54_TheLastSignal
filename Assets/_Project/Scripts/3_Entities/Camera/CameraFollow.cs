@@ -18,8 +18,10 @@ namespace TheLastSignal.Entities.Camera
         [SerializeField] private float smoothTime = 0.12f;
 
         [Header("Map Bounds")]
-        [Tooltip("Tilemap(s) whose combined bounds define the playable map. Bounds are read from these " +
-                 "at runtime, not hardcoded, so they stay correct as the Story 1.4 map is edited.")]
+        [Tooltip("If true or if boundsTilemaps is empty, automatically includes all active Tilemaps across all rooms in the scene.")]
+        [SerializeField] private bool autoIncludeAllTilemaps = true;
+
+        [Tooltip("Tilemap(s) whose combined bounds define the playable map. If autoIncludeAllTilemaps is false, only these tilemaps are used.")]
         [SerializeField] private Tilemap[] boundsTilemaps;
 
         private UnityEngine.Camera cam;
@@ -57,7 +59,13 @@ namespace TheLastSignal.Entities.Camera
         {
             hasBounds = false;
 
-            if (boundsTilemaps == null || boundsTilemaps.Length == 0)
+            Tilemap[] tilemapsToProcess = boundsTilemaps;
+            if (autoIncludeAllTilemaps || tilemapsToProcess == null || tilemapsToProcess.Length == 0)
+            {
+                tilemapsToProcess = FindObjectsByType<Tilemap>(FindObjectsInactive.Exclude);
+            }
+
+            if (tilemapsToProcess == null || tilemapsToProcess.Length == 0)
             {
                 return;
             }
@@ -65,7 +73,7 @@ namespace TheLastSignal.Entities.Camera
             Vector2 min = Vector2.zero;
             Vector2 max = Vector2.zero;
 
-            foreach (Tilemap tilemap in boundsTilemaps)
+            foreach (Tilemap tilemap in tilemapsToProcess)
             {
                 if (tilemap == null)
                 {

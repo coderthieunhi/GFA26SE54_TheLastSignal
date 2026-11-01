@@ -251,6 +251,55 @@ namespace TheLastSignal.Entities.Environment
             ApplyState();
         }
 
+        
+        private void SpawnVaporParticles()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                GameObject vapor = new GameObject("VaporParticle");
+                vapor.transform.position = transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0f);
+                SpriteRenderer sr = vapor.AddComponent<SpriteRenderer>();
+                
+                // Create soft circle texture
+                Texture2D tex = new Texture2D(16, 16);
+                Color[] colors = new Color[16 * 16];
+                for(int y=0; y<16; y++) {
+                    for(int x=0; x<16; x++) {
+                        float dist = Vector2.Distance(new Vector2(8, 8), new Vector2(x, y));
+                        float alpha = Mathf.Clamp01(1f - (dist / 8f)) * 0.5f;
+                        colors[y*16+x] = new Color(0.8f, 0.9f, 1f, alpha); // Cold white/blue
+                    }
+                }
+                tex.SetPixels(colors);
+                tex.Apply();
+                sr.sprite = Sprite.Create(tex, new Rect(0, 0, 16, 16), new Vector2(0.5f, 0.5f), 16f);
+                sr.sortingLayerName = "Obstacles";
+                sr.sortingOrder = 10;
+                
+                var mover = vapor.AddComponent<VaporParticle>();
+            }
+        }
+        
+        public class VaporParticle : MonoBehaviour
+        {
+            private SpriteRenderer sr;
+            private float life = 1f;
+            private Vector3 dir;
+            
+            void Start() {
+                sr = GetComponent<SpriteRenderer>();
+                dir = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f).normalized;
+            }
+            
+            void Update() {
+                life -= Time.deltaTime * 1.5f;
+                if (life <= 0f) { Destroy(gameObject); return; }
+                transform.position += dir * Time.deltaTime * 0.5f;
+                transform.localScale += Vector3.one * Time.deltaTime;
+                Color c = sr.color; c.a = life * 0.5f; sr.color = c;
+            }
+        }
+
         private void ApplyState()
         {
             bool isOpen = CurrentState == DoorState.Open;
@@ -283,6 +332,7 @@ namespace TheLastSignal.Entities.Environment
             }
 
             OnStateChanged?.Invoke(CurrentState);
+            if (isOpen && Application.isPlaying) SpawnVaporParticles();
         }
     }
 }

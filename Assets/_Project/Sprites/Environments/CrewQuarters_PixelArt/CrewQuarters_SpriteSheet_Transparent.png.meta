@@ -1,0 +1,1068 @@
+fileFormatVersion: 2
+guid: 8c4dd6a813e1c49d0b45d6ac92b66646
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4796917120366096450
+    second: CrewQuarters_SpriteSheet_Transparent_0
+  - first:
+      213: -7913099782427384356
+    second: CrewQuarters_SpriteSheet_Transparent_1
+  - first:
+      213: 7841404738521737685
+    second: CrewQuarters_SpriteSheet_Transparent_2
+  - first:
+      213: 3525621130295034467
+    second: CrewQuarters_SpriteSheet_Transparent_3
+  - first:
+      213: 2199476311921906414
+    second: CrewQuarters_SpriteSheet_Transparent_4
+  - first:
+      213: -7347756805160748466
+    second: CrewQuarters_SpriteSheet_Transparent_5
+  - first:
+      213: -2942051794713727099
+    second: CrewQuarters_SpriteSheet_Transparent_6
+  - first:
+      213: 768453707340102798
+    second: CrewQuarters_SpriteSheet_Transparent_7
+  - first:
+      213: -2941719730491998938
+    second: CrewQuarters_SpriteSheet_Transparent_8
+  - first:
+      213: 489176451920084729
+    second: CrewQuarters_SpriteSheet_Transparent_9
+  - first:
+      213: 1198119147215664995
+    second: CrewQuarters_SpriteSheet_Transparent_10
+  - first:
+      213: 8507024648574235157
+    second: CrewQuarters_SpriteSheet_Transparent_11
+  - first:
+      213: 7112631866212157318
+    second: CrewQuarters_SpriteSheet_Transparent_12
+  - first:
+      213: -5021108521538711726
+    second: CrewQuarters_SpriteSheet_Transparent_13
+  - first:
+      213: 7402240196600789380
+    second: CrewQuarters_SpriteSheet_Transparent_14
+  - first:
+      213: -5806394178264455741
+    second: CrewQuarters_SpriteSheet_Transparent_15
+  - first:
+      213: -2904980153707869913
+    second: CrewQuarters_SpriteSheet_Transparent_16
+  - first:
+      213: 6098637230340766128
+    second: CrewQuarters_SpriteSheet_Transparent_17
+  - first:
+      213: -7243368832488909974
+    second: CrewQuarters_SpriteSheet_Transparent_18
+  - first:
+      213: -6931842618857819728
+    second: CrewQuarters_SpriteSheet_Transparent_19
+  - first:
+      213: 6232208945150370208
+    second: CrewQuarters_SpriteSheet_Transparent_20
+  - first:
+      213: 3746955712728403664
+    second: CrewQuarters_SpriteSheet_Transparent_21
+  - first:
+      213: 3914486404952348184
+    second: CrewQuarters_SpriteSheet_Transparent_22
+  - first:
+      213: 3867101784463376478
+    second: CrewQuarters_SpriteSheet_Transparent_23
+  - first:
+      213: -6256028957922455081
+    second: CrewQuarters_SpriteSheet_Transparent_24
+  - first:
+      213: 6320296127051652626
+    second: CrewQuarters_SpriteSheet_Transparent_25
+  - first:
+      213: 2513959573542387978
+    second: CrewQuarters_SpriteSheet_Transparent_26
+  - first:
+      213: -7083823733749913713
+    second: CrewQuarters_SpriteSheet_Transparent_27
+  - first:
+      213: 8836832048610389089
+    second: CrewQuarters_SpriteSheet_Transparent_28
+  - first:
+      213: 2490015396826812941
+    second: CrewQuarters_SpriteSheet_Transparent_29
+  - first:
+      213: 2052410185913705148
+    second: CrewQuarters_SpriteSheet_Transparent_30
+  - first:
+      213: -3107095668766699182
+    second: CrewQuarters_SpriteSheet_Transparent_31
+  - first:
+      213: -7927829491467789248
+    second: CrewQuarters_SpriteSheet_Transparent_32
+  - first:
+      213: 5592276452573525689
+    second: CrewQuarters_SpriteSheet_Transparent_33
+  - first:
+      213: 5155780322054485703
+    second: CrewQuarters_SpriteSheet_Transparent_34
+  - first:
+      213: -3172206156717984401
+    second: CrewQuarters_SpriteSheet_Transparent_35
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 530
+        width: 126
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2403960b4b2129240800000000000000
+      internalID: 4796917120366096450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_1
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 545
+        width: 39
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd5e13c5ca50f2290800000000000000
+      internalID: -7913099782427384356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_2
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 529
+        width: 74
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d927ab601442dc60800000000000000
+      internalID: 7841404738521737685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_3
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 545
+        width: 106
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 362c8db0db58de030800000000000000
+      internalID: 3525621130295034467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_4
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 545
+        width: 65
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee2ddf76d0c168e10800000000000000
+      internalID: 2199476311921906414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_5
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 547
+        width: 62
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4a3f64ad16870a90800000000000000
+      internalID: -7347756805160748466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_6
+      rect:
+        serializedVersion: 2
+        x: 801
+        y: 538
+        width: 62
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58fa949fa7bbb27d0800000000000000
+      internalID: -2942051794713727099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_7
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 401
+        width: 56
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8cb65c43981aaa00800000000000000
+      internalID: 768453707340102798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_8
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 403
+        width: 94
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62d3443bd79ec27d0800000000000000
+      internalID: -2941719730491998938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_9
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 401
+        width: 56
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9febe292467e9c600800000000000000
+      internalID: 489176451920084729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_10
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 417
+        width: 54
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3673268340390a010800000000000000
+      internalID: 1198119147215664995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_11
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 427
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51272c188d50f0670800000000000000
+      internalID: 8507024648574235157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_12
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 424
+        width: 62
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68703bb7ff425b260800000000000000
+      internalID: 7112631866212157318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_13
+      rect:
+        serializedVersion: 2
+        x: 813
+        y: 417
+        width: 44
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25f8ff21760715ab0800000000000000
+      internalID: -5021108521538711726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_14
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 305
+        width: 49
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 489f1847d3a0ab660800000000000000
+      internalID: 7402240196600789380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_15
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 291
+        width: 62
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c5a6aa224b8b6fa0800000000000000
+      internalID: -5806394178264455741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_16
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 287
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 729cea201ff6fa7d0800000000000000
+      internalID: -2904980153707869913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_17
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 292
+        width: 56
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b9fe60cf36b2a450800000000000000
+      internalID: 6098637230340766128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_18
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 292
+        width: 13
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a63dc528c626a7b90800000000000000
+      internalID: -7243368832488909974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_19
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 301
+        width: 42
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b1f0185dd52dcf90800000000000000
+      internalID: -6931842618857819728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_20
+      rect:
+        serializedVersion: 2
+        x: 685
+        y: 303
+        width: 38
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a123b514014d7650800000000000000
+      internalID: 6232208945150370208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_21
+      rect:
+        serializedVersion: 2
+        x: 799
+        y: 287
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0de0c465e5cdff330800000000000000
+      internalID: 3746955712728403664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_22
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 159
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 816d74d35ac035630800000000000000
+      internalID: 3914486404952348184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_23
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 159
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e50083d8594baa530800000000000000
+      internalID: 3867101784463376478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_24
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 159
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d199720fce1e29a0800000000000000
+      internalID: -6256028957922455081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_25
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 159
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21ed03857d336b750800000000000000
+      internalID: 6320296127051652626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_26
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 159
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a01cfa0a9e063e220800000000000000
+      internalID: 2513959573542387978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_27
+      rect:
+        serializedVersion: 2
+        x: 671
+        y: 159
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f87ea5a88d331bd90800000000000000
+      internalID: -7083823733749913713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_28
+      rect:
+        serializedVersion: 2
+        x: 783
+        y: 159
+        width: 98
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16ca53dbdebb2aa70800000000000000
+      internalID: 8836832048610389089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_29
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 31
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d029d1d8fcf4e8220800000000000000
+      internalID: 2490015396826812941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_30
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 31
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb2a7c0a030ab7c10800000000000000
+      internalID: 2052410185913705148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_31
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 31
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 251910c83f061e4d0800000000000000
+      internalID: -3107095668766699182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_32
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 31
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04c5239b411baf190800000000000000
+      internalID: -7927829491467789248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_33
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 31
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b63d61fdc1cb9d40800000000000000
+      internalID: 5592276452573525689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_34
+      rect:
+        serializedVersion: 2
+        x: 671
+        y: 31
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c6b10ce2e20d8740800000000000000
+      internalID: 5155780322054485703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CrewQuarters_SpriteSheet_Transparent_35
+      rect:
+        serializedVersion: 2
+        x: 799
+        y: 31
+        width: 66
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f65748abe4f0af3d0800000000000000
+      internalID: -3172206156717984401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      CrewQuarters_SpriteSheet_Transparent_0: 4796917120366096450
+      CrewQuarters_SpriteSheet_Transparent_1: -7913099782427384356
+      CrewQuarters_SpriteSheet_Transparent_10: 1198119147215664995
+      CrewQuarters_SpriteSheet_Transparent_11: 8507024648574235157
+      CrewQuarters_SpriteSheet_Transparent_12: 7112631866212157318
+      CrewQuarters_SpriteSheet_Transparent_13: -5021108521538711726
+      CrewQuarters_SpriteSheet_Transparent_14: 7402240196600789380
+      CrewQuarters_SpriteSheet_Transparent_15: -5806394178264455741
+      CrewQuarters_SpriteSheet_Transparent_16: -2904980153707869913
+      CrewQuarters_SpriteSheet_Transparent_17: 6098637230340766128
+      CrewQuarters_SpriteSheet_Transparent_18: -7243368832488909974
+      CrewQuarters_SpriteSheet_Transparent_19: -6931842618857819728
+      CrewQuarters_SpriteSheet_Transparent_2: 7841404738521737685
+      CrewQuarters_SpriteSheet_Transparent_20: 6232208945150370208
+      CrewQuarters_SpriteSheet_Transparent_21: 3746955712728403664
+      CrewQuarters_SpriteSheet_Transparent_22: 3914486404952348184
+      CrewQuarters_SpriteSheet_Transparent_23: 3867101784463376478
+      CrewQuarters_SpriteSheet_Transparent_24: -6256028957922455081
+      CrewQuarters_SpriteSheet_Transparent_25: 6320296127051652626
+      CrewQuarters_SpriteSheet_Transparent_26: 2513959573542387978
+      CrewQuarters_SpriteSheet_Transparent_27: -7083823733749913713
+      CrewQuarters_SpriteSheet_Transparent_28: 8836832048610389089
+      CrewQuarters_SpriteSheet_Transparent_29: 2490015396826812941
+      CrewQuarters_SpriteSheet_Transparent_3: 3525621130295034467
+      CrewQuarters_SpriteSheet_Transparent_30: 2052410185913705148
+      CrewQuarters_SpriteSheet_Transparent_31: -3107095668766699182
+      CrewQuarters_SpriteSheet_Transparent_32: -7927829491467789248
+      CrewQuarters_SpriteSheet_Transparent_33: 5592276452573525689
+      CrewQuarters_SpriteSheet_Transparent_34: 5155780322054485703
+      CrewQuarters_SpriteSheet_Transparent_35: -3172206156717984401
+      CrewQuarters_SpriteSheet_Transparent_4: 2199476311921906414
+      CrewQuarters_SpriteSheet_Transparent_5: -7347756805160748466
+      CrewQuarters_SpriteSheet_Transparent_6: -2942051794713727099
+      CrewQuarters_SpriteSheet_Transparent_7: 768453707340102798
+      CrewQuarters_SpriteSheet_Transparent_8: -2941719730491998938
+      CrewQuarters_SpriteSheet_Transparent_9: 489176451920084729
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

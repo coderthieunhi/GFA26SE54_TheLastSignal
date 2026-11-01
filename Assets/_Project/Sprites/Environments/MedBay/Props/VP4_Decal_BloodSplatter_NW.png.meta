@@ -1,0 +1,678 @@
+fileFormatVersion: 2
+guid: 3f4e0ac4da8da42e4afd0c0cb976928e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7743134009541767723
+    second: VP4_Decal_BloodSplatter_NW_0
+  - first:
+      213: 5933388587186831342
+    second: VP4_Decal_BloodSplatter_NW_1
+  - first:
+      213: -6151107475393061278
+    second: VP4_Decal_BloodSplatter_NW_2
+  - first:
+      213: 1548309682946639256
+    second: VP4_Decal_BloodSplatter_NW_3
+  - first:
+      213: -3469904715987938915
+    second: VP4_Decal_BloodSplatter_NW_4
+  - first:
+      213: 3169464738880462240
+    second: VP4_Decal_BloodSplatter_NW_5
+  - first:
+      213: -4746548039223387290
+    second: VP4_Decal_BloodSplatter_NW_6
+  - first:
+      213: -2483105433364263844
+    second: VP4_Decal_BloodSplatter_NW_7
+  - first:
+      213: -6644130255480643414
+    second: VP4_Decal_BloodSplatter_NW_8
+  - first:
+      213: 4751787977518584289
+    second: VP4_Decal_BloodSplatter_NW_9
+  - first:
+      213: -9140776734579433150
+    second: VP4_Decal_BloodSplatter_NW_10
+  - first:
+      213: -9027649238802096454
+    second: VP4_Decal_BloodSplatter_NW_11
+  - first:
+      213: -6276472583548051378
+    second: VP4_Decal_BloodSplatter_NW_12
+  - first:
+      213: -7521739283542755859
+    second: VP4_Decal_BloodSplatter_NW_13
+  - first:
+      213: -2919990859832837603
+    second: VP4_Decal_BloodSplatter_NW_14
+  - first:
+      213: -6645561864980875414
+    second: VP4_Decal_BloodSplatter_NW_15
+  - first:
+      213: 1489161448299894673
+    second: VP4_Decal_BloodSplatter_NW_16
+  - first:
+      213: -8490282386939126593
+    second: VP4_Decal_BloodSplatter_NW_17
+  - first:
+      213: -2971099734628305177
+    second: VP4_Decal_BloodSplatter_NW_18
+  - first:
+      213: 5171932200552739385
+    second: VP4_Decal_BloodSplatter_NW_19
+  - first:
+      213: 6296505920817939764
+    second: VP4_Decal_BloodSplatter_NW_20
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_0
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 169
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b22bbf65b53257b60800000000000000
+      internalID: 7743134009541767723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_1
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 170
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eefb0adcb71a75250800000000000000
+      internalID: 5933388587186831342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_2
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 40
+        width: 115
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26e52f15750e2aaa0800000000000000
+      internalID: -6151107475393061278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_3
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 150
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 895055e0473bc7510800000000000000
+      internalID: 1548309682946639256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_4
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 144
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d91161f8b0c68dfc0800000000000000
+      internalID: -3469904715987938915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_5
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 129
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ad981133633cfb20800000000000000
+      internalID: 3169464738880462240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_6
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 75
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66b53c4e4bfd02eb0800000000000000
+      internalID: -4746548039223387290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_7
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 118
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5c0b70b3cc3a8dd0800000000000000
+      internalID: -2483105433364263844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_8
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 111
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa0a6a81cbe4bc3a0800000000000000
+      internalID: -6644130255480643414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_9
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 66
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e197ff4dfdb1f140800000000000000
+      internalID: 4751787977518584289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_10
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 55
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 241ec346dff652180800000000000000
+      internalID: -9140776734579433150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_11
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 47
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abe106c09d857b280800000000000000
+      internalID: -9027649238802096454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_12
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 51
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e40e32f707d75e8a0800000000000000
+      internalID: -6276472583548051378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_13
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 34
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de5355739f96d9790800000000000000
+      internalID: -7521739283542755859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_14
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 39
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1ab644a8cb1a77d0800000000000000
+      internalID: -2919990859832837603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_15
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 37
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a67bee881b836c3a0800000000000000
+      internalID: -6645561864980875414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_16
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 34
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1971f1382709aa410800000000000000
+      internalID: 1489161448299894673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_17
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 28
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbcdcbb07257c2a80800000000000000
+      internalID: -8490282386939126593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_18
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 30
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e6f83d688884c6d0800000000000000
+      internalID: -2971099734628305177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_19
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 31
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 932b9503fe466c740800000000000000
+      internalID: 5171932200552739385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VP4_Decal_BloodSplatter_NW_20
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 18
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4354f7056cea16750800000000000000
+      internalID: 6296505920817939764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      VP4_Decal_BloodSplatter_NW_0: 7743134009541767723
+      VP4_Decal_BloodSplatter_NW_1: 5933388587186831342
+      VP4_Decal_BloodSplatter_NW_10: -9140776734579433150
+      VP4_Decal_BloodSplatter_NW_11: -9027649238802096454
+      VP4_Decal_BloodSplatter_NW_12: -6276472583548051378
+      VP4_Decal_BloodSplatter_NW_13: -7521739283542755859
+      VP4_Decal_BloodSplatter_NW_14: -2919990859832837603
+      VP4_Decal_BloodSplatter_NW_15: -6645561864980875414
+      VP4_Decal_BloodSplatter_NW_16: 1489161448299894673
+      VP4_Decal_BloodSplatter_NW_17: -8490282386939126593
+      VP4_Decal_BloodSplatter_NW_18: -2971099734628305177
+      VP4_Decal_BloodSplatter_NW_19: 5171932200552739385
+      VP4_Decal_BloodSplatter_NW_2: -6151107475393061278
+      VP4_Decal_BloodSplatter_NW_20: 6296505920817939764
+      VP4_Decal_BloodSplatter_NW_3: 1548309682946639256
+      VP4_Decal_BloodSplatter_NW_4: -3469904715987938915
+      VP4_Decal_BloodSplatter_NW_5: 3169464738880462240
+      VP4_Decal_BloodSplatter_NW_6: -4746548039223387290
+      VP4_Decal_BloodSplatter_NW_7: -2483105433364263844
+      VP4_Decal_BloodSplatter_NW_8: -6644130255480643414
+      VP4_Decal_BloodSplatter_NW_9: 4751787977518584289
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
