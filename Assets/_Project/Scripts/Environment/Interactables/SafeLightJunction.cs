@@ -11,7 +11,7 @@ using TheLastSignal.Entities.Player;
 using TheLastSignal.Entities.Monster;
 using TheLastSignal.Systems.Monster;
 
-namespace TheLastSignal.Environment.Interactables
+namespace TheLastSignal.Entities.Environment.Interactables
 {
     public enum SafeLightJunctionState
     {

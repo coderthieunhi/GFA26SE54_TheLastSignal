@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace TheLastSignal.Environment.VisualPass
+namespace TheLastSignal.Entities.Environment.VisualPass
 {
     public class VP_SparkFX : MonoBehaviour
     {

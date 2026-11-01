@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TheLastSignal.Environment.VisualPass
+namespace TheLastSignal.Entities.Environment.VisualPass
 {
     /// <summary>
     /// Emits gentle, low-lying cryogenic vapor/mist drifting across the floor deck

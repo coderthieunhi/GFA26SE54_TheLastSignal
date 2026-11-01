@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace TheLastSignal.Environment
+namespace TheLastSignal.Entities.Environment
 {
     /// <summary>
     /// Quarantine bulkhead door indicator breathing/slow pulse.

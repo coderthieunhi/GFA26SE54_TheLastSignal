@@ -62,9 +62,8 @@ namespace TheLastSignal.Entities.Player
         private int slotIndex;
         private Vector3 lastRemotePosition;
         private bool isRemoteMoving;
-<<<<<<< HEAD
         private PlayerHealth playerHealth;
-=======
+
         [SerializeField] private bool isMonster = false;
         private float speedMultiplier = 1.0f;
 
@@ -79,7 +78,6 @@ namespace TheLastSignal.Entities.Player
             get => speedMultiplier;
             set => speedMultiplier = Mathf.Clamp(value, 0.1f, 3.0f);
         }
->>>>>>> feat/complete-facility-map
 
         // Network synchronization variables (Owner writable, replicated to all peers)
         private readonly NetworkVariable<Vector2> netFacingDirection = new NetworkVariable<Vector2>(
@@ -546,17 +544,13 @@ namespace TheLastSignal.Entities.Player
 
         private void ApplyMovement(Vector2 direction)
         {
-<<<<<<< HEAD
-            float speed = moveSpeed;
+            float speed = moveSpeed * speedMultiplier;
             if (playerHealth != null && playerHealth.IsDowned)
             {
                 speed *= playerHealth.DownedCrawlSpeedMultiplier;
             }
 
             Vector2 targetVelocity = direction * speed;
-=======
-            Vector2 targetVelocity = direction * (moveSpeed * speedMultiplier);
->>>>>>> feat/complete-facility-map
             float rate = direction.sqrMagnitude > 0.0001f ? acceleration : deceleration;
             currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, rate * Time.fixedDeltaTime);
 

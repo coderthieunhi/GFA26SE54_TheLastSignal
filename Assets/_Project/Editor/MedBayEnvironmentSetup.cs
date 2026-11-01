@@ -645,7 +645,7 @@ namespace TheLastSignal.EditorTools
 
                 if (addFlicker)
                 {
-                    var flicker = go.AddComponent<TheLastSignal.Environment.VisualPass.VP_FlickerLight>();
+                    var flicker = go.AddComponent<TheLastSignal.Entities.Environment.VisualPass.VP_FlickerLight>();
                     var so = new SerializedObject(flicker);
                     so.FindProperty("mode").enumValueIndex = 1; // IrregularGlitches
                     so.FindProperty("baseIntensity").floatValue = intensity;

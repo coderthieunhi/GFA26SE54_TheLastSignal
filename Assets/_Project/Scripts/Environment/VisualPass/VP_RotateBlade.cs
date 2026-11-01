@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TheLastSignal.Environment.VisualPass
+namespace TheLastSignal.Entities.Environment.VisualPass
 {
     public class VP_RotateBlade : MonoBehaviour
     {

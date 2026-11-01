@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace TheLastSignal.Environment.VisualPass
+namespace TheLastSignal.Entities.Environment.VisualPass
 {
     [RequireComponent(typeof(Light2D))]
     public class VP_FlickerLight : MonoBehaviour

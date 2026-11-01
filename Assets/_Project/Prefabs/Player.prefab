@@ -46,11 +46,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-<<<<<<< HEAD
   - {fileID: 8192140490197605188}
-=======
-  - {fileID: 1174830575639972928}
->>>>>>> feat/complete-facility-map
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5881264923978604063
@@ -433,7 +429,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
-<<<<<<< HEAD
 --- !u!114 &238533244729616912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,9 +529,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   lightingConfig: {fileID: 11400000, guid: cde358d9fd56c2a4b9bf4acdf60a8fec, type: 2}
 --- !u!1 &1898134321693049805
-=======
---- !u!1 &5965612824768142429
->>>>>>> feat/complete-facility-map
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -544,39 +536,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD
   - component: {fileID: 8192140490197605188}
   - component: {fileID: 1917315777913583551}
   - component: {fileID: 6569586743157974223}
   - component: {fileID: 3797653618241247102}
   m_Layer: 0
   m_Name: FlashlightCone
-=======
-  - component: {fileID: 1174830575639972928}
-  - component: {fileID: 2228149996498316841}
-  m_Layer: 0
-  m_Name: DroneFlashlight
->>>>>>> feat/complete-facility-map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
 --- !u!4 &8192140490197605188
-=======
---- !u!4 &1174830575639972928
->>>>>>> feat/complete-facility-map
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 1898134321693049805}
-=======
-  m_GameObject: {fileID: 5965612824768142429}
->>>>>>> feat/complete-facility-map
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -585,17 +562,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1229739229434830360}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
 --- !u!114 &1917315777913583551
-=======
---- !u!114 &2228149996498316841
->>>>>>> feat/complete-facility-map
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 1898134321693049805}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -616,9 +588,6 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1898134321693049805}
-=======
-  m_GameObject: {fileID: 5965612824768142429}
->>>>>>> feat/complete-facility-map
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
@@ -630,17 +599,10 @@ MonoBehaviour:
   m_Light2DProvider:
     rid: -2
   m_SelectionSources:
-<<<<<<< HEAD
     rid: 7339941636788191359
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 0.95, b: 0.8, a: 1}
   m_Intensity: 1.2
-=======
-    rid: 8633391898000097834
-  m_FalloffIntensity: 0.6
-  m_Color: {r: 0.92, g: 0.95, b: 1, a: 1}
-  m_Intensity: 1.4
->>>>>>> feat/complete-facility-map
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -664,41 +626,26 @@ MonoBehaviour:
   m_LocalBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
   m_PointLightInnerAngle: 40
   m_PointLightOuterAngle: 40
   m_PointLightInnerRadius: 0
   m_PointLightOuterRadius: 6
-=======
-  m_PointLightInnerAngle: 360
-  m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0.5
-  m_PointLightOuterRadius: 4.8
->>>>>>> feat/complete-facility-map
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
   m_ShapeLightFalloffSize: 0.5
   m_ShapeLightFalloffOffset: {x: 0, y: 0}
-<<<<<<< HEAD
   m_ShapePath:
   - {x: -0.5, y: -0.5, z: 0}
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
-=======
-  m_ShapePath: []
->>>>>>> feat/complete-facility-map
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-<<<<<<< HEAD
     - rid: 7339941636788191359
-=======
-    - rid: 8633391898000097834
->>>>>>> feat/complete-facility-map
       type: {class: Light2DProviderSources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
       data:
         m_SelectedHashCode: 3
@@ -706,7 +653,6 @@ MonoBehaviour:
           rid: -2
         m_Provider2DCache:
           rid: -2
-<<<<<<< HEAD
 --- !u!114 &3797653618241247102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -717,8 +663,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a40e02d068831074ba4e0cf73ae4105c, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerFlashlightView
   flashlight: {fileID: 238533244729616912}
-=======
->>>>>>> feat/complete-facility-map

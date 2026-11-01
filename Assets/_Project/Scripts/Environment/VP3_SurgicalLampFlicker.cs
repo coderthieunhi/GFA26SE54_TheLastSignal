@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace TheLastSignal.Environment
+namespace TheLastSignal.Entities.Environment
 {
     /// <summary>
     /// Subtle horror medical examination lamp flicker.
