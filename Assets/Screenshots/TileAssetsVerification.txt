@@ -1,0 +1,14 @@
+TILE ASSETS VERIFICATION:
+Tile: 01_Floor_MainPlates.asset, Sprite: 01_Floor_MainPlates_0, Collider: None
+Tile: 02_Floor_LargePanel.asset, Sprite: 02_Floor_LargePanel_0, Collider: None
+Tile: 02_Floor_LargePanel_Oil.asset, Sprite: 02_Floor_LargePanel_Oil_0, Collider: None
+Tile: 03_Wall_Horizontal.asset, Sprite: 03_Wall_Horizontal_0, Collider: Grid
+Tile: 04_Wall_Vertical.asset, Sprite: 04_Wall_Vertical_0, Collider: Grid
+Tile: 05_Wall_Corner.asset, Sprite: 05_Wall_Corner_0, Collider: Grid
+Tile: 06_Door_CrewQuarters.asset, Sprite: 06_Door_CrewQuarters_0, Collider: None
+Tile: 06_Door_CrewQuarters_64x64.asset, Sprite: 06_Door_CrewQuarters_64x64_0, Collider: None
+Tile: 07_Floor_HazardStripe_Corner.asset, Sprite: 07_Floor_HazardStripe_Corner_0, Collider: None
+Tile: 07_Floor_HazardStripe_H.asset, Sprite: 07_Floor_HazardStripe_H_0, Collider: None
+Tile: 08_Floor_Detail_Grate.asset, Sprite: 08_Floor_Detail_Grate_0, Collider: None
+Tile: 08_Floor_Detail_Hatch.asset, Sprite: 08_Floor_Detail_Hatch_0, Collider: None
+Tile: 08_Floor_Detail_Vent.asset, Sprite: 08_Floor_Detail_Vent_0, Collider: None

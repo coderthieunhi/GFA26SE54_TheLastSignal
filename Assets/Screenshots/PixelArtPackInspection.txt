@@ -1,0 +1,63 @@
+--- PIXEL ART PACK INSPECTION ---
+
+TILES (PNG):
+  01_Floor_MainPlates.png: Res=64x64, PPU=64, Filter=Point
+  02_Floor_LargePanel.png: Res=64x64, PPU=64, Filter=Point
+  02_Floor_LargePanel_Oil.png: Res=64x64, PPU=64, Filter=Point
+  03_Wall_Horizontal.png: Res=64x64, PPU=64, Filter=Point
+  04_Wall_Vertical.png: Res=64x64, PPU=64, Filter=Point
+  05_Wall_Corner.png: Res=64x64, PPU=64, Filter=Point
+  06_Door_CrewQuarters.png: Res=96x64, PPU=64, Filter=Point
+  06_Door_CrewQuarters_64x64.png: Res=64x64, PPU=64, Filter=Point
+  07_Floor_HazardStripe_Corner.png: Res=64x64, PPU=64, Filter=Point
+  07_Floor_HazardStripe_H.png: Res=64x64, PPU=64, Filter=Point
+  08_Floor_Detail_Grate.png: Res=64x64, PPU=64, Filter=Point
+  08_Floor_Detail_Hatch.png: Res=64x64, PPU=64, Filter=Point
+  08_Floor_Detail_Vent.png: Res=64x64, PPU=64, Filter=Point
+
+PROPS (PNG):
+  01_Prop_CommunalTable.png: Res=128x96, PPU=64, Filter=Point
+  02_Prop_Chair.png: Res=64x64, PPU=64, Filter=Point
+  03_Prop_Lockers.png: Res=96x96, PPU=64, Filter=Point
+  04_Prop_Sofa.png: Res=128x64, PPU=64, Filter=Point
+  05_Prop_Workstation.png: Res=96x64, PPU=64, Filter=Point
+  06_Prop_StorageShelf.png: Res=64x96, PPU=64, Filter=Point
+  07_Prop_VendingMachine.png: Res=64x96, PPU=64, Filter=Point
+  08_Prop_KitchenStation.png: Res=96x96, PPU=64, Filter=Point
+  09_Prop_CargoCrate.png: Res=64x64, PPU=64, Filter=Point
+  10_Prop_BulletinBoard.png: Res=64x64, PPU=64, Filter=Point
+  11_Prop_PottedPlant.png: Res=64x64, PPU=64, Filter=Point
+  12_Prop_WallLight.png: Res=64x32, PPU=64, Filter=Point
+  13_Prop_VentilationFan.png: Res=64x64, PPU=64, Filter=Point
+  14_Prop_PersonalClutter.png: Res=64x64, PPU=64, Filter=Point
+
+PROPS_64x64 (PNG):
+  01_Prop_CommunalTable_64x64.png: Res=64x64, PPU=64, Filter=Point
+  02_Prop_Chair_64x64.png: Res=64x64, PPU=64, Filter=Point
+  03_Prop_Lockers_64x64.png: Res=64x64, PPU=64, Filter=Point
+  04_Prop_Sofa_64x64.png: Res=64x64, PPU=64, Filter=Point
+  05_Prop_Workstation_64x64.png: Res=64x64, PPU=64, Filter=Point
+  06_Prop_StorageShelf_64x64.png: Res=64x64, PPU=64, Filter=Point
+  07_Prop_VendingMachine_64x64.png: Res=64x64, PPU=64, Filter=Point
+  08_Prop_KitchenStation_64x64.png: Res=64x64, PPU=64, Filter=Point
+  09_Prop_CargoCrate_64x64.png: Res=64x64, PPU=64, Filter=Point
+  10_Prop_BulletinBoard_64x64.png: Res=64x64, PPU=64, Filter=Point
+  11_Prop_PottedPlant_64x64.png: Res=64x64, PPU=64, Filter=Point
+  12_Prop_WallLight_64x64.png: Res=64x64, PPU=64, Filter=Point
+  13_Prop_VentilationFan_64x64.png: Res=64x64, PPU=64, Filter=Point
+  14_Prop_PersonalClutter_64x64.png: Res=64x64, PPU=64, Filter=Point
+
+TILE ASSETS:
+  01_Floor_MainPlates.asset
+  02_Floor_LargePanel.asset
+  02_Floor_LargePanel_Oil.asset
+  03_Wall_Horizontal.asset
+  04_Wall_Vertical.asset
+  05_Wall_Corner.asset
+  06_Door_CrewQuarters.asset
+  06_Door_CrewQuarters_64x64.asset
+  07_Floor_HazardStripe_Corner.asset
+  07_Floor_HazardStripe_H.asset
+  08_Floor_Detail_Grate.asset
+  08_Floor_Detail_Hatch.asset
+  08_Floor_Detail_Vent.asset

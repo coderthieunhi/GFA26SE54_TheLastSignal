@@ -171,15 +171,8 @@ namespace TheLastSignal.EditorTools
 
         public static void DecorateActiveScene()
         {
-            Grid grid = Object.FindAnyObjectByType<Grid>();
-            if (grid == null)
-            {
-                GameObject gridGo = GameObject.Find("Facility_Grid") ?? GameObject.Find("Grid");
-                if (gridGo != null)
-                {
-                    grid = gridGo.GetComponent<Grid>();
-                }
-            }
+            GameObject gridGo = GameObject.Find("Facility_Grid") ?? GameObject.Find("Grid");
+            Grid grid = gridGo != null ? gridGo.GetComponent<Grid>() : Object.FindAnyObjectByType<Grid>();
 
             if (grid == null)
             {
@@ -192,11 +185,11 @@ namespace TheLastSignal.EditorTools
             Tilemap[] allTilemaps = grid.GetComponentsInChildren<Tilemap>(true);
             foreach (Tilemap tm in allTilemaps)
             {
-                if (tm.name.IndexOf("Floor", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                if (tm.name == "Floor_Tilemap" || tm.name == "Floor")
                 {
                     floorMap = tm;
                 }
-                else if (tm.name.IndexOf("Wall", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                else if (tm.name == "Wall_Tilemap" || tm.name == "Walls")
                 {
                     wallMap = tm;
                 }
@@ -218,14 +211,23 @@ namespace TheLastSignal.EditorTools
             Tile fWhite = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_White.asset");
             Tile fDark = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Dark.asset");
             Tile fGrate = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Grate.asset");
-            Tile fBio = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Biohazard.asset");
             Tile fDiamond = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Diamond.asset");
             Tile fHatch = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Subfloor_Hatch.asset");
-            Tile fHazTop = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Hazard_Top.asset");
-            Tile fHazBot = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Hazard_Bottom.asset");
-            Tile fHazLeft = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Hazard_Left.asset");
-            Tile fHazRight = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Hazard_Right.asset");
             Tile fR2C5 = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_R2C5.asset");
+            Tile fTrans = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Transition_Strip.asset");
+
+            Tile cTL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_TL.asset");
+            Tile cT = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_T.asset");
+            Tile cTLabel = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_T_Label.asset");
+            Tile cTR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_TR.asset");
+            Tile cL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_L.asset");
+            Tile cR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_R.asset");
+            Tile cBL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_BL.asset");
+            Tile cB = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_B.asset");
+            Tile cBR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Containment_BR.asset");
+
+            Tile sNW = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Spill_NW.asset");
+            Tile sSE = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Spill_SE.asset");
 
             // --- LOAD WALL TILES ---
             Tile wBulkhead = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Bulkhead.asset");
@@ -254,6 +256,33 @@ namespace TheLastSignal.EditorTools
             Tile wCornerBR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Corner_BR.asset");
 
             // ==========================================
+            // 0. CLEAR OUTSIDE BORDER TILES (Void perimeter only, preserving corridors)
+            // ==========================================
+            Undo.RecordObjects(new UnityEngine.Object[] { floorMap, wallMap }, "Clear MedBay Outside Border Tiles");
+            // Clear Northwest void above West corridor bend (X in [-30, -21], Y in [27, 35])
+            for (int ox = -30; ox <= -21; ox++)
+            {
+                for (int oy = 27; oy <= 35; oy++)
+                {
+                    // Do not touch MedBay West wall at X = -21
+                    if (ox == -21) continue;
+                    Vector3Int pos = new Vector3Int(ox, oy, 0);
+                    floorMap.SetTile(pos, null);
+                    if (wallMap != null) wallMap.SetTile(pos, null);
+                }
+            }
+            // Clear Far West void (X in [-35, -27], Y in [18, 26])
+            for (int ox = -35; ox <= -27; ox++)
+            {
+                for (int oy = 18; oy <= 26; oy++)
+                {
+                    Vector3Int pos = new Vector3Int(ox, oy, 0);
+                    floorMap.SetTile(pos, null);
+                    if (wallMap != null) wallMap.SetTile(pos, null);
+                }
+            }
+
+            // ==========================================
             // 1. PAINT INTERIOR FLOOR: X in [-20, -12], Y in [24, 31]
             // ==========================================
             Undo.RecordObject(floorMap, "Decorate MedBay Floor");
@@ -264,58 +293,40 @@ namespace TheLastSignal.EditorTools
                 {
                     Vector3Int pos = new Vector3Int(x, y, 0);
 
-                    // Operating Table sits directly over center drainage grates at (-17, 27) and (-16, 27) (shifted down 1 row, left 1 col)
-                    if ((x == -17 || x == -16) && y == 27)
-                    {
-                        floorMap.SetTile(pos, fGrate ?? fDark ?? fClean);
-                    }
-                    // Hazard Quarantine Border directly surrounding the central grates (shifted down 1 row, left 1 col):
-                    // Top border: y = 28, x in [-18, -15]
-                    else if (y == 28 && x >= -18 && x <= -15)
-                    {
-                        floorMap.SetTile(pos, fHazTop ?? fClean);
-                    }
-                    // Bottom border: y = 26, x in [-18, -15]
-                    else if (y == 26 && x >= -18 && x <= -15)
-                    {
-                        floorMap.SetTile(pos, fHazBot ?? fClean);
-                    }
-                    // Left border: x = -18, y = 27
-                    else if (x == -18 && y == 27)
-                    {
-                        floorMap.SetTile(pos, fHazLeft ?? fClean);
-                    }
-                    // Right border: x = -15, y = 27
-                    else if (x == -15 && y == 27)
-                    {
-                        floorMap.SetTile(pos, fHazRight ?? fClean);
-                    }
-                    // Biohazard dried fluids / stained markings:
-                    else if ((x == -19 && y == 28) || (x == -13 && y == 25) || (x == -18 && y == 26))
-                    {
-                        floorMap.SetTile(pos, fBio ?? fDark ?? fClean);
-                    }
-                    // Sub-floor conduit hatch in NW area:
-                    else if (x == -19 && y == 27)
-                    {
-                        floorMap.SetTile(pos, fHatch ?? fDiamond ?? fClean);
-                    }
-                    // Heavy diamond tread plate at East entrance doorway:
-                    else if (x == -12 && (y == 27 || y == 28))
-                    {
-                        floorMap.SetTile(pos, fDiamond ?? fClean);
-                    }
-                    // Heavy diamond tread plate at West corridor doorway (clear walking path!):
-                    else if (x == -20 && (y == 24 || y == 25))
-                    {
-                        floorMap.SetTile(pos, fDiamond ?? fClean);
-                    }
-                    // Top 2 rows: R2C5 diamond plate floor
-                    else if (y == 31 || y == 30)
+                    // Row 31: Diamond-plate medical service floor
+                    if (y == 31)
                     {
                         floorMap.SetTile(pos, fR2C5 ?? fWhite ?? fClean);
                     }
-                    // Default dark weathered metal floor:
+                    // Row 30: Physical expansion joint threshold transition
+                    else if (y == 30)
+                    {
+                        floorMap.SetTile(pos, fTrans ?? fClean);
+                    }
+                    // Clean Restrained Containment Perimeter around Autopsy Table (X in [-18, -15], Y in [26, 28])
+                    // Top row:
+                    else if (y == 28 && x == -18) floorMap.SetTile(pos, cTL ?? fDark);
+                    else if (y == 28 && x == -17) floorMap.SetTile(pos, cT ?? fDark);
+                    else if (y == 28 && x == -16) floorMap.SetTile(pos, cTLabel ?? fDark); // Single SPECIMEN CONTAINMENT label
+                    else if (y == 28 && x == -15) floorMap.SetTile(pos, cTR ?? fDark);
+                    // Mid row:
+                    else if (y == 27 && x == -18) floorMap.SetTile(pos, cL ?? fDark);
+                    else if (y == 27 && (x == -17 || x == -16)) floorMap.SetTile(pos, fGrate ?? fDark); // Drainage grates under table
+                    else if (y == 27 && x == -15) floorMap.SetTile(pos, cR ?? fDark);
+                    // Bottom row:
+                    else if (y == 26 && x == -18) floorMap.SetTile(pos, cBL ?? fDark);
+                    else if (y == 26 && (x == -17 || x == -16)) floorMap.SetTile(pos, cB ?? fDark);
+                    else if (y == 26 && x == -15) floorMap.SetTile(pos, cBR ?? fDark);
+                    // Unique Organic Stains:
+                    else if (x == -19 && y == 28) floorMap.SetTile(pos, sNW ?? fDark); // NW chemical spill
+                    else if (x == -13 && y == 25) floorMap.SetTile(pos, sSE ?? fDark); // SE drag mark
+                    // Sub-floor conduit hatch in NW area:
+                    else if (x == -19 && y == 27) floorMap.SetTile(pos, fHatch ?? fDiamond ?? fClean);
+                    // Heavy diamond tread plate at East entrance doorway:
+                    else if (x == -12 && (y == 27 || y == 28)) floorMap.SetTile(pos, fDiamond ?? fClean);
+                    // Heavy diamond tread plate at West corridor doorway:
+                    else if (x == -20 && (y == 24 || y == 25)) floorMap.SetTile(pos, fDiamond ?? fClean);
+                    // Default modular steel floor:
                     else
                     {
                         floorMap.SetTile(pos, fDark ?? fClean);
@@ -331,6 +342,13 @@ namespace TheLastSignal.EditorTools
             // West entrance to Loop_West (X = -21, Y in [24, 25])
             floorMap.SetTile(new Vector3Int(-21, 24, 0), fDiamond ?? fClean);
             floorMap.SetTile(new Vector3Int(-21, 25, 0), fDiamond ?? fClean);
+
+            // West Corridor Bend (Loop_West_Bend_North) connection guarantee
+            for (int bx = -23; bx <= -22; bx++)
+            {
+                floorMap.SetTile(new Vector3Int(bx, 24, 0), fDiamond ?? fClean);
+                floorMap.SetTile(new Vector3Int(bx, 25, 0), fDiamond ?? fClean);
+            }
 
             // ==========================================
             // 2. PAINT PERIMETER WALLS & 4 SQUARE CORNERS
@@ -382,27 +400,28 @@ namespace TheLastSignal.EditorTools
                 wallMap.SetTile(new Vector3Int(-11, 25, 0), wPipesLower ?? wBulkhead);
                 wallMap.SetTile(new Vector3Int(-11, 24, 0), wPipesLower ?? wBulkhead);
 
-                // --- 4 CORNERS: R3C3 (Oxygen Manifold) as junction connectors ---
-                wallMap.SetTile(new Vector3Int(-21, 32, 0), wO2 ?? wBulkhead); // Top-Left
-                wallMap.SetTile(new Vector3Int(-11, 32, 0), wO2 ?? wBulkhead); // Top-Right
-                wallMap.SetTile(new Vector3Int(-21, 23, 0), wO2 ?? wBulkhead); // Bottom-Left
-                wallMap.SetTile(new Vector3Int(-11, 23, 0), wO2 ?? wBulkhead); // Bottom-Right
+                // --- 4 CORNERS: Proper 90-degree pipe corner turns connecting wall pipe runs ---
+                wallMap.SetTile(new Vector3Int(-21, 32, 0), wCornerTL ?? wBulkhead); // Top-Left
+                wallMap.SetTile(new Vector3Int(-11, 32, 0), wCornerTR ?? wBulkhead); // Top-Right
+                wallMap.SetTile(new Vector3Int(-21, 23, 0), wCornerBL ?? wBulkhead); // Bottom-Left
+                wallMap.SetTile(new Vector3Int(-11, 23, 0), wCornerBR ?? wBulkhead); // Bottom-Right
+
+                // --- WEST CORRIDOR BEND WALLS GUARANTEE ---
+                for (int bx = -23; bx <= -22; bx++)
+                {
+                    wallMap.SetTile(new Vector3Int(bx, 26, 0), hPipe ?? wBulkhead);
+                    wallMap.SetTile(new Vector3Int(bx, 23, 0), hPipe ?? wBulkhead);
+                }
             }
 
             // ==========================================
             // 3. CONFIGURE BOTH DOORS (EAST & WEST)
             // ==========================================
-            // Standard URP 2D Sprite Unlit Material (Preserves 100% original texture colors without black silhouette bugs)
-            Material defaultSpriteMat = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Unlit-Default.mat");
+            Material defaultSpriteMat = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat");
             if (defaultSpriteMat == null)
             {
-                string matPath = AssetDatabase.GUIDToAssetPath("9dfc825aed78fcd4ba02077103263b40");
-                if (!string.IsNullOrEmpty(matPath)) defaultSpriteMat = AssetDatabase.LoadAssetAtPath<Material>(matPath);
-            }
-            if (defaultSpriteMat == null)
-            {
-                Shader unlitShader = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default") ?? Shader.Find("Sprites/Default");
-                if (unlitShader != null) defaultSpriteMat = new Material(unlitShader);
+                Shader litShader = Shader.Find("Universal Render Pipeline/2D/Sprite-Lit-Default");
+                if (litShader != null) defaultSpriteMat = new Material(litShader);
             }
 
             Sprite doorVClosed = LoadSprite($"{PropsSourceDir}/Door_MedBay_Vertical_Closed.png");
@@ -535,22 +554,21 @@ namespace TheLastSignal.EditorTools
             // 4. SCI-FI HORROR PROPS & PRECISE PLACEMENT
             // (Using 100% original unlit horror pixel-art colors without light tinting)
             // ==========================================
-            // 1. Central Operating Table (Centered over shifted drainage grates at -16.5f, 27.0f)
-            CreateProp(propsRoot, "Prop_MedBay_Operating_Table", new Vector3(-16.50f, 27.00f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.55f, 0.55f, 1f));
+            // 1. Central Operating Table (Centered squarely over the 2 drainage grates at -16.0f, 27.35f, inside hazard boundary)
+            CreateProp(propsRoot, "Prop_MedBay_Operating_Table", new Vector3(-16.00f, 27.35f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.55f, 0.55f, 1f));
 
-            // 2. Hospital Bed (Gurney / Body Bag placed right beside Operating Table at -14.80f, 27.00f)
-            CreateProp(propsRoot, "Prop_MedBay_Hospital_Bed", new Vector3(-14.80f, 27.00f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.55f, 0.55f, 1f));
+            // 2. Mobile Surgical Tool Cart (Placed cleanly beside Operating Table at -14.45f, 27.35f, cleanly inside boundary with no stripe intersection)
+            CreateProp(propsRoot, "Prop_MedBay_Surgical_Cart", new Vector3(-14.45f, 27.35f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.50f, 0.50f, 1f));
 
-            // 3. Mobile Surgical Tool Cart (Placed beside Operating Table at -14.80f, 27.90f)
-            CreateProp(propsRoot, "Prop_MedBay_Surgical_Cart", new Vector3(-14.80f, 27.90f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.50f, 0.50f, 1f));
+            // 3. Body Bag (Casualty zipped in body bag placed on the floor beside the biohazard blood puddle at -14.50f, 25.20f)
+            CreateProp(propsRoot, "Prop_MedBay_Body_Bag", new Vector3(-14.50f, 25.20f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.55f, 0.55f, 1f));
 
             // 4. Medicine Cabinet (Top-left corner: West wall is at X=-20.0, North wall is at Y=32.0)
             // Left edge = -19.95 (wall -20.0), Top edge = 31.96 (wall 32.0). 100% flush without wall overlap!
             CreateProp(propsRoot, "Prop_MedBay_Medicine_Cabinet", new Vector3(-19.20f, 31.15f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.75f, 0.75f, 1f));
 
-            // 5. Wash Station (Mounted flush against North wall Y=32.0, pipe connects directly to bulkhead)
-            // Top of pipe = 31.99 (touches wall at 32.0)
-            CreateProp(propsRoot, "Prop_MedBay_Wash_Station", new Vector3(-14.50f, 31.40f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.70f, 0.70f, 1f));
+            // 5. Wash Station (Mounted onto North wall at Y=31.60 so the intake pipe visually plugs directly into the bulkhead)
+            CreateProp(propsRoot, "Prop_MedBay_Wash_Station", new Vector3(-15.00f, 31.60f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 2, defaultSpriteMat, true, new Vector3(0.70f, 0.70f, 1f));
 
             // 6. EKG Console (Top-right corner: East wall is at X=-11.0, North wall is at Y=32.0)
             // Right edge = -11.03 (wall -11.0), Top edge = 31.96 (wall 32.0). 100% flush without wall overlap!
@@ -589,8 +607,361 @@ namespace TheLastSignal.EditorTools
                 EditorUtility.SetDirty(taskLoc);
             }
 
+            // ==========================================
+            // 7. MEDBAY ATMOSPHERIC & TASK LIGHTING
+            // ==========================================
+            SetupMedBayLighting();
+
+            // ==========================================
+            // 8. MEDBAY WEST CORRIDOR DECORATION (DIRECTION A)
+            // ==========================================
+            DecorateWestCorridor();
+
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             EditorSceneManager.SaveOpenScenes();
+        }
+
+        public static void SetupMedBayLighting()
+        {
+            GameObject oldLighting = GameObject.Find("MedBay_Lighting");
+            if (oldLighting != null) Undo.DestroyObjectImmediate(oldLighting);
+
+            GameObject lightingRoot = new GameObject("MedBay_Lighting");
+            Undo.RegisterCreatedObjectUndo(lightingRoot, "Create MedBay_Lighting");
+
+            System.Action<string, Vector3, Color, float, float, float, bool> addLight = (name, pos, color, intensity, innerR, outerR, addFlicker) =>
+            {
+                GameObject go = new GameObject(name);
+                go.transform.SetParent(lightingRoot.transform);
+                go.transform.position = pos;
+
+                Light2D light = go.AddComponent<Light2D>();
+                light.lightType = Light2D.LightType.Point;
+                light.color = color;
+                light.intensity = intensity;
+                light.pointLightInnerRadius = innerR;
+                light.pointLightOuterRadius = outerR;
+                light.falloffIntensity = 0.65f;
+
+                if (addFlicker)
+                {
+                    var flicker = go.AddComponent<TheLastSignal.Environment.VisualPass.VP_FlickerLight>();
+                    var so = new SerializedObject(flicker);
+                    so.FindProperty("mode").enumValueIndex = 1; // IrregularGlitches
+                    so.FindProperty("baseIntensity").floatValue = intensity;
+                    so.FindProperty("glitchChance").floatValue = 0.04f;
+                    so.ApplyModifiedProperties();
+                }
+            };
+
+            // Layer 1: Base Visibility Ambient Fill - lifts surrounding floor and seam readability
+            addLight("Light_MedBay_Room_Ambient", new Vector3(-15.50f, 28.00f, 0f), new Color(0.38f, 0.48f, 0.55f, 1f), 0.95f, 1.5f, 9.0f, false);
+
+            // Layer 2: Functional Task & Focal Lights
+            // Surgical Lamp: Centered directly at lamp head (-16.15, 27.80) with smooth falloff extending across boundary
+            addLight("Light_MedBay_Surgical_Lamp", new Vector3(-16.15f, 27.80f, 0f), new Color(0.85f, 0.94f, 1.0f, 1f), 1.55f, 0.8f, 5.0f, false);
+            // Diagnostic Monitor: Localized phosphor green accent
+            addLight("Light_MedBay_EKG_Screen", new Vector3(-11.55f, 31.15f, 0f), new Color(0.20f, 0.88f, 0.42f, 1f), 0.80f, 0.15f, 1.4f, false);
+            // Ceiling West: Balanced overhead ambient fill
+            addLight("Light_MedBay_Ceiling_West", new Vector3(-18.50f, 29.50f, 0f), new Color(0.70f, 0.82f, 0.90f, 1f), 0.90f, 0.5f, 3.5f, true);
+            // Hand Wash Station: Warm tungsten task lamp
+            addLight("Light_MedBay_WashStation", new Vector3(-15.00f, 31.60f, 0f), new Color(0.95f, 0.80f, 0.52f, 1f), 0.75f, 0.2f, 1.6f, false);
+            // South Casualty Fill: Restrained low-key fill
+            addLight("Light_MedBay_South_Ambient", new Vector3(-14.50f, 25.20f, 0f), new Color(0.30f, 0.42f, 0.50f, 1f), 0.65f, 0.4f, 3.0f, false);
+
+            // Contact drop shadows
+            Sprite shadowSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Sprites/Environments/VentShaft/Props/VP_Prop_Contact_Shadow.png");
+            Material mat = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Materials/M_Sprite_Lit_PixelSmooth.mat")
+                ?? AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Environment/Materials/M_Sprite_Lit_PixelSmooth.mat");
+
+            string[] sNames = new string[] { "Shadow_MedBay_Table", "Shadow_MedBay_Cart", "Shadow_MedBay_BodyBag", "Shadow_MedBay_OxygenRack" };
+            Vector3[] sPositions = new Vector3[] { new Vector3(-16.00f, 26.65f, 0f), new Vector3(-14.45f, 26.80f, 0f), new Vector3(-14.50f, 25.05f, 0f), new Vector3(-11.75f, 24.25f, 0f) };
+            Vector3[] sScales = new Vector3[] { new Vector3(2.2f, 0.6f, 1f), new Vector3(0.85f, 0.35f, 1f), new Vector3(1.2f, 0.4f, 1f), new Vector3(1.1f, 0.5f, 1f) };
+            float[] sAlphas = new float[] { 0.50f, 0.55f, 0.50f, 0.50f };
+
+            for (int i = 0; i < sNames.Length; i++)
+            {
+                GameObject sGo = new GameObject(sNames[i]);
+                sGo.transform.SetParent(lightingRoot.transform);
+                sGo.transform.position = sPositions[i];
+                sGo.transform.localScale = sScales[i];
+
+                SpriteRenderer sr = sGo.AddComponent<SpriteRenderer>();
+                sr.sprite = shadowSprite;
+                if (mat != null) sr.sharedMaterial = mat;
+                sr.color = new Color(0f, 0f, 0f, sAlphas[i]);
+                sr.sortingLayerName = "Floor";
+                sr.sortingOrder = 3;
+            }
+        }
+
+        [MenuItem("Tools/Facility/Decorate MedBay West Corridor (Direction A)", false, 52)]
+        public static void DecorateWestCorridor()
+        {
+            GameObject gridGo = GameObject.Find("Facility_Grid") ?? GameObject.Find("Grid");
+            if (gridGo == null) return;
+
+            Tilemap floorMap = null;
+            Tilemap wallMap = null;
+            foreach (var tm in gridGo.GetComponentsInChildren<Tilemap>())
+            {
+                if (tm.name.ToLower().Contains("floor")) floorMap = tm;
+                else if (tm.name.ToLower().Contains("wall")) wallMap = tm;
+            }
+            if (floorMap == null || wallMap == null) return;
+
+            Undo.RecordObjects(new UnityEngine.Object[] { floorMap, wallMap }, "Decorate MedBay West Corridor");
+
+            // Load Tiles
+            // Load Tiles - MedBay Active Dark Steel Suite & Bulkheads
+            Tile fDark = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Dark.asset");
+            Tile fDarkStained = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Dark_Stained.asset") ?? fDark;
+            Tile fDarkScratched = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Dark_Scratched.asset") ?? fDark;
+            Tile fDarkRusted = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Dark_Rusted.asset") ?? fDark;
+            Tile fDiamond = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Diamond.asset") ?? fDark;
+            Tile fGrate = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Grate.asset") ?? fDiamond;
+            Tile fHatch = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Subfloor_Hatch.asset") ?? fDiamond;
+            Tile fTrans = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Floor_Transition_Strip.asset") ?? fDiamond;
+
+            Tile wBulkhead = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Bulkhead.asset");
+            Tile wPipesCleanH = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Pipes_Clean_H.asset") ?? wBulkhead;
+            Tile wPipesCleanNorth = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Pipes_Clean_North.asset") ?? wBulkhead;
+            Tile wPipesCleanV = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Pipes_Clean_V.asset") ?? wBulkhead;
+            Tile wPipesCleanVEast = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Pipes_Clean_V_East.asset") ?? wPipesCleanV;
+            Tile wCornerTL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Corner_TL.asset") ?? wBulkhead;
+            Tile wCornerBL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Corner_BL.asset") ?? wBulkhead;
+            Tile wInnerCornerBR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Inner_Corner_BR.asset") ?? wBulkhead;
+            Tile wWarningNotice = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/MedBay_Wall_Warning_Notice.asset") ?? wBulkhead;
+
+            // ==========================================
+            // 1. HORIZONTAL DECONTAMINATION STRETCH (X in [-23, -21], Y in [24, 25])
+            // 100% authentic uniform MedBay Floor (MedBay_Floor_Dark with 4 corner rivets)
+            // ==========================================
+            floorMap.SetTile(new Vector3Int(-21, 25, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-21, 24, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-22, 25, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-22, 24, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-23, 25, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-23, 24, 0), fDark);
+
+            // North Wall (Y = 26) - Clean horizontal pipes running uninterrupted across the entire north wall into corner
+            wallMap.SetTile(new Vector3Int(-21, 26, 0), wPipesCleanNorth);
+            wallMap.SetTile(new Vector3Int(-22, 26, 0), wPipesCleanNorth);
+            wallMap.SetTile(new Vector3Int(-23, 26, 0), wPipesCleanNorth);
+            wallMap.SetTile(new Vector3Int(-24, 26, 0), wPipesCleanNorth);
+            wallMap.SetTile(new Vector3Int(-25, 26, 0), wPipesCleanNorth);
+            wallMap.SetTile(new Vector3Int(-26, 26, 0), wCornerTL);
+
+            // South Wall (Y = 23) - Exact copper + blue pipes matching user reference (VP8 South Trunk)
+            wallMap.SetTile(new Vector3Int(-21, 23, 0), wPipesCleanH);
+            wallMap.SetTile(new Vector3Int(-22, 23, 0), wPipesCleanH);
+            wallMap.SetTile(new Vector3Int(-23, 23, 0), wInnerCornerBR); // Seamless mathematical inner corner connecting Clean_H to Clean_V_East!
+            wallMap.SetTile(new Vector3Int(-24, 23, 0), null); // Clear misplaced wall to free corridor lane!
+
+            // ==========================================
+            // 2. 90-DEGREE CORRIDOR BEND (X in [-25, -24], Y in [24, 25])
+            // ==========================================
+            floorMap.SetTile(new Vector3Int(-25, 25, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-24, 25, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-25, 24, 0), fDark);
+            floorMap.SetTile(new Vector3Int(-24, 24, 0), fDark);
+
+            wallMap.SetTile(new Vector3Int(-26, 25, 0), wPipesCleanV);
+            wallMap.SetTile(new Vector3Int(-26, 24, 0), wPipesCleanV);
+
+            // ==========================================
+            // 3. ENTIRE VERTICAL TRANSIT SPINE (X in [-25, -24], Y from 23 down to -45)
+            // 100% continuous, uniform MedBay Floor & symmetrical pipe walls without broken fragments!
+            // ==========================================
+            for (int y = 23; y >= -45; y--)
+            {
+                // Walkway floor: 100% MedBay_Floor_Dark
+                floorMap.SetTile(new Vector3Int(-25, y, 0), fDark);
+                floorMap.SetTile(new Vector3Int(-24, y, 0), fDark);
+
+                // West Wall (X = -26): 100% continuous vertical conduits
+                wallMap.SetTile(new Vector3Int(-26, y, 0), wPipesCleanV);
+
+                // East Wall (X = -23): 100% continuous symmetrical vertical conduits (from Y=22 down to -45)
+                if (y <= 22)
+                {
+                    wallMap.SetTile(new Vector3Int(-23, y, 0), wPipesCleanVEast);
+                }
+            }
+
+            // ==========================================
+            // 4. SOUTHERN SECTOR JUNCTION & BOTTOM TURN (Y in [-45, -48], X in [-26, -19])
+            // ==========================================
+            // Y = -46 and -47: Corridor turns East
+            for (int y = -46; y >= -47; y--)
+            {
+                // West Wall continues to the bottom-left corner
+                wallMap.SetTile(new Vector3Int(-26, y, 0), wPipesCleanV);
+
+                // Walkway floor turns East from X=-25 to X=-19
+                for (int x = -25; x <= -19; x++)
+                {
+                    floorMap.SetTile(new Vector3Int(x, y, 0), fDark);
+                }
+            }
+
+            // Outer Bottom-Left Corner (-26, -48)
+            wallMap.SetTile(new Vector3Int(-26, -48, 0), wCornerBL);
+
+            // South Wall of bottom corridor (Y = -48, X in [-25, -19])
+            for (int x = -25; x <= -19; x++)
+            {
+                wallMap.SetTile(new Vector3Int(x, -48, 0), wPipesCleanH);
+            }
+
+            // North Wall of bottom corridor (Y = -45, X in [-22, -19])
+            for (int x = -22; x <= -19; x++)
+            {
+                wallMap.SetTile(new Vector3Int(x, -45, 0), wPipesCleanNorth);
+            }
+
+            // Inner Corner at (-23, -45) - Structural Bulkhead Pillar
+            wallMap.SetTile(new Vector3Int(-23, -45, 0), wBulkhead);
+
+            // Flanking boundary wall at (-19, -42..-44)
+            wallMap.SetTile(new Vector3Int(-19, -42, 0), wBulkhead);
+            wallMap.SetTile(new Vector3Int(-19, -43, 0), wBulkhead);
+            wallMap.SetTile(new Vector3Int(-19, -44, 0), wBulkhead);
+
+            // ==========================================
+            // 5. PROPS & ENVIRONMENTAL STORYTELLING
+            // ==========================================
+            SetupWestCorridorProps();
+
+            // ==========================================
+            // 6. ATMOSPHERIC LIGHTING ALONG FULL CORRIDOR
+            // ==========================================
+            SetupWestCorridorLighting();
+        }
+
+        public static void SetupWestCorridorProps()
+        {
+            GameObject oldRoot = GameObject.Find("MedBay_WestCorridor_Decorations");
+            if (oldRoot != null) Undo.DestroyObjectImmediate(oldRoot);
+
+            GameObject decorRoot = new GameObject("MedBay_WestCorridor_Decorations");
+            Undo.RegisterCreatedObjectUndo(decorRoot, "Create MedBay_WestCorridor_Decorations");
+
+            Material litMat = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat");
+
+            // 1. Overturned Surgical Cart at Corner Bend (-24.15f, 24.15f)
+            CreateProp(decorRoot, "VP5_Prop_Overturned_Cart", new Vector3(-24.15f, 24.15f, 0f), new Vector2(0.8f, 0.6f), Vector2.zero, "Obstacles", 2, litMat, true, new Vector3(0.52f, 0.52f, 1f));
+
+            // 2. Stainless Instrument Supply Cart tucked against West wall at (-25.55f, 22.20f)
+            CreateProp(decorRoot, "Prop_MedBay_Biohazard_Bin", new Vector3(-25.55f, 22.20f, 0f), new Vector2(0.5f, 0.5f), Vector2.zero, "Obstacles", 3, litMat, true, new Vector3(0.40f, 0.40f, 1f));
+
+            // 3. Blood Drag Mark trailing along the floor (-24.50f, 21.00f)
+            var bloodDrag = CreateProp(decorRoot, "VP5_Decal_BloodDrag_Long", new Vector3(-24.50f, 21.00f, 0f), Vector2.zero, Vector2.zero, "Floor", 2, litMat, false, new Vector3(0.75f, 0.75f, 1f));
+            if (bloodDrag != null)
+            {
+                bloodDrag.transform.rotation = Quaternion.Euler(0f, 0f, 270f);
+            }
+
+            // 4. Blood Drag Turn Decal at Corner Bend (-24.50f, 24.40f)
+            CreateProp(decorRoot, "VP5_Decal_BloodDrag_SE_Pixel", new Vector3(-24.50f, 24.40f, 0f), Vector2.zero, Vector2.zero, "Floor", 2, litMat, false, new Vector3(0.65f, 0.65f, 1f));
+
+            // 5. Claw Scrapes Decal on metal wall (-25.90f, 23.50f)
+            CreateProp(decorRoot, "VP9_Decal_Claw_Scrapes", new Vector3(-25.90f, 23.50f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 4, litMat, false, new Vector3(0.60f, 0.60f, 1f));
+
+            // 6. Bloody Handprint Slide on metal wall (-25.92f, 21.80f)
+            CreateProp(decorRoot, "VP9_Decal_BloodHand_Slide", new Vector3(-25.92f, 21.80f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 4, litMat, false, new Vector3(0.60f, 0.60f, 1f));
+
+            // 7. Wall Emergency First Aid Board (-23.08f, 21.50f)
+            CreateProp(decorRoot, "VP5_Prop_Wall_Emergency_Board", new Vector3(-23.08f, 21.50f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 4, litMat, false, new Vector3(0.60f, 0.60f, 1f));
+
+            // 8. Pipe Valve Wheel (-23.08f, 17.50f)
+            CreateProp(decorRoot, "VP6_Prop_Valve_Wheel", new Vector3(-23.08f, 17.50f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 4, litMat, false, new Vector3(0.65f, 0.65f, 1f));
+
+            // 10. Quarantine Notice Stencil on Decon bulkhead wall (-21.90f, 25.80f)
+            CreateProp(decorRoot, "MedBay_Decal_Quarantine", new Vector3(-21.90f, 25.80f, 0f), Vector2.zero, Vector2.zero, "Obstacles", 4, litMat, false, new Vector3(0.65f, 0.65f, 1f));
+
+            // 11. Dropped Medical Clipboard on the ground near corner turn (-23.85f, 24.30f)
+            var clip = CreateProp(decorRoot, "VP5_Prop_Medical_Clipboard", new Vector3(-23.85f, 24.30f, 0f), Vector2.zero, Vector2.zero, "Floor", 2, litMat, false, new Vector3(0.55f, 0.55f, 1f));
+            if (clip != null)
+            {
+                clip.transform.rotation = Quaternion.Euler(0f, 0f, 35f);
+            }
+        }
+
+        public static void SetupWestCorridorLighting()
+        {
+            var oldLight = GameObject.Find("Light_WestCorridor_Amber");
+            if (oldLight != null) Undo.DestroyObjectImmediate(oldLight);
+
+            GameObject oldLightRoot = GameObject.Find("MedBay_WestCorridor_Lighting");
+            if (oldLightRoot != null) Undo.DestroyObjectImmediate(oldLightRoot);
+
+            GameObject lightRoot = new GameObject("MedBay_WestCorridor_Lighting");
+            Undo.RegisterCreatedObjectUndo(lightRoot, "Create MedBay_WestCorridor_Lighting");
+
+            Light2D AddPointLight(string name, Vector3 pos, Color col, float intensity, float outerRad, float innerRad, bool flicker)
+            {
+                GameObject go = new GameObject(name);
+                go.transform.SetParent(lightRoot.transform);
+                go.transform.position = pos;
+
+                var l = go.AddComponent<Light2D>();
+                l.lightType = Light2D.LightType.Point;
+                l.color = col;
+                l.intensity = intensity;
+                l.pointLightInnerRadius = innerRad;
+                l.pointLightOuterRadius = outerRad;
+                l.falloffIntensity = 0.60f;
+                l.shadowsEnabled = false;
+
+                if (flicker)
+                {
+                    var fl = go.AddComponent<TheLastSignal.Juice.FlickeringLight>();
+                    fl.minIntensity = 0.45f;
+                    fl.maxIntensity = 1.45f;
+                    fl.flickerChance = 0.15f;
+                }
+                return l;
+            }
+
+            // 1. Amber Warning Light at Corner Bend (Flickering alarm light)
+            AddPointLight("Light_CorridorW_Alarm_Amber", new Vector3(-24.50f, 24.50f, 0f), new Color(1.0f, 0.60f, 0.15f, 1f), 1.45f, 5.0f, 0.5f, true);
+
+            // 2. Cyan Decontamination Overhead Tube (Airlock transition right outside MedBay West door)
+            AddPointLight("Light_CorridorW_Decon_Tube", new Vector3(-22.00f, 24.80f, 0f), new Color(0.72f, 0.90f, 1.0f, 1f), 1.35f, 5.2f, 0.5f, false);
+
+            // 3. Sterile Cyan Point Light (Sterile clinical glow on upper spine)
+            AddPointLight("Light_CorridorW_Sterile_Cyan", new Vector3(-24.50f, 20.50f, 0f), new Color(0.65f, 0.88f, 1.0f, 1f), 1.35f, 5.5f, 0.5f, false);
+
+            // 4. Cool Steel Transit Light (Flanking Crew Quarters)
+            AddPointLight("Light_CorridorW_Spine_12", new Vector3(-24.50f, 12.50f, 0f), new Color(0.40f, 0.65f, 0.88f, 1f), 1.25f, 6.0f, 0.5f, false);
+
+            // 5. Amber Service Light (Between Crew Quarters & Mess Hall)
+            AddPointLight("Light_CorridorW_Spine_04", new Vector3(-24.50f, 4.00f, 0f), new Color(1.0f, 0.68f, 0.25f, 1f), 1.35f, 6.0f, 0.5f, true);
+
+            // 6. Cool Cyan Light (Flanking Mess Hall exterior)
+            AddPointLight("Light_CorridorW_Spine_M04", new Vector3(-24.50f, -4.00f, 0f), new Color(0.65f, 0.88f, 1.0f, 1f), 1.25f, 6.0f, 0.5f, false);
+
+            // 7. Steel Maintenance Light (Mid-corridor)
+            AddPointLight("Light_CorridorW_Spine_M12", new Vector3(-24.50f, -12.00f, 0f), new Color(0.40f, 0.65f, 0.88f, 1f), 1.25f, 6.0f, 0.5f, false);
+
+            // 8. Amber Alarm Light (Mid-south transit)
+            AddPointLight("Light_CorridorW_Spine_M20", new Vector3(-24.50f, -20.00f, 0f), new Color(1.0f, 0.60f, 0.15f, 1f), 1.35f, 6.0f, 0.5f, true);
+
+            // 9. Cool Cyan Light (Lower spine)
+            AddPointLight("Light_CorridorW_Spine_M28", new Vector3(-24.50f, -28.00f, 0f), new Color(0.65f, 0.88f, 1.0f, 1f), 1.25f, 6.0f, 0.5f, false);
+
+            // 10. Steel Maintenance Light (Approaching Cargo/Power sector)
+            AddPointLight("Light_CorridorW_Spine_M36", new Vector3(-24.50f, -36.00f, 0f), new Color(0.40f, 0.65f, 0.88f, 1f), 1.25f, 6.0f, 0.5f, false);
+
+            // 11. Cyan Southern Light (Approaching southern junction)
+            AddPointLight("Light_CorridorW_Spine_M42", new Vector3(-24.50f, -42.00f, 0f), new Color(0.65f, 0.88f, 1.0f, 1f), 1.35f, 6.0f, 0.5f, false);
+
+            // 12. Amber Southern Junction Warning Light (At bottom corner turn)
+            AddPointLight("Light_CorridorW_Junction_Amber", new Vector3(-24.50f, -46.50f, 0f), new Color(1.0f, 0.60f, 0.15f, 1f), 1.45f, 6.5f, 0.5f, true);
+
+            // 13. Deep Storage / Power Relay Eastbound Run Light
+            AddPointLight("Light_CorridorW_SouthEast_Run", new Vector3(-18.00f, -46.50f, 0f), new Color(0.60f, 0.85f, 1.0f, 1f), 1.25f, 6.5f, 0.5f, false);
         }
 
         private static GameObject CreateIndicatorLight(GameObject parent, DoorController door, Vector3 position, Sprite red, Sprite green, Material mat)
@@ -608,10 +979,11 @@ namespace TheLastSignal.EditorTools
 
             Light2D light = lightGo.AddComponent<Light2D>();
             light.lightType = Light2D.LightType.Point;
-            light.color = new Color(1.0f, 0.18f, 0.18f, 1.0f);
-            light.intensity = 1.2f;
-            light.pointLightOuterRadius = 2.0f;
-            light.pointLightInnerRadius = 0.2f;
+            light.color = new Color(0.88f, 0.18f, 0.18f, 1.0f);
+            light.intensity = 0.85f;
+            light.pointLightOuterRadius = 1.5f;
+            light.pointLightInnerRadius = 0.15f;
+            light.enabled = true;
 
             DoorIndicatorLight indicator = lightGo.AddComponent<DoorIndicatorLight>();
             indicator.Initialize(door, red, green, light);

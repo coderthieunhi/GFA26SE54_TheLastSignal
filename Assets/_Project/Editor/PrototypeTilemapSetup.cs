@@ -632,7 +632,7 @@ namespace TheLastSignal.EditorTools
             // Group 2: Dual Console rooms (ConsoleAlpha, PowerRelayBay, ReactorCore) enlarged to 2x2 physical colliders
             CreateTaskLocationInstance("TaskLoc_CrewQuarters", taskLocsRoot.transform, new Vector3(-0.5f, 42.5f, 0f), cpSprite, new Vector2(1.0f, 1.0f));
             CreateTaskLocationInstance("TaskLoc_MedBay", taskLocsRoot.transform, new Vector3(-16.5f, 27.5f, 0f), compSprite, new Vector2(1.0f, 1.0f));
-            CreateTaskLocationInstance("TaskLoc_ConsoleAlpha", taskLocsRoot.transform, new Vector3(15.5f, 27.5f, 0f), cpSprite, new Vector2(2.0f, 2.0f));
+            CreateTaskLocationInstance("TaskLoc_ConsoleAlpha", taskLocsRoot.transform, new Vector3(15.5f, 28.5f, 0f), cpSprite, new Vector2(2.0f, 2.0f));
             CreateTaskLocationInstance("TaskLoc_MessHall", taskLocsRoot.transform, new Vector3(-15.5f, -4.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
             CreateTaskLocationInstance("TaskLoc_VentShaft", taskLocsRoot.transform, new Vector3(16.5f, -4.5f, 0f), mechSprite, new Vector2(1.0f, 1.0f));
             CreateTaskLocationInstance("TaskLoc_CargoHold", taskLocsRoot.transform, new Vector3(-0.5f, -19.5f, 0f), exitSprite, new Vector2(1.0f, 1.0f));

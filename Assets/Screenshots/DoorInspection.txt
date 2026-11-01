@@ -1,0 +1,4 @@
+DOOR INSPECTION:
+Door: Door_CrewQuarters, Pos: (0.00, 37.50, 0.00), Scale: (1.00, 1.00, 1.00)
+  Sprite: Door_CrewQuarters_Industrial_Closed, SortingLayer: Obstacles, Order: 5
+  Collider size: (2.00, 0.50), offset: (0.00, 0.00), isTrigger: False, layer: Interactable

@@ -1,0 +1,22 @@
+--- SCENE INSPECTION ---
+Active Scene: Assets/Scenes/SampleScene.unity
+Found 1 Grid(s):
+Grid: Facility_Grid, CellSize: (1.00, 1.00, 0.00), Pos: (0.00, 0.00, 0.00)
+  Tilemap: Floor_Tilemap, SortingLayer: Floor, Order: 0, Bounds: Position: (-25, -69, 0), Size: (48, 117, 1)
+  Tilemap: Wall_Tilemap, SortingLayer: Obstacles, Order: 0, Bounds: Position: (-26, -70, 0), Size: (50, 119, 1)
+
+Sorting Layers:
+  Layer: Default, id: 0, value: 0
+  Layer: Floor, id: 1845129310, value: 1
+  Layer: Obstacles, id: -1753339104, value: 2
+  Layer: Characters, id: -1093019173, value: 3
+
+Physics Layers:
+  Layer 0: Default
+  Layer 1: TransparentFX
+  Layer 2: Ignore Raycast
+  Layer 4: Water
+  Layer 5: UI
+  Layer 8: Player
+  Layer 9: Obstacle
+  Layer 10: Interactable

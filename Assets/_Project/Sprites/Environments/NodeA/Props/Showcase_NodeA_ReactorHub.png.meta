@@ -1,0 +1,1614 @@
+fileFormatVersion: 2
+guid: 019e659f0cebf4c439d6b939f78fc4de
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2254746457972312242
+    second: Showcase_NodeA_ReactorHub_0
+  - first:
+      213: -1645833029140026844
+    second: Showcase_NodeA_ReactorHub_1
+  - first:
+      213: -2788303632357307809
+    second: Showcase_NodeA_ReactorHub_2
+  - first:
+      213: -4843311758821047298
+    second: Showcase_NodeA_ReactorHub_3
+  - first:
+      213: 738517394771602460
+    second: Showcase_NodeA_ReactorHub_4
+  - first:
+      213: 946014833639519432
+    second: Showcase_NodeA_ReactorHub_5
+  - first:
+      213: -3722215558804739816
+    second: Showcase_NodeA_ReactorHub_6
+  - first:
+      213: 522440527453970695
+    second: Showcase_NodeA_ReactorHub_7
+  - first:
+      213: 6378419602037647660
+    second: Showcase_NodeA_ReactorHub_8
+  - first:
+      213: -3368926518590796873
+    second: Showcase_NodeA_ReactorHub_9
+  - first:
+      213: 7387013145089690565
+    second: Showcase_NodeA_ReactorHub_10
+  - first:
+      213: 7052924079340928552
+    second: Showcase_NodeA_ReactorHub_11
+  - first:
+      213: 1334310945365082977
+    second: Showcase_NodeA_ReactorHub_12
+  - first:
+      213: -4721912877232099064
+    second: Showcase_NodeA_ReactorHub_13
+  - first:
+      213: 4305098357137948379
+    second: Showcase_NodeA_ReactorHub_14
+  - first:
+      213: 8033939019382278575
+    second: Showcase_NodeA_ReactorHub_15
+  - first:
+      213: 1723779249853006785
+    second: Showcase_NodeA_ReactorHub_16
+  - first:
+      213: -2934679108144704409
+    second: Showcase_NodeA_ReactorHub_17
+  - first:
+      213: -38284031768648340
+    second: Showcase_NodeA_ReactorHub_18
+  - first:
+      213: 7134520394905166436
+    second: Showcase_NodeA_ReactorHub_19
+  - first:
+      213: 3533928268937468832
+    second: Showcase_NodeA_ReactorHub_20
+  - first:
+      213: -8030208479182872648
+    second: Showcase_NodeA_ReactorHub_21
+  - first:
+      213: 8691247683363940229
+    second: Showcase_NodeA_ReactorHub_22
+  - first:
+      213: 2371434100065222090
+    second: Showcase_NodeA_ReactorHub_23
+  - first:
+      213: 984387489867083714
+    second: Showcase_NodeA_ReactorHub_24
+  - first:
+      213: -5737147312654319444
+    second: Showcase_NodeA_ReactorHub_25
+  - first:
+      213: 622047950077618689
+    second: Showcase_NodeA_ReactorHub_26
+  - first:
+      213: 1171522965325881
+    second: Showcase_NodeA_ReactorHub_27
+  - first:
+      213: 1811945255022649816
+    second: Showcase_NodeA_ReactorHub_28
+  - first:
+      213: 1893260544848612892
+    second: Showcase_NodeA_ReactorHub_29
+  - first:
+      213: -4609024193004391233
+    second: Showcase_NodeA_ReactorHub_30
+  - first:
+      213: 6235823854284164008
+    second: Showcase_NodeA_ReactorHub_31
+  - first:
+      213: -4705354424772806482
+    second: Showcase_NodeA_ReactorHub_32
+  - first:
+      213: -4414901618133593396
+    second: Showcase_NodeA_ReactorHub_33
+  - first:
+      213: -3423625013389650424
+    second: Showcase_NodeA_ReactorHub_34
+  - first:
+      213: -8555219773528064531
+    second: Showcase_NodeA_ReactorHub_35
+  - first:
+      213: 902421267018982082
+    second: Showcase_NodeA_ReactorHub_36
+  - first:
+      213: 4603574128980677738
+    second: Showcase_NodeA_ReactorHub_37
+  - first:
+      213: 2713751536420266144
+    second: Showcase_NodeA_ReactorHub_38
+  - first:
+      213: -4132747687102299558
+    second: Showcase_NodeA_ReactorHub_39
+  - first:
+      213: -2808160341639655824
+    second: Showcase_NodeA_ReactorHub_40
+  - first:
+      213: -8588511466382142336
+    second: Showcase_NodeA_ReactorHub_41
+  - first:
+      213: -3783852947380764577
+    second: Showcase_NodeA_ReactorHub_42
+  - first:
+      213: 5278475327780300784
+    second: Showcase_NodeA_ReactorHub_43
+  - first:
+      213: 1075962751859099255
+    second: Showcase_NodeA_ReactorHub_44
+  - first:
+      213: -8480512902826093353
+    second: Showcase_NodeA_ReactorHub_45
+  - first:
+      213: 9045992671098203070
+    second: Showcase_NodeA_ReactorHub_46
+  - first:
+      213: -8548657438769289145
+    second: Showcase_NodeA_ReactorHub_47
+  - first:
+      213: 8863081093138796882
+    second: Showcase_NodeA_ReactorHub_48
+  - first:
+      213: -8361515979152780011
+    second: Showcase_NodeA_ReactorHub_49
+  - first:
+      213: 7622881559955104382
+    second: Showcase_NodeA_ReactorHub_50
+  - first:
+      213: -6049870676250073813
+    second: Showcase_NodeA_ReactorHub_51
+  - first:
+      213: 3194445927231900337
+    second: Showcase_NodeA_ReactorHub_52
+  - first:
+      213: -39947863523033043
+    second: Showcase_NodeA_ReactorHub_53
+  - first:
+      213: 2903139943978333339
+    second: Showcase_NodeA_ReactorHub_54
+  - first:
+      213: 2396587240509555353
+    second: Showcase_NodeA_ReactorHub_55
+  - first:
+      213: 5616202964289110932
+    second: Showcase_NodeA_ReactorHub_56
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_0
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 977
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e477df9ea0885b0e0800000000000000
+      internalID: -2254746457972312242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_1
+      rect:
+        serializedVersion: 2
+        x: 495
+        y: 977
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42ae08a7493d829e0800000000000000
+      internalID: -1645833029140026844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_2
+      rect:
+        serializedVersion: 2
+        x: 507
+        y: 977
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5a49639e94fd49d0800000000000000
+      internalID: -2788303632357307809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_3
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 977
+        width: 10
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef3cff6cd9919ccb0800000000000000
+      internalID: -4843311758821047298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_4
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 977
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1ceecf58adbf3a00800000000000000
+      internalID: 738517394771602460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_5
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 839
+        width: 176
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c4755f9a7be02d00800000000000000
+      internalID: 946014833639519432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_6
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 813
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 819e200aba8085cc0800000000000000
+      internalID: -3722215558804739816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_7
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 813
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 701692744e4104700800000000000000
+      internalID: 522440527453970695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_8
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 813
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c29a7df65d2b48850800000000000000
+      internalID: 6378419602037647660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_9
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 813
+        width: 10
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bb80014e2b2f31d0800000000000000
+      internalID: -3368926518590796873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_10
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 813
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cb46304151f38660800000000000000
+      internalID: 7387013145089690565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_11
+      rect:
+        serializedVersion: 2
+        x: 769
+        y: 813
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82e3ae8051501e160800000000000000
+      internalID: 7052924079340928552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_12
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 813
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 163c66e3cbc648210800000000000000
+      internalID: 1334310945365082977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_13
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 813
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 801fc348145687eb0800000000000000
+      internalID: -4721912877232099064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_14
+      rect:
+        serializedVersion: 2
+        x: 807
+        y: 813
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bde335c7528cebb30800000000000000
+      internalID: 4305098357137948379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_15
+      rect:
+        serializedVersion: 2
+        x: 815
+        y: 813
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa94e65f8f84e7f60800000000000000
+      internalID: 8033939019382278575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_16
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 678
+        width: 16
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c38da248181ce710800000000000000
+      internalID: 1723779249853006785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_17
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 763
+        width: 36
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 764564556ece547d0800000000000000
+      internalID: -2934679108144704409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_18
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 744
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c652cdd30ecf77ff0800000000000000
+      internalID: -38284031768648340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_19
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 245
+        width: 749
+        height: 565
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4622a15bf78e20360800000000000000
+      internalID: 7134520394905166436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_20
+      rect:
+        serializedVersion: 2
+        x: 709
+        y: 678
+        width: 183
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ab9abb79090b0130800000000000000
+      internalID: 3533928268937468832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_21
+      rect:
+        serializedVersion: 2
+        x: 892
+        y: 763
+        width: 30
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bf99fd1fe7fe8090800000000000000
+      internalID: -8030208479182872648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_22
+      rect:
+        serializedVersion: 2
+        x: 893
+        y: 745
+        width: 29
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58728d548b38d9870800000000000000
+      internalID: 8691247683363940229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_23
+      rect:
+        serializedVersion: 2
+        x: 923
+        y: 678
+        width: 15
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acdb2a6efb609e020800000000000000
+      internalID: 2371434100065222090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_24
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 716
+        width: 20
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cfadded43f39ad00800000000000000
+      internalID: 984387489867083714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_25
+      rect:
+        serializedVersion: 2
+        x: 903
+        y: 716
+        width: 14
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca007257aee8160b0800000000000000
+      internalID: -5737147312654319444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_26
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 697
+        width: 35
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10ae2a99055f1a800800000000000000
+      internalID: 622047950077618689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_27
+      rect:
+        serializedVersion: 2
+        x: 892
+        y: 697
+        width: 30
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 938c1327e79240000800000000000000
+      internalID: 1171522965325881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_28
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 463
+        width: 51
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d1641efb92552910800000000000000
+      internalID: 1811945255022649816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_29
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 388
+        width: 88
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1ec6f24f66364a10800000000000000
+      internalID: 1893260544848612892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_30
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 321
+        width: 133
+        height: 246
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb4bac68ae47900c0800000000000000
+      internalID: -4609024193004391233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_31
+      rect:
+        serializedVersion: 2
+        x: 887
+        y: 567
+        width: 21
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8abc384b1c81a8650800000000000000
+      internalID: 6235823854284164008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_32
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 451
+        width: 21
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea8ba19a41933beb0800000000000000
+      internalID: -4705354424772806482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_33
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 279
+        width: 15
+        height: 175
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc299d49e5e1bb2c0800000000000000
+      internalID: -4414901618133593396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_34
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 305
+        width: 18
+        height: 234
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80694c08037dc70d0800000000000000
+      internalID: -3423625013389650424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_35
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 245
+        width: 198
+        height: 281
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ded367781f0c54980800000000000000
+      internalID: -8555219773528064531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_36
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 245
+        width: 198
+        height: 317
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c2ac627c5b068c00800000000000000
+      internalID: 902421267018982082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_37
+      rect:
+        serializedVersion: 2
+        x: 757
+        y: 193
+        width: 178
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a64521f874e23ef30800000000000000
+      internalID: 4603574128980677738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_38
+      rect:
+        serializedVersion: 2
+        x: 895
+        y: 201
+        width: 46
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a02001f4ae29a520800000000000000
+      internalID: 2713751536420266144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_39
+      rect:
+        serializedVersion: 2
+        x: 908
+        y: 283
+        width: 12
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5243f3ffd785a6c0800000000000000
+      internalID: -4132747687102299558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_40
+      rect:
+        serializedVersion: 2
+        x: 917
+        y: 319
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07e8a3c2c096709d0800000000000000
+      internalID: -2808160341639655824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_41
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 260
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0845ce0435a7fc880800000000000000
+      internalID: -8588511466382142336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_42
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 204
+        width: 74
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f500e05cacd0d7bc0800000000000000
+      internalID: -3783852947380764577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_43
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 222
+        width: 41
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f722041859e04940800000000000000
+      internalID: 5278475327780300784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_44
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 237
+        width: 112
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7760d101c669eee00800000000000000
+      internalID: 1075962751859099255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_45
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 237
+        width: 35
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d41fe1527a2f4a80800000000000000
+      internalID: -8480512902826093353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_46
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 196
+        width: 51
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebb68991862d98d70800000000000000
+      internalID: 9045992671098203070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_47
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 204
+        width: 326
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 748e7a72a511d5980800000000000000
+      internalID: -8548657438769289145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_48
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 204
+        width: 66
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 251d40cab4dfffa70800000000000000
+      internalID: 8863081093138796882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_49
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 198
+        width: 51
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51598d6a48de5fb80800000000000000
+      internalID: -8361515979152780011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_50
+      rect:
+        serializedVersion: 2
+        x: 751
+        y: 226
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e72eff9146ae9c960800000000000000
+      internalID: 7622881559955104382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_51
+      rect:
+        serializedVersion: 2
+        x: 754
+        y: 238
+        width: 20
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b25ef0d6caa8a0ca0800000000000000
+      internalID: -6049870676250073813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_52
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 221
+        width: 115
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bac9da55a3f45c20800000000000000
+      internalID: 3194445927231900337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_53
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 204
+        width: 7
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d208c2931a3127ff0800000000000000
+      internalID: -39947863523033043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_54
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 204
+        width: 99
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b947316c5660a4820800000000000000
+      internalID: 2903139943978333339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_55
+      rect:
+        serializedVersion: 2
+        x: 751
+        y: 213
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9924ec7c563624120800000000000000
+      internalID: 2396587240509555353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Showcase_NodeA_ReactorHub_56
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 60
+        width: 195
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 493c2f017d2c0fd40800000000000000
+      internalID: 5616202964289110932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Showcase_NodeA_ReactorHub_0: -2254746457972312242
+      Showcase_NodeA_ReactorHub_1: -1645833029140026844
+      Showcase_NodeA_ReactorHub_10: 7387013145089690565
+      Showcase_NodeA_ReactorHub_11: 7052924079340928552
+      Showcase_NodeA_ReactorHub_12: 1334310945365082977
+      Showcase_NodeA_ReactorHub_13: -4721912877232099064
+      Showcase_NodeA_ReactorHub_14: 4305098357137948379
+      Showcase_NodeA_ReactorHub_15: 8033939019382278575
+      Showcase_NodeA_ReactorHub_16: 1723779249853006785
+      Showcase_NodeA_ReactorHub_17: -2934679108144704409
+      Showcase_NodeA_ReactorHub_18: -38284031768648340
+      Showcase_NodeA_ReactorHub_19: 7134520394905166436
+      Showcase_NodeA_ReactorHub_2: -2788303632357307809
+      Showcase_NodeA_ReactorHub_20: 3533928268937468832
+      Showcase_NodeA_ReactorHub_21: -8030208479182872648
+      Showcase_NodeA_ReactorHub_22: 8691247683363940229
+      Showcase_NodeA_ReactorHub_23: 2371434100065222090
+      Showcase_NodeA_ReactorHub_24: 984387489867083714
+      Showcase_NodeA_ReactorHub_25: -5737147312654319444
+      Showcase_NodeA_ReactorHub_26: 622047950077618689
+      Showcase_NodeA_ReactorHub_27: 1171522965325881
+      Showcase_NodeA_ReactorHub_28: 1811945255022649816
+      Showcase_NodeA_ReactorHub_29: 1893260544848612892
+      Showcase_NodeA_ReactorHub_3: -4843311758821047298
+      Showcase_NodeA_ReactorHub_30: -4609024193004391233
+      Showcase_NodeA_ReactorHub_31: 6235823854284164008
+      Showcase_NodeA_ReactorHub_32: -4705354424772806482
+      Showcase_NodeA_ReactorHub_33: -4414901618133593396
+      Showcase_NodeA_ReactorHub_34: -3423625013389650424
+      Showcase_NodeA_ReactorHub_35: -8555219773528064531
+      Showcase_NodeA_ReactorHub_36: 902421267018982082
+      Showcase_NodeA_ReactorHub_37: 4603574128980677738
+      Showcase_NodeA_ReactorHub_38: 2713751536420266144
+      Showcase_NodeA_ReactorHub_39: -4132747687102299558
+      Showcase_NodeA_ReactorHub_4: 738517394771602460
+      Showcase_NodeA_ReactorHub_40: -2808160341639655824
+      Showcase_NodeA_ReactorHub_41: -8588511466382142336
+      Showcase_NodeA_ReactorHub_42: -3783852947380764577
+      Showcase_NodeA_ReactorHub_43: 5278475327780300784
+      Showcase_NodeA_ReactorHub_44: 1075962751859099255
+      Showcase_NodeA_ReactorHub_45: -8480512902826093353
+      Showcase_NodeA_ReactorHub_46: 9045992671098203070
+      Showcase_NodeA_ReactorHub_47: -8548657438769289145
+      Showcase_NodeA_ReactorHub_48: 8863081093138796882
+      Showcase_NodeA_ReactorHub_49: -8361515979152780011
+      Showcase_NodeA_ReactorHub_5: 946014833639519432
+      Showcase_NodeA_ReactorHub_50: 7622881559955104382
+      Showcase_NodeA_ReactorHub_51: -6049870676250073813
+      Showcase_NodeA_ReactorHub_52: 3194445927231900337
+      Showcase_NodeA_ReactorHub_53: -39947863523033043
+      Showcase_NodeA_ReactorHub_54: 2903139943978333339
+      Showcase_NodeA_ReactorHub_55: 2396587240509555353
+      Showcase_NodeA_ReactorHub_56: 5616202964289110932
+      Showcase_NodeA_ReactorHub_6: -3722215558804739816
+      Showcase_NodeA_ReactorHub_7: 522440527453970695
+      Showcase_NodeA_ReactorHub_8: 6378419602037647660
+      Showcase_NodeA_ReactorHub_9: -3368926518590796873
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

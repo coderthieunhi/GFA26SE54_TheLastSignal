@@ -1,0 +1,7 @@
+=== CREW_QUARTERS REFINEMENT VERIFICATION ===
+1. Interior Tiles: 100/100 -> PASS
+2. Walls: North=10/10, South=8/8 (Door open), West=10/10, East=10/10, Corners=True -> PASS
+3. Total Room Footprint: 12x12 tiles (X: 0..11, Y: 0..11) -> PASS
+4. Doorway unobstructed (no wall tile over door): -> PASS
+5. All furniture inside room: -> PASS
+6. Navigation Connectivity: 56/56 free tiles reached (Start at entrance) -> PASS

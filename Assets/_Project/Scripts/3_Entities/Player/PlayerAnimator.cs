@@ -96,17 +96,17 @@ namespace TheLastSignal.Entities.Player
             if (runSouth == null || runSouth.Length == 0 || runSouth[0] == null) runSouth = LoadAnimationFrames("Engineer_Run_South");
             if (runSouthEast == null || runSouthEast.Length == 0 || runSouthEast[0] == null) runSouthEast = LoadAnimationFrames("Engineer_Run_SouthEast");
 
-            // Fallback 3: Ensure sprite renderer is white and using unlit material
+            // Fallback 3: Ensure sprite renderer is white and has valid 2D material
             if (spriteRenderer != null)
             {
                 spriteRenderer.color = Color.white;
 
-                if (spriteRenderer.sharedMaterial == null || (spriteRenderer.sharedMaterial.shader != null && spriteRenderer.sharedMaterial.shader.name.Contains("Lit")))
+                if (spriteRenderer.sharedMaterial == null)
                 {
-                    Shader unlit = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default") ?? Shader.Find("Sprites/Default");
-                    if (unlit != null)
+                    Shader litShader = Shader.Find("Universal Render Pipeline/2D/Sprite-Lit-Default") ?? Shader.Find("Sprites/Default");
+                    if (litShader != null)
                     {
-                        spriteRenderer.material = new Material(unlit);
+                        spriteRenderer.material = new Material(litShader);
                     }
                 }
 
