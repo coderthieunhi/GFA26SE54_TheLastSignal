@@ -11,9 +11,11 @@ namespace TheLastSignal.Entities.Player
     /// PlayerHealth's shape: NetworkVariable&lt;T&gt; (Server write, Everyone read), a ServerRpc entry
     /// point per input, and an offline/local fallback when there is no NetworkManager at all.
     ///
-    /// Aim direction: this project has no mouse-look input (PlayerController is keyboard-only,
-    /// top-down), so the cone aims along the player's own existing movement-facing direction
-    /// (PlayerController.FacingDirection) rather than introducing a new aiming control.
+    /// Aim direction: the cone aims from the player's position toward the mouse cursor's world
+    /// position (standard top-down mouse-look), computed locally by the owner each frame via
+    /// Camera.main.ScreenToWorldPoint and sent through the same quantized RequestAim path as before.
+    /// Falls back to the player's movement-facing direction (PlayerController.FacingDirection) if no
+    /// Mouse device or Camera.main is available (e.g. controller-only input).
     /// </summary>
     [RequireComponent(typeof(PlayerController))]
     public class PlayerFlashlight : NetworkBehaviour
@@ -34,6 +36,7 @@ namespace TheLastSignal.Entities.Player
             0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         private PlayerController playerController;
+        private Camera cachedCamera;
         private float lastSentAngle;
         private float sendCooldownRemaining;
 
@@ -119,13 +122,47 @@ namespace TheLastSignal.Entities.Player
 
             // Rate-limited, quantized aim reporting (design: ~10-15 Hz max, only when changed).
             sendCooldownRemaining -= Time.deltaTime;
-            float currentAngle = QuantizeAngle(FacingToAngle());
+            float currentAngle = QuantizeAngle(MouseAimAngle());
             if (sendCooldownRemaining <= 0f && !Mathf.Approximately(currentAngle, lastSentAngle))
             {
                 lastSentAngle = currentAngle;
                 sendCooldownRemaining = config != null ? config.AimSendIntervalSeconds : 0.08f;
                 RequestAim(currentAngle);
             }
+        }
+
+        /// <summary>Angle from the player's position to the mouse cursor's world position. Orthographic
+        /// 2D camera: ScreenToWorldPoint needs a z equal to the camera's distance from the world's z=0
+        /// plane (the player's own plane), not the mouse's screen z (which Mouse.position has none of).</summary>
+        private float MouseAimAngle()
+        {
+            Mouse mouse = Mouse.current;
+            if (mouse == null)
+            {
+                return FacingToAngle();
+            }
+
+            if (cachedCamera == null)
+            {
+                cachedCamera = Camera.main;
+            }
+
+            if (cachedCamera == null)
+            {
+                return FacingToAngle();
+            }
+
+            Vector3 screenPos = mouse.position.ReadValue();
+            screenPos.z = -cachedCamera.transform.position.z;
+            Vector3 worldPos = cachedCamera.ScreenToWorldPoint(screenPos);
+
+            Vector2 direction = (Vector2)worldPos - (Vector2)transform.position;
+            if (direction.sqrMagnitude < 0.0001f)
+            {
+                return FacingToAngle();
+            }
+
+            return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         }
 
         private float FacingToAngle()
