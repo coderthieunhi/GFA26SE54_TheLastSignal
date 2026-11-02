@@ -36,7 +36,7 @@ namespace TheLastSignal.Entities.Player
             0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         private PlayerController playerController;
-        private Camera cachedCamera;
+        private UnityEngine.Camera cachedCamera;
         private float lastSentAngle;
         private float sendCooldownRemaining;
 
@@ -144,7 +144,7 @@ namespace TheLastSignal.Entities.Player
 
             if (cachedCamera == null)
             {
-                cachedCamera = Camera.main;
+                cachedCamera = UnityEngine.Camera.main;
             }
 
             if (cachedCamera == null)
