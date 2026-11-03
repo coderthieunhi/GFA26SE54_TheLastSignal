@@ -4,6 +4,12 @@ using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.Entities.Environment
 {
+    public enum TaskMinigameType
+    {
+        Automatic,
+        WireBridging,
+        ValveBalancing
+    }
     public enum TaskStationType
     {
         Generator,
@@ -25,6 +31,10 @@ namespace TheLastSignal.Entities.Environment
         [SerializeField] private string stationDisplayName = "Station";
         [SerializeField] private TaskStationType stationType = TaskStationType.Generator;
         [SerializeField] private bool isCompleted = false;
+
+        [Header("Minigame")]
+        [SerializeField] private bool useMinigame = true;
+        [SerializeField] private TaskMinigameType minigameType = TaskMinigameType.Automatic;
 
         [Header("Feedback")]
         [SerializeField] private SpriteRenderer markerRenderer;
@@ -63,6 +73,31 @@ namespace TheLastSignal.Entities.Environment
             // TLS-E05-S02: every Survivor can repair any machine; repair speed is role-scaled in
             // StationRepair itself. Epic 8's Task Ticket System can still replace this with a real
             // minigame later — this only adds a progress counter to the existing placeholder.
+            if (useMinigame && !isCompleted)
+            {
+                bool useValve = minigameType == TaskMinigameType.ValveBalancing ||
+                                (minigameType == TaskMinigameType.Automatic && (stationType == TaskStationType.Mechanical || stationType == TaskStationType.Computer));
+
+                if (useValve)
+                {
+                    var valveUI = TheLastSignal.UI.Tasks.ValveTaskUI.Instance ?? TheLastSignal.UI.Tasks.ValveTaskUI.GetOrCreateInstance();
+                    if (valveUI != null)
+                    {
+                        valveUI.Open(player, this);
+                        return;
+                    }
+                }
+                else
+                {
+                    var wireUI = TheLastSignal.UI.Tasks.WireTaskUI.Instance ?? TheLastSignal.UI.Tasks.WireTaskUI.GetOrCreateInstance();
+                    if (wireUI != null)
+                    {
+                        wireUI.Open(player, this);
+                        return;
+                    }
+                }
+            }
+
             if (TryGetComponent(out StationRepair repair))
             {
                 repair.RequestRepair(player);
