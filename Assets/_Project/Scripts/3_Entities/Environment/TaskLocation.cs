@@ -9,7 +9,8 @@ namespace TheLastSignal.Entities.Environment
         Automatic,
         WireBridging,
         ValveBalancing,
-        MemorySequence
+        MemorySequence,
+        WaveformTuning
     }
     public enum TaskStationType
     {
@@ -79,7 +80,11 @@ namespace TheLastSignal.Entities.Environment
                 TaskMinigameType activeType = minigameType;
                 if (activeType == TaskMinigameType.Automatic)
                 {
-                    if (stationType == TaskStationType.Computer || stationType == TaskStationType.ControlPanel)
+                    if (stationType == TaskStationType.Computer)
+                    {
+                        activeType = TaskMinigameType.WaveformTuning;
+                    }
+                    else if (stationType == TaskStationType.ControlPanel)
                     {
                         activeType = TaskMinigameType.MemorySequence;
                     }
@@ -93,7 +98,16 @@ namespace TheLastSignal.Entities.Environment
                     }
                 }
 
-                if (activeType == TaskMinigameType.MemorySequence)
+                if (activeType == TaskMinigameType.WaveformTuning)
+                {
+                    var waveUI = TheLastSignal.UI.Tasks.WaveformTaskUI.Instance ?? TheLastSignal.UI.Tasks.WaveformTaskUI.GetOrCreateInstance();
+                    if (waveUI != null)
+                    {
+                        waveUI.Open(player, this);
+                        return;
+                    }
+                }
+                else if (activeType == TaskMinigameType.MemorySequence)
                 {
                     var memUI = TheLastSignal.UI.Tasks.MemoryTaskUI.Instance ?? TheLastSignal.UI.Tasks.MemoryTaskUI.GetOrCreateInstance();
                     if (memUI != null)

@@ -68,6 +68,26 @@ namespace TheLastSignal.Editor
             Debug.Log("<color=green>[WiringMinigameBuilder]</color> Upgraded Memory Minigame UI successfully created under Canvas!");
         }
 
+        [MenuItem("TheLastSignal/Tasks/Create Waveform Tuning Minigame UI (Recreate)", false, 103)]
+        [MenuItem("GameObject/UI/The Last Signal - Waveform Minigame", false, 23)]
+        public static void CreateWaveformMinigameUI()
+        {
+            Canvas canvas = EnsureCanvas();
+
+            WaveformTaskUI existing = Object.FindAnyObjectByType<WaveformTaskUI>(FindObjectsInactive.Include);
+            if (existing != null)
+            {
+                Undo.DestroyObjectImmediate(existing.gameObject);
+                Debug.Log("<color=yellow>[WiringMinigameBuilder]</color> Removed old Waveform Minigame UI to upgrade.");
+            }
+
+            WaveformTaskUI waveUI = WaveformTaskUI.CreateWaveformUIHierarchy(canvas);
+
+            Selection.activeGameObject = waveUI.gameObject;
+            Undo.RegisterCreatedObjectUndo(waveUI.gameObject, "Create Upgraded Waveform Minigame UI");
+            Debug.Log("<color=green>[WiringMinigameBuilder]</color> Upgraded Waveform Minigame UI successfully created under Canvas!");
+        }
+
         private static Canvas EnsureCanvas()
         {
             Canvas canvas = Object.FindAnyObjectByType<Canvas>();
