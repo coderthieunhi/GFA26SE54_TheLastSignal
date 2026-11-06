@@ -97,6 +97,9 @@ namespace TheLastSignal.UI.Tasks
             }
             _instance = this;
 
+            EnsureUpgradedVisuals();
+            ResetAllTileVisuals();
+
             if (closeButton != null)
             {
                 closeButton.onClick.RemoveAllListeners();
@@ -175,6 +178,9 @@ namespace TheLastSignal.UI.Tasks
             currentStage = 0;
             playerInputIndex = 0;
 
+            EnsureUpgradedVisuals();
+            ResetAllTileVisuals();
+
             if (activePlayer != null)
             {
                 activePlayer.SetControlEnabled(false);
@@ -208,6 +214,7 @@ namespace TheLastSignal.UI.Tasks
             currentStage = stage;
             playerInputIndex = 0;
 
+            ResetAllTileVisuals();
             UpdateStageLeds();
 
             if (instructionText != null)
@@ -379,21 +386,20 @@ namespace TheLastSignal.UI.Tasks
             // Flash all tiles green
             for (int i = 0; i < monitorTiles.Length; i++)
             {
-                if (monitorTiles[i] != null) monitorTiles[i].color = MonitorTileFlash;
+                if (monitorTiles[i] != null) monitorTiles[i].color = KeypadTileFlash;
                 if (keypadTileImages[i] != null) keypadTileImages[i].color = KeypadTileFlash;
             }
 
             yield return new WaitForSeconds(0.85f);
 
+            ResetAllTileVisuals();
+
             if (activeTaskLocation != null)
             {
+                activeTaskLocation.SetCompleted(true);
                 if (activeTaskLocation.TryGetComponent(out StationRepair repair))
                 {
-                    repair.RequestRepair(activePlayer);
-                }
-                else
-                {
-                    activeTaskLocation.SetCompleted(true);
+                    repair.CompleteRepair();
                 }
             }
 
@@ -407,6 +413,8 @@ namespace TheLastSignal.UI.Tasks
                 StopCoroutine(activePlayRoutine);
                 activePlayRoutine = null;
             }
+
+            ResetAllTileVisuals();
 
             if (rootPanel != null)
             {
@@ -479,6 +487,152 @@ namespace TheLastSignal.UI.Tasks
             {
                 if (stageLeds[i] == null) continue;
                 stageLeds[i].color = i <= currentStage ? LedActive : LedInactive;
+            }
+        }
+
+        public void ResetAllTileVisuals()
+        {
+            if (monitorTiles != null)
+            {
+                for (int i = 0; i < monitorTiles.Length; i++)
+                {
+                    if (monitorTiles[i] != null)
+                    {
+                        monitorTiles[i].color = MonitorTileNormal;
+                    }
+                }
+            }
+            if (keypadTileImages != null)
+            {
+                for (int i = 0; i < keypadTileImages.Length; i++)
+                {
+                    if (keypadTileImages[i] != null)
+                    {
+                        keypadTileImages[i].color = KeypadTileNormal;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Automatically upgrades/re-aligns any existing scene hierarchy to the un-cluttered, non-overlapping brutalist layout.
+        /// </summary>
+        public void EnsureUpgradedVisuals()
+        {
+            if (rootPanel == null) return;
+            Transform boxT = rootPanel.transform.Find("TerminalBox");
+            if (boxT == null) return;
+
+            // Monitor Housing
+            Transform mHouseT = boxT.Find("MonitorHousing");
+            if (mHouseT is RectTransform mHouseRect)
+            {
+                mHouseRect.sizeDelta = new Vector2(340, 360);
+                mHouseRect.anchoredPosition = new Vector2(-200, 18);
+
+                Transform mHeadT = mHouseT.Find("MonitorHeader");
+                if (mHeadT is RectTransform mhRect)
+                {
+                    mhRect.anchoredPosition = new Vector2(0, 155);
+                    mhRect.sizeDelta = new Vector2(300, 24);
+                }
+
+                float tileSize = 74f;
+                float spacing = 12f;
+                float startX = -(tileSize + spacing);
+                float startY = 70f;
+
+                for (int r = 0; r < 3; r++)
+                {
+                    for (int c = 0; c < 3; c++)
+                    {
+                        int index = r * 3 + c;
+                        Transform tT = mHouseT.Find($"MonitorTile_{index}");
+                        if (tT is RectTransform tRect)
+                        {
+                            tRect.sizeDelta = new Vector2(tileSize, tileSize);
+                            tRect.anchoredPosition = new Vector2(startX + c * (tileSize + spacing), startY - r * (tileSize + spacing));
+                        }
+                    }
+                }
+
+                Transform mStatT = mHouseT.Find("MonitorStatusText");
+                if (mStatT is RectTransform msRect)
+                {
+                    msRect.anchoredPosition = new Vector2(0, -152);
+                    msRect.sizeDelta = new Vector2(300, 24);
+                }
+            }
+
+            // Keypad Housing
+            Transform kHouseT = boxT.Find("KeypadHousing");
+            if (kHouseT is RectTransform kHouseRect)
+            {
+                kHouseRect.sizeDelta = new Vector2(340, 360);
+                kHouseRect.anchoredPosition = new Vector2(200, 18);
+
+                Transform kHeadT = kHouseT.Find("KeypadHeader");
+                if (kHeadT is RectTransform khRect)
+                {
+                    khRect.anchoredPosition = new Vector2(0, 155);
+                    khRect.sizeDelta = new Vector2(300, 24);
+                }
+
+                float tileSize = 74f;
+                float spacing = 12f;
+                float startX = -(tileSize + spacing);
+                float startY = 70f;
+
+                for (int r = 0; r < 3; r++)
+                {
+                    for (int c = 0; c < 3; c++)
+                    {
+                        int index = r * 3 + c;
+                        Transform bT = kHouseT.Find($"KeypadBtn_{index + 1}");
+                        if (bT is RectTransform bRect)
+                        {
+                            bRect.sizeDelta = new Vector2(tileSize, tileSize);
+                            bRect.anchoredPosition = new Vector2(startX + c * (tileSize + spacing), startY - r * (tileSize + spacing));
+                        }
+                    }
+                }
+
+                Transform kStatT = kHouseT.Find("KeypadStatusText");
+                if (kStatT is RectTransform ksRect)
+                {
+                    ksRect.anchoredPosition = new Vector2(0, -152);
+                    ksRect.sizeDelta = new Vector2(300, 24);
+                }
+            }
+
+            // Progress Frame
+            Transform pfT = boxT.Find("ProgressFrame");
+            if (pfT is RectTransform pfRect)
+            {
+                pfRect.anchoredPosition = new Vector2(0, -205);
+                pfRect.sizeDelta = new Vector2(380, 20);
+
+                float ledWidth = 58f;
+                float ledSpacing = 14f;
+                float ledStartX = -(2 * (ledWidth + ledSpacing));
+
+                for (int i = 0; i < 5; i++)
+                {
+                    Transform ledT = pfT.Find($"StageLed_{i + 1}");
+                    if (ledT is RectTransform lRect)
+                    {
+                        lRect.sizeDelta = new Vector2(ledWidth, 14);
+                        lRect.anchoredPosition = new Vector2(ledStartX + i * (ledWidth + ledSpacing), 0);
+                    }
+                }
+            }
+
+            // Stage Text
+            Transform stgT = boxT.Find("StageText");
+            if (stgT is RectTransform stgRect)
+            {
+                stgRect.anchoredPosition = new Vector2(0, -250);
+                stgRect.sizeDelta = new Vector2(600, 28);
             }
         }
 
@@ -717,8 +871,8 @@ namespace TheLastSignal.UI.Tasks
             GameObject monitorBox = new GameObject("MonitorHousing", typeof(RectTransform), typeof(Image));
             monitorBox.transform.SetParent(box.transform, false);
             RectTransform mBoxRect = monitorBox.GetComponent<RectTransform>();
-            mBoxRect.sizeDelta = new Vector2(330, 330);
-            mBoxRect.anchoredPosition = new Vector2(-200, -18);
+            mBoxRect.sizeDelta = new Vector2(340, 360);
+            mBoxRect.anchoredPosition = new Vector2(-200, 18);
             Image mBoxImg = monitorBox.GetComponent<Image>();
             mBoxImg.color = new Color(0.04f, 0.07f, 0.10f, 1f);
 
@@ -730,7 +884,7 @@ namespace TheLastSignal.UI.Tasks
             GameObject mHeadGo = new GameObject("MonitorHeader", typeof(RectTransform), typeof(TextMeshProUGUI));
             mHeadGo.transform.SetParent(monitorBox.transform, false);
             RectTransform mhRect = mHeadGo.GetComponent<RectTransform>();
-            mhRect.anchoredPosition = new Vector2(0, 142);
+            mhRect.anchoredPosition = new Vector2(0, 155);
             mhRect.sizeDelta = new Vector2(300, 24);
             TextMeshProUGUI mhTxt = mHeadGo.GetComponent<TextMeshProUGUI>();
             mhTxt.text = "SYSTEM PATTERN OUTPUT";
@@ -741,10 +895,10 @@ namespace TheLastSignal.UI.Tasks
 
             // Monitor 3x3 Grid
             Image[] mTiles = new Image[9];
-            float tileSize = 78f;
-            float spacing = 14f;
+            float tileSize = 74f;
+            float spacing = 12f;
             float startX = -(tileSize + spacing);
-            float startY = (tileSize + spacing);
+            float startY = 70f;
 
             for (int r = 0; r < 3; r++)
             {
@@ -755,7 +909,7 @@ namespace TheLastSignal.UI.Tasks
                     tile.transform.SetParent(monitorBox.transform, false);
                     RectTransform tRect = tile.GetComponent<RectTransform>();
                     tRect.sizeDelta = new Vector2(tileSize, tileSize);
-                    tRect.anchoredPosition = new Vector2(startX + c * (tileSize + spacing), startY - r * (tileSize + spacing) - 8);
+                    tRect.anchoredPosition = new Vector2(startX + c * (tileSize + spacing), startY - r * (tileSize + spacing));
 
                     Image tImg = tile.GetComponent<Image>();
                     tImg.color = new Color(0.08f, 0.11f, 0.15f, 1f);
@@ -772,7 +926,7 @@ namespace TheLastSignal.UI.Tasks
             GameObject mStatGo = new GameObject("MonitorStatusText", typeof(RectTransform), typeof(TextMeshProUGUI));
             mStatGo.transform.SetParent(monitorBox.transform, false);
             RectTransform msRect = mStatGo.GetComponent<RectTransform>();
-            msRect.anchoredPosition = new Vector2(0, -145);
+            msRect.anchoredPosition = new Vector2(0, -152);
             msRect.sizeDelta = new Vector2(300, 24);
             TextMeshProUGUI msTxt = mStatGo.GetComponent<TextMeshProUGUI>();
             msTxt.text = "<color=#00E5FF>OBSERVING SEQUENCE...</color>";
@@ -783,8 +937,8 @@ namespace TheLastSignal.UI.Tasks
             GameObject keypadBox = new GameObject("KeypadHousing", typeof(RectTransform), typeof(Image));
             keypadBox.transform.SetParent(box.transform, false);
             RectTransform kBoxRect = keypadBox.GetComponent<RectTransform>();
-            kBoxRect.sizeDelta = new Vector2(330, 330);
-            kBoxRect.anchoredPosition = new Vector2(200, -18);
+            kBoxRect.sizeDelta = new Vector2(340, 360);
+            kBoxRect.anchoredPosition = new Vector2(200, 18);
             Image kBoxImg = keypadBox.GetComponent<Image>();
             kBoxImg.color = new Color(0.06f, 0.08f, 0.11f, 1f);
 
@@ -796,7 +950,7 @@ namespace TheLastSignal.UI.Tasks
             GameObject kHeadGo = new GameObject("KeypadHeader", typeof(RectTransform), typeof(TextMeshProUGUI));
             kHeadGo.transform.SetParent(keypadBox.transform, false);
             RectTransform khRect = kHeadGo.GetComponent<RectTransform>();
-            khRect.anchoredPosition = new Vector2(0, 142);
+            khRect.anchoredPosition = new Vector2(0, 155);
             khRect.sizeDelta = new Vector2(300, 24);
             TextMeshProUGUI khTxt = kHeadGo.GetComponent<TextMeshProUGUI>();
             khTxt.text = "MANUAL INPUT KEYPAD";
@@ -818,7 +972,7 @@ namespace TheLastSignal.UI.Tasks
                     btnGo.transform.SetParent(keypadBox.transform, false);
                     RectTransform bRect = btnGo.GetComponent<RectTransform>();
                     bRect.sizeDelta = new Vector2(tileSize, tileSize);
-                    bRect.anchoredPosition = new Vector2(startX + c * (tileSize + spacing), startY - r * (tileSize + spacing) - 8);
+                    bRect.anchoredPosition = new Vector2(startX + c * (tileSize + spacing), startY - r * (tileSize + spacing));
 
                     Image bImg = btnGo.GetComponent<Image>();
                     bImg.color = new Color(0.13f, 0.16f, 0.20f, 1f);
@@ -859,7 +1013,7 @@ namespace TheLastSignal.UI.Tasks
             GameObject kStatGo = new GameObject("KeypadStatusText", typeof(RectTransform), typeof(TextMeshProUGUI));
             kStatGo.transform.SetParent(keypadBox.transform, false);
             RectTransform ksRect = kStatGo.GetComponent<RectTransform>();
-            ksRect.anchoredPosition = new Vector2(0, -145);
+            ksRect.anchoredPosition = new Vector2(0, -152);
             ksRect.sizeDelta = new Vector2(300, 24);
             TextMeshProUGUI ksTxt = kStatGo.GetComponent<TextMeshProUGUI>();
             ksTxt.text = "<color=#8B949E>CLICK OR PRESS [1-9]</color>";
@@ -870,12 +1024,12 @@ namespace TheLastSignal.UI.Tasks
             GameObject progFrame = new GameObject("ProgressFrame", typeof(RectTransform));
             progFrame.transform.SetParent(box.transform, false);
             RectTransform pfRect = progFrame.GetComponent<RectTransform>();
-            pfRect.anchoredPosition = new Vector2(0, -188);
-            pfRect.sizeDelta = new Vector2(400, 28);
+            pfRect.anchoredPosition = new Vector2(0, -205);
+            pfRect.sizeDelta = new Vector2(380, 20);
 
             Image[] leds = new Image[5];
-            float ledWidth = 60f;
-            float ledSpacing = 16f;
+            float ledWidth = 58f;
+            float ledSpacing = 14f;
             float ledStartX = -(2 * (ledWidth + ledSpacing));
 
             for (int i = 0; i < 5; i++)
@@ -900,8 +1054,8 @@ namespace TheLastSignal.UI.Tasks
             GameObject stgGo = new GameObject("StageText", typeof(RectTransform), typeof(TextMeshProUGUI));
             stgGo.transform.SetParent(box.transform, false);
             RectTransform stgRect = stgGo.GetComponent<RectTransform>();
-            stgRect.anchoredPosition = new Vector2(0, -235);
-            stgRect.sizeDelta = new Vector2(600, 36);
+            stgRect.anchoredPosition = new Vector2(0, -250);
+            stgRect.sizeDelta = new Vector2(600, 28);
             TextMeshProUGUI stgTxt = stgGo.GetComponent<TextMeshProUGUI>();
             stgTxt.text = "<color=#00FF7F><b>STAGE: 1 / 5</b></color>";
             stgTxt.fontSize = 18;

@@ -80,6 +80,45 @@ namespace TheLastSignal.Entities.Environment
             }
         }
 
+        /// <summary>
+        /// Instantly completes station repair (e.g., when a dedicated task minigame is completed).
+        /// </summary>
+        public void CompleteRepair()
+        {
+            if (IsCompleted)
+            {
+                return;
+            }
+
+            if (IsSpawned)
+            {
+                if (!IsServer)
+                {
+                    CompleteRepairRpc();
+                    return;
+                }
+
+                progress.Value = 1f;
+                completed.Value = true;
+                lightZone?.ServerSetLit(true);
+            }
+            else
+            {
+                offlineProgress = 1f;
+                offlineCompleted = true;
+                ApplyCompletionVisual(true);
+                lightZone?.ServerSetLit(true);
+            }
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void CompleteRepairRpc(RpcParams rpcParams = default)
+        {
+            progress.Value = 1f;
+            completed.Value = true;
+            lightZone?.ServerSetLit(true);
+        }
+
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
         private void RequestRepairRpc(RpcParams rpcParams = default)
         {

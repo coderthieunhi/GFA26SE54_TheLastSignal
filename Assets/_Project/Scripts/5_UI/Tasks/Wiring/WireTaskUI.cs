@@ -451,13 +451,10 @@ namespace TheLastSignal.UI.Tasks
             // Notify station
             if (activeTaskLocation != null)
             {
+                activeTaskLocation.SetCompleted(true);
                 if (activeTaskLocation.TryGetComponent(out StationRepair repair))
                 {
-                    repair.RequestRepair(activePlayer);
-                }
-                else
-                {
-                    activeTaskLocation.SetCompleted(true);
+                    repair.CompleteRepair();
                 }
             }
 
