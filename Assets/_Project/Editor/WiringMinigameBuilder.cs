@@ -88,6 +88,26 @@ namespace TheLastSignal.Editor
             Debug.Log("<color=green>[WiringMinigameBuilder]</color> Upgraded Waveform Minigame UI successfully created under Canvas!");
         }
 
+        [MenuItem("TheLastSignal/Tasks/Create Calibration Minigame UI (Recreate)", false, 104)]
+        [MenuItem("GameObject/UI/The Last Signal - Calibration Minigame", false, 24)]
+        public static void CreateCalibrationMinigameUI()
+        {
+            Canvas canvas = EnsureCanvas();
+
+            CalibrationTaskUI existing = Object.FindAnyObjectByType<CalibrationTaskUI>(FindObjectsInactive.Include);
+            if (existing != null)
+            {
+                Undo.DestroyObjectImmediate(existing.gameObject);
+                Debug.Log("<color=yellow>[WiringMinigameBuilder]</color> Removed old Calibration Minigame UI to upgrade.");
+            }
+
+            CalibrationTaskUI calibUI = CalibrationTaskUI.CreateCalibrationUIHierarchy(canvas);
+
+            Selection.activeGameObject = calibUI.gameObject;
+            Undo.RegisterCreatedObjectUndo(calibUI.gameObject, "Create Upgraded Calibration Minigame UI");
+            Debug.Log("<color=green>[WiringMinigameBuilder]</color> Upgraded Calibration Minigame UI successfully created under Canvas!");
+        }
+
         private static Canvas EnsureCanvas()
         {
             Canvas canvas = Object.FindAnyObjectByType<Canvas>();

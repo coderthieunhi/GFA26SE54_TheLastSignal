@@ -10,7 +10,8 @@ namespace TheLastSignal.Entities.Environment
         WireBridging,
         ValveBalancing,
         MemorySequence,
-        WaveformTuning
+        WaveformTuning,
+        TimingCalibration
     }
     public enum TaskStationType
     {
@@ -94,11 +95,22 @@ namespace TheLastSignal.Entities.Environment
                     }
                     else
                     {
-                        activeType = TaskMinigameType.WireBridging;
+                        // Generator / Power stations: alternate between WireBridging and TimingCalibration
+                        int hash = Mathf.Abs(stationId.GetHashCode());
+                        activeType = (hash % 2 == 0) ? TaskMinigameType.WireBridging : TaskMinigameType.TimingCalibration;
                     }
                 }
 
-                if (activeType == TaskMinigameType.WaveformTuning)
+                if (activeType == TaskMinigameType.TimingCalibration)
+                {
+                    var calibUI = TheLastSignal.UI.Tasks.CalibrationTaskUI.Instance ?? TheLastSignal.UI.Tasks.CalibrationTaskUI.GetOrCreateInstance();
+                    if (calibUI != null)
+                    {
+                        calibUI.Open(player, this);
+                        return;
+                    }
+                }
+                else if (activeType == TaskMinigameType.WaveformTuning)
                 {
                     var waveUI = TheLastSignal.UI.Tasks.WaveformTaskUI.Instance ?? TheLastSignal.UI.Tasks.WaveformTaskUI.GetOrCreateInstance();
                     if (waveUI != null)
