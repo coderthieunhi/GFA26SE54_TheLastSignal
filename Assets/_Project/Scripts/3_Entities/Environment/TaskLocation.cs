@@ -8,7 +8,8 @@ namespace TheLastSignal.Entities.Environment
     {
         Automatic,
         WireBridging,
-        ValveBalancing
+        ValveBalancing,
+        MemorySequence
     }
     public enum TaskStationType
     {
@@ -75,10 +76,33 @@ namespace TheLastSignal.Entities.Environment
             // minigame later — this only adds a progress counter to the existing placeholder.
             if (useMinigame && !isCompleted)
             {
-                bool useValve = minigameType == TaskMinigameType.ValveBalancing ||
-                                (minigameType == TaskMinigameType.Automatic && (stationType == TaskStationType.Mechanical || stationType == TaskStationType.Computer));
+                TaskMinigameType activeType = minigameType;
+                if (activeType == TaskMinigameType.Automatic)
+                {
+                    if (stationType == TaskStationType.Computer || stationType == TaskStationType.ControlPanel)
+                    {
+                        activeType = TaskMinigameType.MemorySequence;
+                    }
+                    else if (stationType == TaskStationType.Mechanical)
+                    {
+                        activeType = TaskMinigameType.ValveBalancing;
+                    }
+                    else
+                    {
+                        activeType = TaskMinigameType.WireBridging;
+                    }
+                }
 
-                if (useValve)
+                if (activeType == TaskMinigameType.MemorySequence)
+                {
+                    var memUI = TheLastSignal.UI.Tasks.MemoryTaskUI.Instance ?? TheLastSignal.UI.Tasks.MemoryTaskUI.GetOrCreateInstance();
+                    if (memUI != null)
+                    {
+                        memUI.Open(player, this);
+                        return;
+                    }
+                }
+                else if (activeType == TaskMinigameType.ValveBalancing)
                 {
                     var valveUI = TheLastSignal.UI.Tasks.ValveTaskUI.Instance ?? TheLastSignal.UI.Tasks.ValveTaskUI.GetOrCreateInstance();
                     if (valveUI != null)

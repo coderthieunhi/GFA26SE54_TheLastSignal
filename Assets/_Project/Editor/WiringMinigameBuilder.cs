@@ -48,6 +48,26 @@ namespace TheLastSignal.Editor
             Debug.Log("<color=green>[WiringMinigameBuilder]</color> Upgraded Valve Minigame UI successfully created under Canvas!");
         }
 
+        [MenuItem("TheLastSignal/Tasks/Create Memory Keypad Minigame UI (Recreate)", false, 102)]
+        [MenuItem("GameObject/UI/The Last Signal - Memory Minigame", false, 22)]
+        public static void CreateMemoryMinigameUI()
+        {
+            Canvas canvas = EnsureCanvas();
+
+            MemoryTaskUI existing = Object.FindAnyObjectByType<MemoryTaskUI>(FindObjectsInactive.Include);
+            if (existing != null)
+            {
+                Undo.DestroyObjectImmediate(existing.gameObject);
+                Debug.Log("<color=yellow>[WiringMinigameBuilder]</color> Removed old Memory Minigame UI to upgrade.");
+            }
+
+            MemoryTaskUI memUI = MemoryTaskUI.CreateMemoryUIHierarchy(canvas);
+
+            Selection.activeGameObject = memUI.gameObject;
+            Undo.RegisterCreatedObjectUndo(memUI.gameObject, "Create Upgraded Memory Minigame UI");
+            Debug.Log("<color=green>[WiringMinigameBuilder]</color> Upgraded Memory Minigame UI successfully created under Canvas!");
+        }
+
         private static Canvas EnsureCanvas()
         {
             Canvas canvas = Object.FindAnyObjectByType<Canvas>();
