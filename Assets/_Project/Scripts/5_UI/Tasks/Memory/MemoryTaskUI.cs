@@ -18,6 +18,7 @@ namespace TheLastSignal.UI.Tasks
     /// - Procedural audio feedback (distinct musical tones for each key, error buzzer, victory chime).
     /// - Server-authoritative ready and full player control lock/release.
     /// </summary>
+    [RequireComponent(typeof(AudioSource))]
     public class MemoryTaskUI : MonoBehaviour
     {
         private static MemoryTaskUI _instance;
@@ -487,9 +488,17 @@ namespace TheLastSignal.UI.Tasks
         {
             if (audioSource == null)
             {
-                audioSource = gameObject.GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+                audioSource = GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
             }
-            audioSource.playOnAwake = false;
+
+            if (audioSource != null)
+            {
+                audioSource.playOnAwake = false;
+            }
 
             // 9 musical frequencies (Major scale from C4 to D5)
             float[] freqs = new float[] {
@@ -619,7 +628,7 @@ namespace TheLastSignal.UI.Tasks
             Sprite bezelSprite = Resources.Load<Sprite>("UI/Tasks/TerminalBezel");
 
             // Root panel (Full Screen Vignette)
-            GameObject root = new GameObject("MemoryMinigamePanel", typeof(RectTransform));
+            GameObject root = new GameObject("MemoryMinigamePanel", typeof(RectTransform), typeof(AudioSource));
             root.transform.SetParent(canvas.transform, false);
             RectTransform rootRect = root.GetComponent<RectTransform>();
             rootRect.anchorMin = Vector2.zero;
@@ -899,9 +908,15 @@ namespace TheLastSignal.UI.Tasks
             stgTxt.alignment = TextAlignmentOptions.Center;
 
             // Configure component
+            AudioSource rootAudio = root.GetComponent<AudioSource>();
+            if (rootAudio != null)
+            {
+                rootAudio.playOnAwake = false;
+            }
+
             MemoryTaskUI memTask = root.AddComponent<MemoryTaskUI>();
             memTask.Configure(root, headerTxt, instTxt, stgTxt, closeBtn,
-                              mTiles, msTxt, kBtns, kImgs, kTexts, leds);
+                              mTiles, msTxt, kBtns, kImgs, kTexts, leds, rootAudio);
 
             root.SetActive(false);
             return memTask;
@@ -909,7 +924,7 @@ namespace TheLastSignal.UI.Tasks
 
         public void Configure(GameObject root, TextMeshProUGUI header, TextMeshProUGUI inst, TextMeshProUGUI stage,
                               Button close, Image[] mTiles, TextMeshProUGUI mStatus, Button[] kBtns, Image[] kImgs,
-                              TextMeshProUGUI[] kTexts, Image[] leds)
+                              TextMeshProUGUI[] kTexts, Image[] leds, AudioSource audio = null)
         {
             rootPanel = root;
             headerText = header;
@@ -922,6 +937,19 @@ namespace TheLastSignal.UI.Tasks
             keypadTileImages = kImgs;
             keypadTileTexts = kTexts;
             stageLeds = leds;
+
+            if (audio != null)
+            {
+                audioSource = audio;
+            }
+            else if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
 
             if (closeButton != null)
             {
