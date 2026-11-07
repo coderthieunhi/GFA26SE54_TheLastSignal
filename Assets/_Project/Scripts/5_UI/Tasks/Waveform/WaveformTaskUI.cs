@@ -236,6 +236,18 @@ namespace TheLastSignal.UI.Tasks
 
             UpdateReadouts();
 
+            if (headerText != null && taskLocation != null)
+            {
+                string pipelineInfo = string.Empty;
+                if (taskLocation.TryGetComponent(out StationRepair repair))
+                {
+                    int step = repair.CompletedSteps + 1;
+                    int target = repair.GetTargetStepsForPlayer(player);
+                    pipelineInfo = $" [STAGE {step}/{target}]";
+                }
+                headerText.text = $"RADIO FREQUENCY SYNCHRONIZER // {taskLocation.StationDisplayName.ToUpper()}{pipelineInfo}";
+            }
+
             if (rootPanel != null)
             {
                 rootPanel.SetActive(true);
@@ -253,6 +265,14 @@ namespace TheLastSignal.UI.Tasks
 
         public void CloseMinigame()
         {
+            if (activeTaskLocation != null && !isFinished)
+            {
+                if (activeTaskLocation.TryGetComponent(out StationRepair repair))
+                {
+                    repair.ReleaseRepairLock(activePlayer);
+                }
+            }
+
             if (staticAudioSource != null)
             {
                 staticAudioSource.Stop();
@@ -508,17 +528,15 @@ namespace TheLastSignal.UI.Tasks
 
             yield return new WaitForSeconds(0.85f);
 
-            // Complete Station
+            // Notify Station
             if (activeTaskLocation != null)
             {
-                activeTaskLocation.SetCompleted(true);
-                if (activeTaskLocation.TryGetComponent(out StationRepair repair))
-                {
-                    repair.CompleteRepair();
-                }
+                activeTaskLocation.OnSubTaskCompleted(activePlayer, this);
             }
-
-            CloseMinigame();
+            else
+            {
+                CloseMinigame();
+            }
         }
 
         #region Audio Synthesis

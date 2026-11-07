@@ -108,6 +108,26 @@ namespace TheLastSignal.Editor
             Debug.Log("<color=green>[WiringMinigameBuilder]</color> Upgraded Calibration Minigame UI successfully created under Canvas!");
         }
 
+        [MenuItem("TheLastSignal/Tasks/Create Intermission UI (Recreate)", false, 105)]
+        [MenuItem("GameObject/UI/The Last Signal - Intermission Screen", false, 25)]
+        public static void CreateIntermissionUI()
+        {
+            Canvas canvas = EnsureCanvas();
+
+            TaskIntermissionUI existing = Object.FindAnyObjectByType<TaskIntermissionUI>(FindObjectsInactive.Include);
+            if (existing != null)
+            {
+                Undo.DestroyObjectImmediate(existing.gameObject);
+                Debug.Log("<color=yellow>[WiringMinigameBuilder]</color> Removed old Intermission UI to upgrade.");
+            }
+
+            TaskIntermissionUI intermissionUI = TaskIntermissionUI.CreateIntermissionUIHierarchy(canvas);
+
+            Selection.activeGameObject = intermissionUI.gameObject;
+            Undo.RegisterCreatedObjectUndo(intermissionUI.gameObject, "Create Task Intermission UI");
+            Debug.Log("<color=green>[WiringMinigameBuilder]</color> Task Intermission UI successfully created under Canvas!");
+        }
+
         private static Canvas EnsureCanvas()
         {
             Canvas canvas = Object.FindAnyObjectByType<Canvas>();

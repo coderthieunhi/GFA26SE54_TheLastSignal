@@ -5,12 +5,11 @@ using TheLastSignal.Entities.Player;
 namespace TheLastSignal.Entities.Environment
 {
     /// <summary>
-    /// Server-authoritative repair progress for a TaskLocation. No repair system existed in this
-    /// project before this (TaskLocation.Interact was a placeholder log only — see its own comments),
-    /// so this is new, minimal scaffolding: each [E] press adds a fixed chunk of progress, scaled by
-    /// the repairing player's role (Engineer: faster — design brief: "every Survivor can repair any
-    /// machine... Engineer repairs faster"). Mirrors DoorController's shape: its own per-entity
-    /// NetworkVariable (Server write, Everyone read), a ServerRpc entry point, an offline fallback.
+    /// Server-authoritative multi-stage repair progression for a TaskLocation.
+    /// Manages sequential sub-tasks, persistent progress saving, and role-based quotas:
+    /// - Engineer: 3 sub-tasks required (or +1 if station already had >= 3 and < 5 steps)
+    /// - Drone Operator / Mechanic / Logistics: 5 sub-tasks required
+    /// - Concurrency lock: ensures only 1 survivor repairs at a time
     /// </summary>
     [RequireComponent(typeof(TaskLocation))]
     [RequireComponent(typeof(NetworkObject))]
@@ -22,9 +21,7 @@ namespace TheLastSignal.Entities.Environment
         [Tooltip("Progress added per [E] interact at repairSpeedMultiplier = 1 (Mechanic/Logistics baseline).")]
         [SerializeField, Range(0.05f, 1f)] private float baseProgressPerInteract = 0.34f;
 
-        [Tooltip("Optional: the room's light zone, switched on when this station completes — closes " +
-                 "the hook Epic 5 part 1's RepairStationLightZone left for 'a real repair-confirmation " +
-                 "signal' (see that class's own comments).")]
+        [Tooltip("Optional: the room's light zone, switched on when this station completes.")]
         [SerializeField] private RepairStationLightZone lightZone;
 
         private readonly NetworkVariable<float> progress = new NetworkVariable<float>(
@@ -33,12 +30,23 @@ namespace TheLastSignal.Entities.Environment
         private readonly NetworkVariable<bool> completed = new NetworkVariable<bool>(
             false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+        private readonly NetworkVariable<int> completedSteps = new NetworkVariable<int>(
+            0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        private readonly NetworkVariable<ulong> activeRepairerClientId = new NetworkVariable<ulong>(
+            ulong.MaxValue, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
         private TaskLocation taskLocation;
         private float offlineProgress;
         private bool offlineCompleted;
+        private int offlineCompletedSteps = 0;
+        private ulong offlineRepairerId = ulong.MaxValue;
+        private int engineerSessionStartSteps = -1;
 
         public float Progress => IsSpawned ? progress.Value : offlineProgress;
         public bool IsCompleted => IsSpawned ? completed.Value : offlineCompleted;
+        public int CompletedSteps => IsSpawned ? completedSteps.Value : offlineCompletedSteps;
+        public ulong ActiveRepairerClientId => IsSpawned ? activeRepairerClientId.Value : offlineRepairerId;
 
         private void Awake()
         {
@@ -50,6 +58,13 @@ namespace TheLastSignal.Entities.Environment
             base.OnNetworkSpawn();
             progress.OnValueChanged += HandleProgressChanged;
             completed.OnValueChanged += HandleCompletedChanged;
+            completedSteps.OnValueChanged += HandleStepsChanged;
+
+            if (IsServer && NetworkManager != null)
+            {
+                NetworkManager.OnClientDisconnectCallback += HandleClientDisconnect;
+            }
+
             ApplyCompletionVisual(IsCompleted);
         }
 
@@ -57,12 +72,268 @@ namespace TheLastSignal.Entities.Environment
         {
             progress.OnValueChanged -= HandleProgressChanged;
             completed.OnValueChanged -= HandleCompletedChanged;
+            completedSteps.OnValueChanged -= HandleStepsChanged;
+
+            if (IsServer && NetworkManager != null)
+            {
+                NetworkManager.OnClientDisconnectCallback -= HandleClientDisconnect;
+            }
+
             base.OnNetworkDespawn();
         }
 
-        /// <summary>Called by TaskLocation.Interact — routes through the Host-validated ServerRpc when
-        /// networked, falls back to a direct local update in single-player (same pattern as
-        /// DoorController.Interact).</summary>
+        private void HandleClientDisconnect(ulong clientId)
+        {
+            if (activeRepairerClientId.Value == clientId)
+            {
+                activeRepairerClientId.Value = ulong.MaxValue;
+            }
+        }
+
+        private ulong GetClientId(PlayerController player)
+        {
+            if (player != null && player.IsSpawned)
+            {
+                return player.OwnerClientId;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Checks whether another survivor is currently working on this station.
+        /// </summary>
+        public bool IsStationLockedByOther(PlayerController requester, out string reason)
+        {
+            reason = string.Empty;
+            if (IsCompleted) return false;
+
+            ulong myId = GetClientId(requester);
+            ulong lockId = ActiveRepairerClientId;
+
+            if (lockId != ulong.MaxValue && lockId != myId)
+            {
+                reason = "Station is in use by another survivor.";
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Claims exclusive repair lock for a survivor while interacting with minigames.
+        /// </summary>
+        public bool TryClaimRepairLock(PlayerController requester, out string reason)
+        {
+            reason = string.Empty;
+            if (IsCompleted)
+            {
+                reason = "Station is already repaired.";
+                return false;
+            }
+
+            ulong myId = GetClientId(requester);
+
+            if (IsSpawned)
+            {
+                if (activeRepairerClientId.Value != ulong.MaxValue && activeRepairerClientId.Value != myId)
+                {
+                    reason = "Station is currently in use by another survivor.";
+                    return false;
+                }
+
+                if (IsServer)
+                {
+                    activeRepairerClientId.Value = myId;
+                }
+                else
+                {
+                    ClaimLockRpc();
+                }
+            }
+            else
+            {
+                if (offlineRepairerId != ulong.MaxValue && offlineRepairerId != myId)
+                {
+                    reason = "Station is in use.";
+                    return false;
+                }
+                offlineRepairerId = myId;
+            }
+
+            // Record session start steps for Engineer hand-off logic
+            if (requester != null && requester.TryGetComponent(out PlayerRole r) && r.Role == TheLastSignal.Core.SurvivorRole.Engineer)
+            {
+                engineerSessionStartSteps = CompletedSteps;
+            }
+            else
+            {
+                engineerSessionStartSteps = -1;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Releases exclusive repair lock when player exits or finishes minigames.
+        /// </summary>
+        public void ReleaseRepairLock(PlayerController requester)
+        {
+            ulong myId = GetClientId(requester);
+            if (IsSpawned)
+            {
+                if (IsServer)
+                {
+                    if (activeRepairerClientId.Value == myId)
+                    {
+                        activeRepairerClientId.Value = ulong.MaxValue;
+                    }
+                }
+                else
+                {
+                    ReleaseLockRpc();
+                }
+            }
+            else
+            {
+                if (offlineRepairerId == myId)
+                {
+                    offlineRepairerId = ulong.MaxValue;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Computes the target number of minigame steps required for this survivor role.
+        /// - Engineer: Normally 3 steps. If station was already >= 3 and < 5, requires 1 additional step.
+        /// - Drone Operator / Mechanic / Logistics: 5 steps.
+        /// </summary>
+        public int GetTargetStepsForPlayer(PlayerController player)
+        {
+            if (player != null && player.TryGetComponent(out PlayerRole r) && r.Role == TheLastSignal.Core.SurvivorRole.Engineer)
+            {
+                int current = CompletedSteps;
+                if (current >= 3 && current < 5)
+                {
+                    return current + 1;
+                }
+                return 3;
+            }
+            return 5;
+        }
+
+        /// <summary>
+        /// Advances completed minigames counter and evaluates whether the station is now 100% finished.
+        /// Implements the Engineer hand-off rule: if station was already >= 3 and < 5, doing 1 more completes it!
+        /// </summary>
+        public bool AdvanceRepairStep(PlayerController player, out bool isStationCompleted)
+        {
+            isStationCompleted = false;
+            if (IsCompleted)
+            {
+                isStationCompleted = true;
+                return true;
+            }
+
+            bool isEngineer = player != null && player.TryGetComponent(out PlayerRole r) && r.Role == TheLastSignal.Core.SurvivorRole.Engineer;
+            int current = CompletedSteps;
+            int next = current + 1;
+
+            bool finished = false;
+            if (isEngineer)
+            {
+                // Engineer special rule:
+                // If station already had >= 3 steps and < 5 when Engineer started, 1 more minigame completes it!
+                if (engineerSessionStartSteps >= 3 && engineerSessionStartSteps < 5)
+                {
+                    if (next > engineerSessionStartSteps)
+                    {
+                        finished = true;
+                    }
+                }
+                else if (next >= 3)
+                {
+                    finished = true;
+                }
+            }
+            else
+            {
+                // Drone Operator / Mechanic / Logistics: requires 5 steps
+                if (next >= 5)
+                {
+                    finished = true;
+                }
+            }
+
+            if (IsSpawned)
+            {
+                if (IsServer)
+                {
+                    ServerApplyStep(next, finished);
+                }
+                else
+                {
+                    AdvanceStepRpc(finished);
+                }
+            }
+            else
+            {
+                offlineCompletedSteps = next;
+                offlineProgress = finished ? 1f : Mathf.Clamp01(next / 5f);
+                if (finished)
+                {
+                    offlineCompleted = true;
+                    offlineRepairerId = ulong.MaxValue;
+                    ApplyCompletionVisual(true);
+                    lightZone?.ServerSetLit(true);
+                }
+            }
+
+            isStationCompleted = finished;
+            return true;
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void ClaimLockRpc(RpcParams rpcParams = default)
+        {
+            ulong sender = rpcParams.Receive.SenderClientId;
+            if (activeRepairerClientId.Value == ulong.MaxValue)
+            {
+                activeRepairerClientId.Value = sender;
+            }
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void ReleaseLockRpc(RpcParams rpcParams = default)
+        {
+            ulong sender = rpcParams.Receive.SenderClientId;
+            if (activeRepairerClientId.Value == sender)
+            {
+                activeRepairerClientId.Value = ulong.MaxValue;
+            }
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void AdvanceStepRpc(bool finished, RpcParams rpcParams = default)
+        {
+            int next = completedSteps.Value + 1;
+            ServerApplyStep(next, finished);
+        }
+
+        private void ServerApplyStep(int nextSteps, bool finished)
+        {
+            completedSteps.Value = nextSteps;
+            if (finished || nextSteps >= 5)
+            {
+                progress.Value = 1f;
+                completed.Value = true;
+                activeRepairerClientId.Value = ulong.MaxValue;
+                lightZone?.ServerSetLit(true);
+            }
+            else
+            {
+                progress.Value = Mathf.Clamp01(nextSteps / 5f);
+            }
+        }
+
         public void RequestRepair(PlayerController requester)
         {
             if (IsCompleted)
@@ -80,9 +351,6 @@ namespace TheLastSignal.Entities.Environment
             }
         }
 
-        /// <summary>
-        /// Instantly completes station repair (e.g., when a dedicated task minigame is completed).
-        /// </summary>
         public void CompleteRepair()
         {
             if (IsCompleted)
@@ -98,14 +366,18 @@ namespace TheLastSignal.Entities.Environment
                     return;
                 }
 
+                completedSteps.Value = 5;
                 progress.Value = 1f;
                 completed.Value = true;
+                activeRepairerClientId.Value = ulong.MaxValue;
                 lightZone?.ServerSetLit(true);
             }
             else
             {
+                offlineCompletedSteps = 5;
                 offlineProgress = 1f;
                 offlineCompleted = true;
+                offlineRepairerId = ulong.MaxValue;
                 ApplyCompletionVisual(true);
                 lightZone?.ServerSetLit(true);
             }
@@ -114,8 +386,10 @@ namespace TheLastSignal.Entities.Environment
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
         private void CompleteRepairRpc(RpcParams rpcParams = default)
         {
+            completedSteps.Value = 5;
             progress.Value = 1f;
             completed.Value = true;
+            activeRepairerClientId.Value = ulong.MaxValue;
             lightZone?.ServerSetLit(true);
         }
 
@@ -169,7 +443,9 @@ namespace TheLastSignal.Entities.Environment
                 progress.Value = newValue;
                 if (nowCompleted)
                 {
+                    completedSteps.Value = 5;
                     completed.Value = true;
+                    activeRepairerClientId.Value = ulong.MaxValue;
                     lightZone?.ServerSetLit(true);
                 }
             }
@@ -177,6 +453,11 @@ namespace TheLastSignal.Entities.Environment
             {
                 offlineProgress = newValue;
                 offlineCompleted = nowCompleted;
+                if (nowCompleted)
+                {
+                    offlineCompletedSteps = 5;
+                    offlineRepairerId = ulong.MaxValue;
+                }
                 ApplyCompletionVisual(nowCompleted);
                 if (nowCompleted)
                 {
@@ -192,6 +473,10 @@ namespace TheLastSignal.Entities.Environment
         }
 
         private void HandleProgressChanged(float previous, float current)
+        {
+        }
+
+        private void HandleStepsChanged(int previous, int current)
         {
         }
 

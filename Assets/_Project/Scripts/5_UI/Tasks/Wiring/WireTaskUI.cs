@@ -785,7 +785,14 @@ namespace TheLastSignal.UI.Tasks
 
             if (headerText != null && station != null)
             {
-                headerText.text = $"ELECTRICAL JUNCTION PANEL // {station.StationDisplayName.ToUpper()}";
+                string pipelineInfo = string.Empty;
+                if (station.TryGetComponent(out StationRepair repair))
+                {
+                    int step = repair.CompletedSteps + 1;
+                    int target = repair.GetTargetStepsForPlayer(player);
+                    pipelineInfo = $" [STAGE {step}/{target}]";
+                }
+                headerText.text = $"ELECTRICAL JUNCTION PANEL // {station.StationDisplayName.ToUpper()}{pipelineInfo}";
             }
 
             UpdateProgressText();
@@ -908,18 +915,24 @@ namespace TheLastSignal.UI.Tasks
             // Notify station
             if (activeTaskLocation != null)
             {
-                activeTaskLocation.SetCompleted(true);
-                if (activeTaskLocation.TryGetComponent(out StationRepair repair))
-                {
-                    repair.CompleteRepair();
-                }
+                activeTaskLocation.OnSubTaskCompleted(activePlayer, this);
             }
-
-            CloseMinigame();
+            else
+            {
+                CloseMinigame();
+            }
         }
 
         public void CloseMinigame()
         {
+            if (activeTaskLocation != null && !isFinished)
+            {
+                if (activeTaskLocation.TryGetComponent(out StationRepair repair))
+                {
+                    repair.ReleaseRepairLock(activePlayer);
+                }
+            }
+
             if (rootPanel != null)
             {
                 rootPanel.SetActive(false);
