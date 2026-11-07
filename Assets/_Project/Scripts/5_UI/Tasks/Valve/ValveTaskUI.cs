@@ -418,13 +418,13 @@ namespace TheLastSignal.UI.Tasks
 
                 // Header Title positioning
                 Transform headerT = terminalBox.Find("HeaderTitle");
-                if (headerT != null && headerT.TryGetComponent(out RectTransform hRect))
+                if (headerT != null && headerT.TryGetComponent(out RectTransform hdrRect))
                 {
-                    hRect.anchorMin = new Vector2(0f, 1f);
-                    hRect.anchorMax = new Vector2(1f, 1f);
-                    hRect.pivot = new Vector2(0.5f, 1f);
-                    hRect.anchoredPosition = new Vector2(0, -32);
-                    hRect.sizeDelta = new Vector2(-120, 36);
+                    hdrRect.anchorMin = new Vector2(0f, 1f);
+                    hdrRect.anchorMax = new Vector2(1f, 1f);
+                    hdrRect.pivot = new Vector2(0.5f, 1f);
+                    hdrRect.anchoredPosition = new Vector2(0, -32);
+                    hdrRect.sizeDelta = new Vector2(-120, 36);
                     if (headerT.TryGetComponent(out TextMeshProUGUI hTxt))
                     {
                         headerText = hTxt;
@@ -537,9 +537,9 @@ namespace TheLastSignal.UI.Tasks
                 if (housing != null)
                 {
                     housing.SetParent(leftBay, false);
-                    RectTransform hRect = housing.GetComponent<RectTransform>();
-                    hRect.anchoredPosition = new Vector2(0, 10);
-                    hRect.sizeDelta = new Vector2(260, 260);
+                    RectTransform housingRect = housing.GetComponent<RectTransform>();
+                    housingRect.anchoredPosition = new Vector2(0, 10);
+                    housingRect.sizeDelta = new Vector2(260, 260);
 
                     if (housing.TryGetComponent(out Image hImg))
                     {
