@@ -47,6 +47,7 @@ namespace TheLastSignal.Entities.Environment
         public bool IsCompleted => IsSpawned ? completed.Value : offlineCompleted;
         public int CompletedSteps => IsSpawned ? completedSteps.Value : offlineCompletedSteps;
         public ulong ActiveRepairerClientId => IsSpawned ? activeRepairerClientId.Value : offlineRepairerId;
+        public bool IsLocked => ActiveRepairerClientId != ulong.MaxValue;
 
         private void Awake()
         {
