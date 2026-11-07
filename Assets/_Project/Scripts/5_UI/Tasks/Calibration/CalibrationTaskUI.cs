@@ -193,6 +193,18 @@ namespace TheLastSignal.UI.Tasks
                 headerText.text = $"POWER SURGE CALIBRATOR // {taskLocation.StationDisplayName.ToUpper()}{pipelineInfo}";
             }
 
+            if (closeButton != null)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(CloseMinigame);
+            }
+
+            if (calibrateButton != null)
+            {
+                calibrateButton.onClick.RemoveAllListeners();
+                calibrateButton.onClick.AddListener(AttemptCalibration);
+            }
+
             if (rootPanel != null)
             {
                 rootPanel.SetActive(true);
@@ -653,6 +665,18 @@ namespace TheLastSignal.UI.Tasks
             efficiencyText = effTxt;
             if (leds != null) stageLeds = leds;
 
+            if (closeButton != null)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(CloseMinigame);
+            }
+
+            if (calibrateButton != null)
+            {
+                calibrateButton.onClick.RemoveAllListeners();
+                calibrateButton.onClick.AddListener(AttemptCalibration);
+            }
+
             EnsureAudioSource();
             GenerateProceduralAudio();
         }
@@ -778,6 +802,7 @@ namespace TheLastSignal.UI.Tasks
             ctTxt.fontStyle = FontStyles.Bold;
             ctTxt.alignment = TextAlignmentOptions.Center;
             ctTxt.color = Color.white;
+            ctTxt.raycastTarget = false;
 
             // ================= 1. CALIBRATION CHAMBER (TOP / CENTER) =================
             GameObject chamberBox = new GameObject("ChamberHousing", typeof(RectTransform), typeof(Image));

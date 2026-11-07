@@ -42,6 +42,7 @@ namespace TheLastSignal.Entities.Environment
 
         [Header("Minigame")]
         [SerializeField] private bool useMinigame = true;
+        [SerializeField] private bool forceSpecificMinigame = false;
         [SerializeField] private TaskMinigameType minigameType = TaskMinigameType.Automatic;
 
         [Header("Multi-Stage Repair Playlist")]
@@ -101,7 +102,7 @@ namespace TheLastSignal.Entities.Environment
             {
                 markerRenderer = GetComponentInChildren<SpriteRenderer>();
             }
-            EnsureSubTasksPlaylist();
+            EnsureSubTasksPlaylist(forceReshuffle: true);
         }
 
         public void Initialize(string id, string displayName, TaskStationType type)
@@ -110,15 +111,15 @@ namespace TheLastSignal.Entities.Environment
             stationDisplayName = displayName;
             stationType = type;
             isCompleted = false;
-            EnsureSubTasksPlaylist();
+            EnsureSubTasksPlaylist(forceReshuffle: true);
         }
 
         /// <summary>
         /// Generates a deterministic non-repeating sequence of 5 minigames for this station.
         /// </summary>
-        private void EnsureSubTasksPlaylist()
+        private void EnsureSubTasksPlaylist(bool forceReshuffle = false)
         {
-            if (subTasksPlaylist != null && subTasksPlaylist.Count >= 5) return;
+            if (!forceReshuffle && subTasksPlaylist != null && subTasksPlaylist.Count >= 5) return;
 
             subTasksPlaylist = new List<TaskMinigameType>
             {
@@ -129,13 +130,27 @@ namespace TheLastSignal.Entities.Environment
                 TaskMinigameType.TimingCalibration
             };
 
-            // Deterministic shuffle based on stationId hash code
-            int seed = string.IsNullOrEmpty(stationId) ? 42 : Mathf.Abs(stationId.GetHashCode());
+            // Deterministic stable shuffle based on stationId polynomial hash
+            int seed = GetStableHash(!string.IsNullOrEmpty(stationId) ? stationId : stationDisplayName);
             System.Random rng = new System.Random(seed);
             for (int i = 0; i < subTasksPlaylist.Count; i++)
             {
                 int r = rng.Next(i, subTasksPlaylist.Count);
                 (subTasksPlaylist[i], subTasksPlaylist[r]) = (subTasksPlaylist[r], subTasksPlaylist[i]);
+            }
+        }
+
+        private static int GetStableHash(string str)
+        {
+            if (string.IsNullOrEmpty(str)) return 42;
+            unchecked
+            {
+                int hash = 17;
+                for (int i = 0; i < str.Length; i++)
+                {
+                    hash = hash * 31 + str[i];
+                }
+                return Mathf.Abs(hash);
             }
         }
 
@@ -174,10 +189,11 @@ namespace TheLastSignal.Entities.Environment
 
         /// <summary>
         /// Resolves the current sub-task minigame type based on playlist and completed steps.
+        /// Guaranteed to rotate across all 5 minigames for all task locations unless explicitly forced.
         /// </summary>
         public TaskMinigameType GetCurrentSubTaskType()
         {
-            if (minigameType != TaskMinigameType.Automatic)
+            if (forceSpecificMinigame && minigameType != TaskMinigameType.Automatic)
             {
                 return minigameType;
             }
@@ -187,6 +203,11 @@ namespace TheLastSignal.Entities.Environment
             if (TryGetComponent(out StationRepair repair))
             {
                 currentStep = repair.CompletedSteps;
+            }
+
+            if (subTasksPlaylist == null || subTasksPlaylist.Count == 0)
+            {
+                EnsureSubTasksPlaylist(forceReshuffle: true);
             }
 
             return subTasksPlaylist[currentStep % subTasksPlaylist.Count];

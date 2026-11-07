@@ -9994,6 +9994,7 @@ GameObject:
   - component: {fileID: 161927070}
   - component: {fileID: 161927069}
   - component: {fileID: 161927068}
+  - component: {fileID: 161927071}
   m_Layer: 0
   m_Name: WiringMinigamePanel
   m_TagString: Untagged
@@ -10036,8 +10037,14 @@ MonoBehaviour:
   rootPanel: {fileID: 161927066}
   masterStatusLight: {fileID: 1785384184}
   headerText: {fileID: 1272328123}
+  instructionText: {fileID: 0}
   progressText: {fileID: 1164157009}
   closeButton: {fileID: 1941025218}
+  connectionLeds:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   leftPoints:
   - {fileID: 1968918437}
   - {fileID: 539822863}
@@ -10089,6 +10096,103 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 161927066}
   m_CullTransparentMesh: 1
+--- !u!82 &161927071
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161927066}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &165157232
 GameObject:
   m_ObjectHideFlags: 0
@@ -11628,7 +11732,7 @@ Sprite:
       height: 64
     textureRectOffset: {x: 0, y: 0}
     atlasRectOffset: {x: -1, y: -1}
-    settingsRaw: 3136
+    settingsRaw: 64
     uvTransform: {x: 64, y: 32, z: 64, w: 32}
     downscaleMultiplier: 1
   m_AtlasRD:
@@ -23168,8 +23272,8 @@ MonoBehaviour:
   m_SelectionSources:
     rid: 3389542127196439092
   m_FalloffIntensity: 0.35
-  m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.38
+  m_Color: {r: 0.9308573, g: 0.16885772, b: 0.11357159, a: 1}
+  m_Intensity: 0.5455734
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -26645,8 +26749,8 @@ MonoBehaviour:
   m_SelectionSources:
     rid: 3389542127196439088
   m_FalloffIntensity: 0.35
-  m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.38
+  m_Color: {r: 0.99617034, g: 0.46276653, b: 0.19521293, a: 1}
+  m_Intensity: 1.5415977
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -35157,8 +35261,8 @@ MonoBehaviour:
   m_SelectionSources:
     rid: 3389542127196439087
   m_FalloffIntensity: 0.35
-  m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.38
+  m_Color: {r: 0.9786984, g: 0.38414264, b: 0.17337297, a: 1}
+  m_Intensity: 1.2751502
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -42482,8 +42586,8 @@ MonoBehaviour:
   m_SelectionSources:
     rid: 3389542127196439086
   m_FalloffIntensity: 0.35
-  m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.38
+  m_Color: {r: 0.95022726, g: 0.25602254, b: 0.13778405, a: 1}
+  m_Intensity: 0.8409653
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -48825,8 +48929,8 @@ MonoBehaviour:
   m_SelectionSources:
     rid: 3389542127196439091
   m_FalloffIntensity: 0.35
-  m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.17099999
+  m_Color: {r: 0.9633367, g: 0.31501505, b: 0.15417086, a: 1}
+  m_Intensity: 0.94510144
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -60856,6 +60960,7 @@ MonoBehaviour:
   gaugeDialImage: {fileID: 2028763108}
   gaugeNeedle: {fileID: 1133184553}
   stabilizationBar: {fileID: 1738744641}
+  stabilizationBarFrame: {fileID: 0}
   stabilizationPercentText: {fileID: 1630511115}
   valveWheel: {fileID: 1581795299}
   requiredHoldSeconds: 2.5
@@ -65404,7 +65509,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ''
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -71653,7 +71758,7 @@ MonoBehaviour:
   stationType: 0
   isCompleted: 0
   useMinigame: 1
-  minigameType: 2
+  minigameType: 0
   markerRenderer: {fileID: 0}
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   completedColor: {r: 0.3, g: 1, b: 0.5, a: 0.8}
@@ -79790,6 +79895,7 @@ MonoBehaviour:
   objectiveText: {fileID: 1196469178}
   sessionStatusText: {fileID: 1290102882}
   countdownText: {fileID: 1405511583}
+  showObjectiveText: 0
 --- !u!114 &1405511573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80704,8 +80810,8 @@ MonoBehaviour:
   m_SelectionSources:
     rid: 3389542127196439089
   m_FalloffIntensity: 0.35
-  m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.38
+  m_Color: {r: 0.9993692, g: 0.4771613, b: 0.19921148, a: 1}
+  m_Intensity: 1.59038
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -93915,8 +94021,8 @@ MonoBehaviour:
   m_SelectionSources:
     rid: 3389542127196439090
   m_FalloffIntensity: 0.35
-  m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.38
+  m_Color: {r: 0.98769546, g: 0.4246296, b: 0.18461934, a: 1}
+  m_Intensity: 1.4123559
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -109206,6 +109312,7 @@ GameObject:
   - component: {fileID: 1902110620}
   - component: {fileID: 1902110619}
   - component: {fileID: 1902110618}
+  - component: {fileID: 1902110621}
   m_Layer: 0
   m_Name: WiringMinigamePanel
   m_TagString: Untagged
@@ -109248,8 +109355,14 @@ MonoBehaviour:
   rootPanel: {fileID: 1902110616}
   masterStatusLight: {fileID: 1259371049}
   headerText: {fileID: 851786087}
+  instructionText: {fileID: 0}
   progressText: {fileID: 1020996669}
   closeButton: {fileID: 1186571312}
+  connectionLeds:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   leftPoints:
   - {fileID: 1935711119}
   - {fileID: 818337118}
@@ -109301,6 +109414,103 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1902110616}
   m_CullTransparentMesh: 1
+--- !u!82 &1902110621
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902110616}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1902923255
 GameObject:
   m_ObjectHideFlags: 0

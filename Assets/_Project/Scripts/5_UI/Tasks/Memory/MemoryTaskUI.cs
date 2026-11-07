@@ -198,6 +198,12 @@ namespace TheLastSignal.UI.Tasks
                 headerText.text = $"REACTOR MEMORY CORE // {station.StationDisplayName.ToUpper()}{pipelineInfo}";
             }
 
+            if (closeButton != null)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(CloseMinigame);
+            }
+
             if (rootPanel != null)
             {
                 rootPanel.SetActive(true);
@@ -879,6 +885,7 @@ namespace TheLastSignal.UI.Tasks
             ctTxt.fontStyle = FontStyles.Bold;
             ctTxt.alignment = TextAlignmentOptions.Center;
             ctTxt.color = Color.white;
+            ctTxt.raycastTarget = false;
 
             // ================= LEFT: MONITOR DISPLAY (3x3) =================
             GameObject monitorBox = new GameObject("MonitorHousing", typeof(RectTransform), typeof(Image));

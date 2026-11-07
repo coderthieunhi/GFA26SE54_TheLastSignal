@@ -313,6 +313,12 @@ namespace TheLastSignal.UI.Tasks
                 activePlayer.SetControlEnabled(false);
             }
 
+            if (closeButton != null)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(CloseMinigame);
+            }
+
             if (rootPanel != null)
             {
                 rootPanel.SetActive(true);
@@ -660,6 +666,7 @@ namespace TheLastSignal.UI.Tasks
             closeTxt.fontStyle = FontStyles.Bold;
             closeTxt.alignment = TextAlignmentOptions.Center;
             closeTxt.color = Color.white;
+            closeTxt.raycastTarget = false;
 
             // LEFT SIDE: GAUGE HOUSING
             GameObject gaugeGo = new GameObject("GaugeHousing", typeof(RectTransform), typeof(Image));

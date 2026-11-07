@@ -248,6 +248,12 @@ namespace TheLastSignal.UI.Tasks
                 headerText.text = $"RADIO FREQUENCY SYNCHRONIZER // {taskLocation.StationDisplayName.ToUpper()}{pipelineInfo}";
             }
 
+            if (closeButton != null)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(CloseMinigame);
+            }
+
             if (rootPanel != null)
             {
                 rootPanel.SetActive(true);
@@ -689,6 +695,12 @@ namespace TheLastSignal.UI.Tasks
             lockStatusText = statTxt;
             if (leds != null) lockIndicatorLeds = leds;
 
+            if (closeButton != null)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(CloseMinigame);
+            }
+
             EnsureAudioSources();
             GenerateProceduralAudio();
         }
@@ -815,6 +827,7 @@ namespace TheLastSignal.UI.Tasks
             ctTxt.fontStyle = FontStyles.Bold;
             ctTxt.alignment = TextAlignmentOptions.Center;
             ctTxt.color = Color.white;
+            ctTxt.raycastTarget = false;
 
             // ================= 1. OSCILLOSCOPE HOUSING (TOP) =================
             GameObject scopeBox = new GameObject("OscilloscopeHousing", typeof(RectTransform), typeof(Image));

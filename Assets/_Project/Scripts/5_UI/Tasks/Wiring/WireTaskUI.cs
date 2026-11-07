@@ -258,6 +258,7 @@ namespace TheLastSignal.UI.Tasks
             closeTxt.fontStyle = FontStyles.Bold;
             closeTxt.alignment = TextAlignmentOptions.Center;
             closeTxt.color = Color.white;
+            closeTxt.raycastTarget = false;
 
             // Background Decorative Bays (drawn behind sockets)
             EnsureBayPanels(box.transform);
@@ -804,6 +805,12 @@ namespace TheLastSignal.UI.Tasks
             }
 
             SetupWires();
+
+            if (closeButton != null)
+            {
+                closeButton.onClick.RemoveAllListeners();
+                closeButton.onClick.AddListener(CloseMinigame);
+            }
 
             if (rootPanel != null)
             {

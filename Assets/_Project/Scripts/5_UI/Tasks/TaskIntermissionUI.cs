@@ -191,6 +191,18 @@ namespace TheLastSignal.UI.Tasks
                 }
             }
 
+            if (continueButton != null)
+            {
+                continueButton.onClick.RemoveAllListeners();
+                continueButton.onClick.AddListener(TriggerContinue);
+            }
+
+            if (exitButton != null)
+            {
+                exitButton.onClick.RemoveAllListeners();
+                exitButton.onClick.AddListener(TriggerExit);
+            }
+
             if (rootPanel != null)
             {
                 rootPanel.SetActive(true);
@@ -520,6 +532,7 @@ namespace TheLastSignal.UI.Tasks
             ctt.fontStyle = FontStyles.Bold;
             ctt.alignment = TextAlignmentOptions.Center;
             ctt.color = Color.white;
+            ctt.raycastTarget = false;
 
             // Button 2: Exit & Save [ESC]
             GameObject exitGo = new GameObject("ExitButton", typeof(RectTransform), typeof(Image), typeof(Button));
@@ -548,6 +561,7 @@ namespace TheLastSignal.UI.Tasks
             ett.fontStyle = FontStyles.Bold;
             ett.alignment = TextAlignmentOptions.Center;
             ett.color = Color.white;
+            ett.raycastTarget = false;
 
             TaskIntermissionUI ui = root.AddComponent<TaskIntermissionUI>();
             ui.rootPanel = root;
@@ -560,6 +574,17 @@ namespace TheLastSignal.UI.Tasks
             ui.continueButton = contBtn;
             ui.exitButton = exitBtn;
             ui.audioSource = root.GetComponent<AudioSource>();
+
+            if (contBtn != null)
+            {
+                contBtn.onClick.RemoveAllListeners();
+                contBtn.onClick.AddListener(ui.TriggerContinue);
+            }
+            if (exitBtn != null)
+            {
+                exitBtn.onClick.RemoveAllListeners();
+                exitBtn.onClick.AddListener(ui.TriggerExit);
+            }
 
             return ui;
         }
