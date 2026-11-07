@@ -28,7 +28,7 @@ namespace TheLastSignal.UI.Tasks
             {
                 if (_instance == null)
                 {
-                    _instance = Object.FindAnyObjectByType<WireTaskUI>(FindObjectsInactive.Include);
+                    _instance = UnityEngine.Object.FindAnyObjectByType<WireTaskUI>(FindObjectsInactive.Include);
                 }
                 return _instance;
             }
@@ -163,7 +163,7 @@ namespace TheLastSignal.UI.Tasks
             }
             if (canvas == null)
             {
-                canvas = Object.FindAnyObjectByType<Canvas>();
+                canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
             }
 
             if (canvas == null)
@@ -799,7 +799,7 @@ namespace TheLastSignal.UI.Tasks
         {
             if (player == null)
             {
-                player = PlayerController.Local ?? Object.FindAnyObjectByType<PlayerController>();
+                player = PlayerController.Local ?? UnityEngine.Object.FindAnyObjectByType<PlayerController>();
             }
 
             activePlayer = player;

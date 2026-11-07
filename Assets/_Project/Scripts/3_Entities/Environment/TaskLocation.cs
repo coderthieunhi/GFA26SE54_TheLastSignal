@@ -158,7 +158,7 @@ namespace TheLastSignal.Entities.Environment
         {
             if (player == null)
             {
-                player = PlayerController.Local ?? Object.FindAnyObjectByType<PlayerController>();
+                player = PlayerController.Local ?? UnityEngine.Object.FindAnyObjectByType<PlayerController>();
             }
 
             if (!CanInteract(player)) return;
@@ -196,7 +196,7 @@ namespace TheLastSignal.Entities.Environment
             }
             if (pc == null)
             {
-                pc = PlayerController.Local ?? Object.FindAnyObjectByType<PlayerController>();
+                pc = PlayerController.Local ?? UnityEngine.Object.FindAnyObjectByType<PlayerController>();
             }
             Interact(pc);
         }
