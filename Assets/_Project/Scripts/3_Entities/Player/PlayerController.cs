@@ -34,6 +34,11 @@ namespace TheLastSignal.Entities.Player
         private static bool IsNetworkSessionActive =>
             NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
 
+        /// <summary>
+        /// Static reference to the local client's active PlayerController.
+        /// </summary>
+        public static PlayerController Local { get; private set; }
+
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 3f;
         [SerializeField] private float acceleration = 15.5f;
@@ -122,6 +127,11 @@ namespace TheLastSignal.Entities.Player
 
         private void Awake()
         {
+            if (!IsNetworkSessionActive || IsOwner)
+            {
+                Local = this;
+            }
+
             rb = GetComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
@@ -229,6 +239,7 @@ namespace TheLastSignal.Entities.Player
             }
 
             // Local owner: place body on own spawn slot and enable controls
+            Local = this;
             ResetState(ResolveNetworkSpawnPosition(slotIndex));
             SetControlEnabled(true);
 
@@ -246,9 +257,22 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         public override void OnNetworkDespawn()
         {
+            if (Local == this)
+            {
+                Local = null;
+            }
+
             // TODO: drop/clear this player's held item once the Inventory/Pin system exists. No such
             // system exists yet (out of scope for Story 3.6), so there is nothing to drop right now.
             base.OnNetworkDespawn();
+        }
+
+        private void OnDestroy()
+        {
+            if (Local == this)
+            {
+                Local = null;
+            }
         }
 
         /// <summary>

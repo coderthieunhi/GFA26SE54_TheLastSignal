@@ -156,6 +156,11 @@ namespace TheLastSignal.Entities.Environment
 
         public void Interact(PlayerController player)
         {
+            if (player == null)
+            {
+                player = PlayerController.Local ?? Object.FindAnyObjectByType<PlayerController>();
+            }
+
             if (!CanInteract(player)) return;
 
             Debug.Log($"<color=yellow>[TaskLocation]</color> Player interacted with {stationDisplayName} ({stationId} - {stationType})!");
@@ -184,7 +189,16 @@ namespace TheLastSignal.Entities.Environment
 
         public void Interact(GameObject player)
         {
-            Interact(player != null ? player.GetComponent<PlayerController>() : null);
+            PlayerController pc = null;
+            if (player != null)
+            {
+                pc = player.GetComponent<PlayerController>() ?? player.GetComponentInParent<PlayerController>();
+            }
+            if (pc == null)
+            {
+                pc = PlayerController.Local ?? Object.FindAnyObjectByType<PlayerController>();
+            }
+            Interact(pc);
         }
 
         /// <summary>

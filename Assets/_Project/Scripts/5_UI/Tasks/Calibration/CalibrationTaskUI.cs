@@ -167,6 +167,11 @@ namespace TheLastSignal.UI.Tasks
 
         public void Open(PlayerController player, TaskLocation taskLocation)
         {
+            if (player == null)
+            {
+                player = PlayerController.Local ?? Object.FindAnyObjectByType<PlayerController>();
+            }
+
             activePlayer = player;
             activeTaskLocation = taskLocation;
             isFinished = false;
@@ -683,6 +688,19 @@ namespace TheLastSignal.UI.Tasks
 
         public void EnsureUpgradedVisuals()
         {
+            if (rootPanel != null)
+            {
+                Canvas panelCanvas = rootPanel.GetComponent<Canvas>();
+                if (panelCanvas == null) panelCanvas = rootPanel.AddComponent<Canvas>();
+                panelCanvas.overrideSorting = true;
+                panelCanvas.sortingOrder = 1000;
+
+                if (rootPanel.GetComponent<GraphicRaycaster>() == null)
+                {
+                    rootPanel.AddComponent<GraphicRaycaster>();
+                }
+            }
+
             Sprite bezelSprite = Resources.Load<Sprite>("UI/Tasks/TerminalBezel");
             if (terminalBox != null && bezelSprite != null)
             {
@@ -698,7 +716,17 @@ namespace TheLastSignal.UI.Tasks
         {
             if (Instance != null) return Instance;
 
-            Canvas canvas = Object.FindAnyObjectByType<Canvas>();
+            Canvas canvas = null;
+            GameObject hudCanvas = GameObject.Find("HUD_Canvas");
+            if (hudCanvas != null)
+            {
+                canvas = hudCanvas.GetComponent<Canvas>();
+            }
+            if (canvas == null)
+            {
+                canvas = Object.FindAnyObjectByType<Canvas>();
+            }
+
             if (canvas == null)
             {
                 Debug.LogWarning("[CalibrationTaskUI] No Canvas found in scene.");
@@ -722,8 +750,15 @@ namespace TheLastSignal.UI.Tasks
             rootRect.offsetMin = Vector2.zero;
             rootRect.offsetMax = Vector2.zero;
 
+            // Enforce top-level canvas sorting order so 2D world sprites can never draw over UI
+            Canvas panelCanvas = root.AddComponent<Canvas>();
+            panelCanvas.overrideSorting = true;
+            panelCanvas.sortingOrder = 1000;
+            root.AddComponent<GraphicRaycaster>();
+
             Image bgOverlay = root.AddComponent<Image>();
-            bgOverlay.color = new Color(0.02f, 0.04f, 0.06f, 0.88f);
+            bgOverlay.color = new Color(0.02f, 0.04f, 0.06f, 0.90f);
+            bgOverlay.raycastTarget = true;
 
             // Center Terminal Chassis Box
             GameObject box = new GameObject("TerminalBox", typeof(RectTransform), typeof(Image));

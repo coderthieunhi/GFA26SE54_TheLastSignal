@@ -69,6 +69,7 @@ namespace TheLastSignal.UI.Tasks
             }
             _instance = this;
 
+            EnsureCanvasSorting();
             EnsureAudio();
             GenerateProceduralAudio();
 
@@ -124,11 +125,18 @@ namespace TheLastSignal.UI.Tasks
         public void ShowIntermission(PlayerController player, TaskLocation taskLocation, int currentSteps, int targetSteps,
                                      string nextTaskName, Action onContinue, Action onExit)
         {
+            if (player == null)
+            {
+                player = PlayerController.Local ?? UnityEngine.Object.FindAnyObjectByType<PlayerController>();
+            }
+
             activePlayer = player;
             activeStation = taskLocation;
             onContinueCallback = onContinue;
             onExitCallback = onExit;
             isDisplaying = true;
+
+            EnsureCanvasSorting();
 
             if (activePlayer != null)
             {
@@ -328,11 +336,37 @@ namespace TheLastSignal.UI.Tasks
             return clip;
         }
 
+        public void EnsureCanvasSorting()
+        {
+            if (rootPanel != null)
+            {
+                Canvas panelCanvas = rootPanel.GetComponent<Canvas>();
+                if (panelCanvas == null) panelCanvas = rootPanel.AddComponent<Canvas>();
+                panelCanvas.overrideSorting = true;
+                panelCanvas.sortingOrder = 1000;
+
+                if (rootPanel.GetComponent<GraphicRaycaster>() == null)
+                {
+                    rootPanel.AddComponent<GraphicRaycaster>();
+                }
+            }
+        }
+
         public static TaskIntermissionUI GetOrCreateInstance()
         {
             if (Instance != null) return Instance;
 
-            Canvas canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
+            Canvas canvas = null;
+            GameObject hudCanvas = GameObject.Find("HUD_Canvas");
+            if (hudCanvas != null)
+            {
+                canvas = hudCanvas.GetComponent<Canvas>();
+            }
+            if (canvas == null)
+            {
+                canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
+            }
+
             if (canvas == null)
             {
                 Debug.LogWarning("[TaskIntermissionUI] No Canvas found in scene.");
@@ -356,8 +390,15 @@ namespace TheLastSignal.UI.Tasks
             rootRect.offsetMin = Vector2.zero;
             rootRect.offsetMax = Vector2.zero;
 
+            // Enforce top-level canvas sorting order so 2D world sprites can never draw over UI
+            Canvas panelCanvas = root.AddComponent<Canvas>();
+            panelCanvas.overrideSorting = true;
+            panelCanvas.sortingOrder = 1000;
+            root.AddComponent<GraphicRaycaster>();
+
             Image bgOverlay = root.AddComponent<Image>();
-            bgOverlay.color = new Color(0.02f, 0.04f, 0.06f, 0.88f);
+            bgOverlay.color = new Color(0.02f, 0.04f, 0.06f, 0.90f);
+            bgOverlay.raycastTarget = true;
 
             // Center Chassis
             GameObject box = new GameObject("TerminalBox", typeof(RectTransform), typeof(Image));
