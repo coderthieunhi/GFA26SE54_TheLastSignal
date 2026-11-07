@@ -60,8 +60,14 @@ namespace TheLastSignal.UI.Tasks
 
         [Header("Audio (Optional)")]
         [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioSource turnAudioSource;
         [SerializeField] private AudioClip valveTurnSfx;
         [SerializeField] private AudioClip successSfx;
+
+        private AudioClip proceduralTurnClip;
+        private AudioClip proceduralCompleteClip;
+        private float accumulatedAngleForSfx = 0f;
+        private const float AnglePerRatchetClick = 16f;
 
         private Canvas canvas;
         private PlayerController activePlayer;
@@ -98,6 +104,8 @@ namespace TheLastSignal.UI.Tasks
             }
 
             EnsureUpgradedVisuals();
+            EnsureAudioSources();
+            GenerateProceduralAudio();
 
             if (rootPanel != null)
             {
@@ -176,11 +184,19 @@ namespace TheLastSignal.UI.Tasks
 
             if (Mathf.Abs(keyDelta) > 0.01f)
             {
+                float rotDelta = -keyDelta * 160f * Time.deltaTime;
                 currentPressure += keyDelta * 48f * Time.deltaTime;
-                wheelVisualRotation -= keyDelta * 160f * Time.deltaTime;
+                wheelVisualRotation += rotDelta;
                 if (valveWheel != null)
                 {
                     valveWheel.localEulerAngles = new Vector3(0, 0, wheelVisualRotation);
+                }
+
+                accumulatedAngleForSfx += Mathf.Abs(rotDelta);
+                if (accumulatedAngleForSfx >= AnglePerRatchetClick)
+                {
+                    PlayValveTurnSound();
+                    accumulatedAngleForSfx %= AnglePerRatchetClick;
                 }
             }
         }
@@ -247,6 +263,13 @@ namespace TheLastSignal.UI.Tasks
             wheelVisualRotation += angleDelta;
             valveWheel.localEulerAngles = new Vector3(0, 0, wheelVisualRotation);
 
+            accumulatedAngleForSfx += Mathf.Abs(angleDelta);
+            if (accumulatedAngleForSfx >= AnglePerRatchetClick)
+            {
+                PlayValveTurnSound();
+                accumulatedAngleForSfx %= AnglePerRatchetClick;
+            }
+
             previousMouseAngle = currentAngle;
         }
 
@@ -273,6 +296,7 @@ namespace TheLastSignal.UI.Tasks
             holdTimer = 0f;
             isFinished = false;
             isDraggingValve = false;
+            accumulatedAngleForSfx = 0f;
 
             if (canvas == null)
             {
@@ -280,6 +304,8 @@ namespace TheLastSignal.UI.Tasks
             }
 
             EnsureUpgradedVisuals();
+            EnsureAudioSources();
+            GenerateProceduralAudio();
 
             if (!gameObject.activeSelf)
             {
@@ -487,9 +513,10 @@ namespace TheLastSignal.UI.Tasks
                 stabilizationPercentText.text = "<color=#00FF7F><b>Pressure Stabilized</b></color>\n<size=15><color=#FFFFFF>(Task Completed)</color></size>";
             }
 
-            if (audioSource != null && successSfx != null)
+            AudioClip doneClip = successSfx ?? proceduralCompleteClip;
+            if (audioSource != null && doneClip != null)
             {
-                audioSource.PlayOneShot(successSfx);
+                audioSource.PlayOneShot(doneClip, 0.85f);
             }
 
             yield return new WaitForSeconds(0.6f);
@@ -550,7 +577,131 @@ namespace TheLastSignal.UI.Tasks
                 closeButton.onClick.RemoveAllListeners();
                 closeButton.onClick.AddListener(CloseMinigame);
             }
+
+            EnsureAudioSources();
+            GenerateProceduralAudio();
         }
+
+        #region Audio Synthesis
+
+        private void EnsureAudioSources()
+        {
+            if (audioSource == null)
+            {
+                AudioSource[] sources = GetComponents<AudioSource>();
+                if (sources != null && sources.Length > 0)
+                {
+                    audioSource = sources[0];
+                    if (sources.Length > 1) turnAudioSource = sources[1];
+                }
+                else
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
+            if (turnAudioSource == null)
+            {
+                AudioSource[] sources = GetComponents<AudioSource>();
+                if (sources != null && sources.Length > 1)
+                {
+                    turnAudioSource = sources[1];
+                }
+                else
+                {
+                    turnAudioSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
+            if (audioSource != null) audioSource.playOnAwake = false;
+            if (turnAudioSource != null) turnAudioSource.playOnAwake = false;
+        }
+
+        private void GenerateProceduralAudio()
+        {
+            if (proceduralTurnClip == null)
+            {
+                proceduralTurnClip = CreateValveRatchetTone();
+            }
+            if (proceduralCompleteClip == null)
+            {
+                proceduralCompleteClip = CreateValveCompleteTone();
+            }
+        }
+
+        private void PlayValveTurnSound()
+        {
+            EnsureAudioSources();
+            AudioClip clip = valveTurnSfx ?? proceduralTurnClip;
+            if (turnAudioSource != null && clip != null)
+            {
+                turnAudioSource.pitch = UnityEngine.Random.Range(0.92f, 1.08f);
+                turnAudioSource.PlayOneShot(clip, 0.40f);
+            }
+            else if (audioSource != null && clip != null)
+            {
+                audioSource.PlayOneShot(clip, 0.40f);
+            }
+        }
+
+        private static AudioClip CreateValveRatchetTone()
+        {
+            int sampleRate = 44100;
+            float duration = 0.055f;
+            int samples = (int)(sampleRate * duration);
+            float[] data = new float[samples];
+            System.Random rng = new System.Random(1337);
+
+            for (int i = 0; i < samples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float progress = t / duration;
+
+                // Attack envelope (very fast ramp up, sharp exponential decay)
+                float env = Mathf.Exp(-progress * 14f);
+
+                // Noise element for metallic friction/grit
+                float noise = ((float)rng.NextDouble() * 2f - 1f) * 0.35f * Mathf.Exp(-progress * 22f);
+
+                // Heavy metallic clank harmonics (ratchet gear tooth engagement)
+                float h1 = Mathf.Sin(2f * Mathf.PI * 380f * t) * 0.40f;
+                float h2 = Mathf.Sin(2f * Mathf.PI * 760f * t) * 0.30f;
+                float h3 = Mathf.Sin(2f * Mathf.PI * 1420f * t) * 0.15f;
+
+                float sample = (noise + h1 + h2 + h3) * env;
+                data[i] = Mathf.Clamp(sample * 0.85f, -1f, 1f);
+            }
+
+            AudioClip clip = AudioClip.Create("ValveRatchetClick", samples, 1, sampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
+        }
+
+        private static AudioClip CreateValveCompleteTone()
+        {
+            int sampleRate = 44100;
+            float duration = 0.75f;
+            int samples = (int)(sampleRate * duration);
+            float[] data = new float[samples];
+
+            for (int i = 0; i < samples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float env = Mathf.Clamp01((duration - t) / duration);
+
+                // Rich resonant major chord chime (C5 + G5 + C6) with low hydraulic sub-thud
+                float thud = Mathf.Sin(2f * Mathf.PI * 90f * t) * Mathf.Exp(-t * 12f) * 0.45f;
+                float f1 = Mathf.Sin(2f * Mathf.PI * 523.25f * t) * 0.25f;
+                float f2 = Mathf.Sin(2f * Mathf.PI * 783.99f * t) * 0.20f;
+                float f3 = Mathf.Sin(2f * Mathf.PI * 1046.50f * t) * 0.15f;
+
+                data[i] = (thud + (f1 + f2 + f3) * env) * 0.85f;
+            }
+
+            AudioClip clip = AudioClip.Create("ValveCompleteHydraulicChime", samples, 1, sampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
+        }
+
+        #endregion
 
         public static ValveTaskUI GetOrCreateInstance()
         {
@@ -575,7 +726,7 @@ namespace TheLastSignal.UI.Tasks
             Sprite valveSprite = Resources.Load<Sprite>("UI/Tasks/ValveWheel");
 
             // Full Screen Dark Vignette Overlay
-            GameObject root = new GameObject("ValveMinigamePanel", typeof(RectTransform));
+            GameObject root = new GameObject("ValveMinigamePanel", typeof(RectTransform), typeof(AudioSource), typeof(AudioSource));
             root.transform.SetParent(canvas.transform, false);
 
             RectTransform rootRect = root.GetComponent<RectTransform>();
