@@ -12,10 +12,10 @@ namespace TheLastSignal.UI.Tasks
     /// Upgraded Sci-Fi Brutalist Valve Balancing Minigame.
     /// Features:
     /// - Symmetrical Twin-Bay Architecture: Left Pressure Telemetry Bay and Right Actuator Bay
-    /// - High-visibility glowing green safe zone dial and needle
-    /// - Recessed mechanical wheel well with directional cues
-    /// - Framed bottom pressure stabilization system with real-time telemetry
-    /// - High-fidelity 2D metallic ratchet rotation audio synthesis
+    /// - High-visibility glowing green safe zone dial with needle constrained inside dial boundary
+    /// - Clean, non-overlapping 2-line telemetry readouts and control guidance plates
+    /// - Generously spaced bottom pressure stabilization bay with distinct margins
+    /// - Direct-to-listener & camera audio playback with punchy mechanical ratchet synthesis
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class ValveTaskUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -61,14 +61,13 @@ namespace TheLastSignal.UI.Tasks
 
         [Header("Audio")]
         [SerializeField] private AudioSource audioSource;
-        [SerializeField] private AudioSource turnAudioSource;
         [SerializeField] private AudioClip valveTurnSfx;
         [SerializeField] private AudioClip successSfx;
 
         private AudioClip proceduralTurnClip;
         private AudioClip proceduralCompleteClip;
         private float accumulatedAngleForSfx = 0f;
-        private const float AnglePerRatchetClick = 12f;
+        private const float AnglePerRatchetClick = 10f;
 
         private Canvas canvas;
         private PlayerController activePlayer;
@@ -179,13 +178,21 @@ namespace TheLastSignal.UI.Tasks
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb == null) return;
 
+            // Immediate audio click on initial key down
+            if (kb.dKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame ||
+                kb.aKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame)
+            {
+                PlayValveTurnSound();
+                accumulatedAngleForSfx = 0f;
+            }
+
             float keyDelta = 0f;
             if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) keyDelta += 1f;
             if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) keyDelta -= 1f;
 
             if (Mathf.Abs(keyDelta) > 0.01f)
             {
-                float rotDelta = -keyDelta * 160f * Time.deltaTime;
+                float rotDelta = -keyDelta * 180f * Time.deltaTime;
                 currentPressure += keyDelta * 48f * Time.deltaTime;
                 wheelVisualRotation += rotDelta;
                 if (valveWheel != null)
@@ -215,7 +222,7 @@ namespace TheLastSignal.UI.Tasks
             if (pressureReadoutText != null)
             {
                 string statusColor = inSafeZone ? "#00FF7F" : (currentPressure > maxSafePressure ? "#FF3B30" : "#FFA500");
-                pressureReadoutText.text = $"<color={statusColor}><size=24><b>{currentPressure:00.0}</b></size> <size=14>PSI</size></color>";
+                pressureReadoutText.text = $"<color={statusColor}><size=20><b>{currentPressure:00.0} PSI</b></size></color>\n<size=10><color=#7A96B0>NOMINAL: 50.0 — 88.0 PSI</color></size>";
             }
 
             float progress01 = Mathf.Clamp01(holdTimer / requiredHoldSeconds);
@@ -230,15 +237,15 @@ namespace TheLastSignal.UI.Tasks
                 if (inSafeZone)
                 {
                     int pct = Mathf.RoundToInt(progress01 * 100f);
-                    stabilizationPercentText.text = $"<color=#00FF7F><b>>>> IN SAFE ZONE — HOLDING PRESSURE <<<</b></color>  <size=15><color=#A0FFA0>({pct}%)</color></size>";
+                    stabilizationPercentText.text = $"<color=#00FF7F><b>>>> IN SAFE ZONE — HOLDING PRESSURE <<<</b></color>  <size=14><color=#A0FFA0>({pct}%)</color></size>";
                 }
                 else if (currentPressure < minSafePressure)
                 {
-                    stabilizationPercentText.text = $"<color=#FFA500><b>LOW PRESSURE</b></color>  <size=14><color=#CCCCCC>— Turn Valve Right / Press [D] to Increase Value</color></size>";
+                    stabilizationPercentText.text = $"<color=#FFA500><b>LOW PRESSURE</b></color>  <size=13><color=#CCCCCC>— Turn Valve Right / Press [D] to Increase Value</color></size>";
                 }
                 else
                 {
-                    stabilizationPercentText.text = $"<color=#FF3B30><b>HIGH PRESSURE</b></color>  <size=14><color=#CCCCCC>— Turn Valve Left / Press [A] to Decrease Value</color></size>";
+                    stabilizationPercentText.text = $"<color=#FF3B30><b>HIGH PRESSURE</b></color>  <size=13><color=#CCCCCC>— Turn Valve Left / Press [A] to Decrease Value</color></size>";
                 }
             }
         }
@@ -248,6 +255,8 @@ namespace TheLastSignal.UI.Tasks
             if (isFinished || valveWheel == null) return;
             isDraggingValve = true;
             previousMouseAngle = GetMouseAngleOnValve(eventData.position);
+            PlayValveTurnSound();
+            accumulatedAngleForSfx = 0f;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -357,7 +366,7 @@ namespace TheLastSignal.UI.Tasks
         }
 
         /// <summary>
-        /// Automatically upgrades any existing or serialized scene instance to the balanced twin-bay layout.
+        /// Automatically upgrades any existing or serialized scene instance to the balanced, non-overlapping twin-bay layout.
         /// </summary>
         public void EnsureUpgradedVisuals()
         {
@@ -487,8 +496,8 @@ namespace TheLastSignal.UI.Tasks
                     leftBay = lbGo.transform;
                 }
                 RectTransform lbRect = leftBay.GetComponent<RectTransform>();
-                lbRect.sizeDelta = new Vector2(400, 340);
-                lbRect.anchoredPosition = new Vector2(-215, 28);
+                lbRect.sizeDelta = new Vector2(400, 330);
+                lbRect.anchoredPosition = new Vector2(-215, 35);
                 Image lbImg = leftBay.GetComponent<Image>();
                 lbImg.color = new Color(0.04f, 0.07f, 0.10f, 0.95f);
                 lbImg.raycastTarget = false;
@@ -504,20 +513,20 @@ namespace TheLastSignal.UI.Tasks
                     GameObject lbhGo = new GameObject("BayHeader", typeof(RectTransform), typeof(TextMeshProUGUI));
                     lbhGo.transform.SetParent(leftBay, false);
                     lbHeader = lbhGo.transform;
-                    RectTransform lbhRect = lbhGo.GetComponent<RectTransform>();
-                    lbhRect.anchorMin = new Vector2(0f, 1f);
-                    lbhRect.anchorMax = new Vector2(1f, 1f);
-                    lbhRect.pivot = new Vector2(0.5f, 1f);
-                    lbhRect.anchoredPosition = new Vector2(0, -14);
-                    lbhRect.sizeDelta = new Vector2(-20, 24);
-                    TextMeshProUGUI lbhText = lbhGo.GetComponent<TextMeshProUGUI>();
-                    lbhText.text = "[ PRESSURE MONITOR // TELEMETRY ]";
-                    lbhText.fontSize = 13;
-                    lbhText.fontStyle = FontStyles.Bold;
-                    lbhText.alignment = TextAlignmentOptions.Center;
-                    lbhText.color = new Color(0.40f, 0.80f, 1f, 0.90f);
-                    lbhText.raycastTarget = false;
                 }
+                RectTransform lbhRect = lbHeader.GetComponent<RectTransform>();
+                lbhRect.anchorMin = new Vector2(0f, 1f);
+                lbhRect.anchorMax = new Vector2(1f, 1f);
+                lbhRect.pivot = new Vector2(0.5f, 1f);
+                lbhRect.anchoredPosition = new Vector2(0, -14);
+                lbhRect.sizeDelta = new Vector2(-20, 22);
+                TextMeshProUGUI lbhText = lbHeader.GetComponent<TextMeshProUGUI>();
+                lbhText.text = "[ PRESSURE MONITOR // TELEMETRY ]";
+                lbhText.fontSize = 12;
+                lbhText.fontStyle = FontStyles.Bold;
+                lbhText.alignment = TextAlignmentOptions.Center;
+                lbhText.color = new Color(0.40f, 0.80f, 1f, 0.90f);
+                lbhText.raycastTarget = false;
 
                 // Reparent GaugeHousing into Left Bay
                 Transform housing = null;
@@ -538,8 +547,8 @@ namespace TheLastSignal.UI.Tasks
                 {
                     housing.SetParent(leftBay, false);
                     RectTransform housingRect = housing.GetComponent<RectTransform>();
-                    housingRect.anchoredPosition = new Vector2(0, 10);
-                    housingRect.sizeDelta = new Vector2(260, 260);
+                    housingRect.anchoredPosition = new Vector2(0, 15);
+                    housingRect.sizeDelta = new Vector2(240, 240);
 
                     if (housing.TryGetComponent(out Image hImg))
                     {
@@ -558,7 +567,20 @@ namespace TheLastSignal.UI.Tasks
                     if (oldCap != null) oldCap.gameObject.SetActive(false);
                 }
 
-                // Left Bay Readout Plate
+                // Gauge Needle (Contained cleanly inside 240px dial)
+                if (gaugeNeedle != null)
+                {
+                    if (gaugeNeedle.TryGetComponent(out Image needleImg) && needleSprite != null)
+                    {
+                        needleImg.sprite = needleSprite;
+                        needleImg.color = Color.white;
+                    }
+                    gaugeNeedle.sizeDelta = new Vector2(28, 136);
+                    gaugeNeedle.pivot = new Vector2(0.5f, 0.18f);
+                    gaugeNeedle.anchoredPosition = Vector2.zero;
+                }
+
+                // Left Bay Readout Plate (Matched identically with Right Bay Control Plate)
                 Transform readoutPlate = leftBay.Find("ReadoutPlate");
                 if (readoutPlate == null)
                 {
@@ -568,7 +590,7 @@ namespace TheLastSignal.UI.Tasks
                 }
                 RectTransform rpRect = readoutPlate.GetComponent<RectTransform>();
                 rpRect.anchoredPosition = new Vector2(0, -135);
-                rpRect.sizeDelta = new Vector2(280, 42);
+                rpRect.sizeDelta = new Vector2(320, 42);
                 Image rpImg = readoutPlate.GetComponent<Image>();
                 rpImg.color = new Color(0.02f, 0.04f, 0.06f, 1f);
                 rpImg.raycastTarget = false;
@@ -576,22 +598,11 @@ namespace TheLastSignal.UI.Tasks
                 rpOutline.effectColor = new Color(0.15f, 0.28f, 0.42f, 0.70f);
                 rpOutline.effectDistance = new Vector2(1, -1);
 
-                // Target range label inside readoutPlate
+                // Disable separate RangeSubtext to prevent text collision
                 Transform rangeT = readoutPlate.Find("RangeSubtext");
-                if (rangeT == null)
-                {
-                    GameObject rangeGo = new GameObject("RangeSubtext", typeof(RectTransform), typeof(TextMeshProUGUI));
-                    rangeGo.transform.SetParent(readoutPlate, false);
-                    RectTransform rgtRect = rangeGo.GetComponent<RectTransform>();
-                    rgtRect.anchoredPosition = new Vector2(0, -12);
-                    rgtRect.sizeDelta = new Vector2(260, 14);
-                    TextMeshProUGUI rgtText = rangeGo.GetComponent<TextMeshProUGUI>();
-                    rgtText.text = "<size=10><color=#7A96B0>NOMINAL RANGE: 50.0 — 88.0 PSI</color></size>";
-                    rgtText.alignment = TextAlignmentOptions.Center;
-                    rgtText.raycastTarget = false;
-                }
+                if (rangeT != null) rangeT.gameObject.SetActive(false);
 
-                // Reparent / format pressureReadoutText inside readoutPlate
+                // Consolidated 2-line pressure readout text
                 Transform psiT = housing != null ? housing.Find("PsiReadout") : null;
                 if (psiT == null) psiT = readoutPlate.Find("PsiReadout");
                 if (psiT == null && pressureReadoutText != null) psiT = pressureReadoutText.transform;
@@ -599,27 +610,17 @@ namespace TheLastSignal.UI.Tasks
                 {
                     psiT.SetParent(readoutPlate, false);
                     RectTransform psiRect = psiT.GetComponent<RectTransform>();
-                    psiRect.anchoredPosition = new Vector2(0, 4);
-                    psiRect.sizeDelta = new Vector2(260, 26);
+                    psiRect.anchorMin = Vector2.zero;
+                    psiRect.anchorMax = Vector2.one;
+                    psiRect.sizeDelta = Vector2.zero;
+                    psiRect.anchoredPosition = Vector2.zero;
                     if (psiT.TryGetComponent(out TextMeshProUGUI psiTxt))
                     {
                         pressureReadoutText = psiTxt;
                         pressureReadoutText.alignment = TextAlignmentOptions.Center;
+                        pressureReadoutText.lineSpacing = 10;
                         pressureReadoutText.raycastTarget = false;
                     }
-                }
-
-                // Gauge Needle
-                if (gaugeNeedle != null)
-                {
-                    if (gaugeNeedle.TryGetComponent(out Image needleImg) && needleSprite != null)
-                    {
-                        needleImg.sprite = needleSprite;
-                        needleImg.color = Color.white;
-                    }
-                    gaugeNeedle.sizeDelta = new Vector2(34, 160);
-                    gaugeNeedle.pivot = new Vector2(0.5f, 0.18f);
-                    gaugeNeedle.anchoredPosition = Vector2.zero;
                 }
 
                 // ================= 2. RIGHT BAY (ACTUATOR // VALVE SERVO) =================
@@ -631,8 +632,8 @@ namespace TheLastSignal.UI.Tasks
                     rightBay = rbGo.transform;
                 }
                 RectTransform rbRect = rightBay.GetComponent<RectTransform>();
-                rbRect.sizeDelta = new Vector2(400, 340);
-                rbRect.anchoredPosition = new Vector2(215, 28);
+                rbRect.sizeDelta = new Vector2(400, 330);
+                rbRect.anchoredPosition = new Vector2(215, 35);
                 Image rbImg = rightBay.GetComponent<Image>();
                 rbImg.color = new Color(0.04f, 0.07f, 0.10f, 0.95f);
                 rbImg.raycastTarget = false;
@@ -641,6 +642,13 @@ namespace TheLastSignal.UI.Tasks
                 rbOutline.effectColor = new Color(0.18f, 0.28f, 0.40f, 0.85f);
                 rbOutline.effectDistance = new Vector2(2, -2);
 
+                // Remove legacy square WheelWell that cuts through the header text
+                Transform legacyWell = rightBay.Find("WheelWell");
+                if (legacyWell != null)
+                {
+                    Destroy(legacyWell.gameObject);
+                }
+
                 // Right Bay Header Label
                 Transform rbHeader = rightBay.Find("BayHeader");
                 if (rbHeader == null)
@@ -648,47 +656,29 @@ namespace TheLastSignal.UI.Tasks
                     GameObject rbhGo = new GameObject("BayHeader", typeof(RectTransform), typeof(TextMeshProUGUI));
                     rbhGo.transform.SetParent(rightBay, false);
                     rbHeader = rbhGo.transform;
-                    RectTransform rbhRect = rbhGo.GetComponent<RectTransform>();
-                    rbhRect.anchorMin = new Vector2(0f, 1f);
-                    rbhRect.anchorMax = new Vector2(1f, 1f);
-                    rbhRect.pivot = new Vector2(0.5f, 1f);
-                    rbhRect.anchoredPosition = new Vector2(0, -14);
-                    rbhRect.sizeDelta = new Vector2(-20, 24);
-                    TextMeshProUGUI rbhText = rbhGo.GetComponent<TextMeshProUGUI>();
-                    rbhText.text = "[ MANUAL ACTUATOR // VALVE SERVO-A ]";
-                    rbhText.fontSize = 13;
-                    rbhText.fontStyle = FontStyles.Bold;
-                    rbhText.alignment = TextAlignmentOptions.Center;
-                    rbhText.color = new Color(0.40f, 0.80f, 1f, 0.90f);
-                    rbhText.raycastTarget = false;
                 }
+                RectTransform rbhRect = rbHeader.GetComponent<RectTransform>();
+                rbhRect.anchorMin = new Vector2(0f, 1f);
+                rbhRect.anchorMax = new Vector2(1f, 1f);
+                rbhRect.pivot = new Vector2(0.5f, 1f);
+                rbhRect.anchoredPosition = new Vector2(0, -14);
+                rbhRect.sizeDelta = new Vector2(-20, 22);
+                TextMeshProUGUI rbhText = rbHeader.GetComponent<TextMeshProUGUI>();
+                rbhText.text = "[ MANUAL ACTUATOR // VALVE SERVO-A ]";
+                rbhText.fontSize = 12;
+                rbhText.fontStyle = FontStyles.Bold;
+                rbhText.alignment = TextAlignmentOptions.Center;
+                rbhText.color = new Color(0.40f, 0.80f, 1f, 0.90f);
+                rbhText.raycastTarget = false;
 
-                // Recessed Circular Wheel Well
-                Transform wheelWell = rightBay.Find("WheelWell");
-                if (wheelWell == null)
-                {
-                    GameObject wwGo = new GameObject("WheelWell", typeof(RectTransform), typeof(Image));
-                    wwGo.transform.SetParent(rightBay, false);
-                    wheelWell = wwGo.transform;
-                }
-                RectTransform wwRect = wheelWell.GetComponent<RectTransform>();
-                wwRect.sizeDelta = new Vector2(270, 270);
-                wwRect.anchoredPosition = new Vector2(0, 10);
-                Image wwImg = wheelWell.GetComponent<Image>();
-                wwImg.color = new Color(0.02f, 0.04f, 0.07f, 1f);
-                wwImg.raycastTarget = false;
-                Outline wwOutline = wheelWell.GetComponent<Outline>() ?? wheelWell.gameObject.AddComponent<Outline>();
-                wwOutline.effectColor = new Color(0.18f, 0.28f, 0.40f, 0.60f);
-                wwOutline.effectDistance = new Vector2(1, -1);
-
-                // Reparent ValveWheel into Right Bay
+                // Reparent ValveWheel into Right Bay (Matched in size & position with GaugeDial)
                 Transform wheelT = valveWheel != null ? valveWheel : terminalBox.Find("ValveWheel");
                 if (wheelT != null)
                 {
                     wheelT.SetParent(rightBay, false);
                     valveWheel = wheelT.GetComponent<RectTransform>();
-                    valveWheel.sizeDelta = new Vector2(250, 250);
-                    valveWheel.anchoredPosition = new Vector2(0, 10);
+                    valveWheel.sizeDelta = new Vector2(240, 240);
+                    valveWheel.anchoredPosition = new Vector2(0, 15);
                     if (valveWheel.TryGetComponent(out Image wImg))
                     {
                         if (valveSprite != null)
@@ -706,7 +696,7 @@ namespace TheLastSignal.UI.Tasks
                     }
                 }
 
-                // Right Bay Controls Guidance Plate
+                // Right Bay Controls Guidance Plate (Exact 320x42 match with Left Bay ReadoutPlate)
                 Transform controlPlate = rightBay.Find("ControlPlate");
                 if (controlPlate == null)
                 {
@@ -716,7 +706,7 @@ namespace TheLastSignal.UI.Tasks
                 }
                 RectTransform cpRect = controlPlate.GetComponent<RectTransform>();
                 cpRect.anchoredPosition = new Vector2(0, -135);
-                cpRect.sizeDelta = new Vector2(340, 42);
+                cpRect.sizeDelta = new Vector2(320, 42);
                 Image cpImg = controlPlate.GetComponent<Image>();
                 cpImg.color = new Color(0.02f, 0.04f, 0.06f, 1f);
                 cpImg.raycastTarget = false;
@@ -724,35 +714,30 @@ namespace TheLastSignal.UI.Tasks
                 cpOutline.effectColor = new Color(0.15f, 0.28f, 0.42f, 0.70f);
                 cpOutline.effectDistance = new Vector2(1, -1);
 
+                // Disable separate ControlSubtext to prevent collision
+                Transform ctrlSubT = controlPlate.Find("ControlSubtext");
+                if (ctrlSubT != null) ctrlSubT.gameObject.SetActive(false);
+
+                // Consolidated 2-line control guidance text
                 Transform ctrlTextT = controlPlate.Find("ControlText");
                 if (ctrlTextT == null)
                 {
                     GameObject cpTextGo = new GameObject("ControlText", typeof(RectTransform), typeof(TextMeshProUGUI));
                     cpTextGo.transform.SetParent(controlPlate, false);
-                    RectTransform cptRect = cpTextGo.GetComponent<RectTransform>();
-                    cptRect.anchoredPosition = new Vector2(0, 4);
-                    cptRect.sizeDelta = new Vector2(320, 24);
-                    TextMeshProUGUI cptText = cpTextGo.GetComponent<TextMeshProUGUI>();
-                    cptText.text = "◄ <color=#FF8866><b>[A]</b></color> DECREASE   |   INCREASE <color=#66DDFF><b>[D]</b></color> ►";
-                    cptText.fontSize = 13;
-                    cptText.alignment = TextAlignmentOptions.Center;
-                    cptText.color = new Color(0.75f, 0.85f, 0.95f, 1f);
-                    cptText.raycastTarget = false;
+                    ctrlTextT = cpTextGo.transform;
                 }
-
-                Transform ctrlSubT = controlPlate.Find("ControlSubtext");
-                if (ctrlSubT == null)
-                {
-                    GameObject cpsGo = new GameObject("ControlSubtext", typeof(RectTransform), typeof(TextMeshProUGUI));
-                    cpsGo.transform.SetParent(controlPlate, false);
-                    RectTransform cpsRect = cpsGo.GetComponent<RectTransform>();
-                    cpsRect.anchoredPosition = new Vector2(0, -12);
-                    cpsRect.sizeDelta = new Vector2(320, 14);
-                    TextMeshProUGUI cpsText = cpsGo.GetComponent<TextMeshProUGUI>();
-                    cpsText.text = "<size=10><color=#7A96B0>CONTROL: DRAG WHEEL OR USE [A] / [D] KEYS</color></size>";
-                    cpsText.alignment = TextAlignmentOptions.Center;
-                    cpsText.raycastTarget = false;
-                }
+                RectTransform cptRect = ctrlTextT.GetComponent<RectTransform>();
+                cptRect.anchorMin = Vector2.zero;
+                cptRect.anchorMax = Vector2.one;
+                cptRect.sizeDelta = Vector2.zero;
+                cptRect.anchoredPosition = Vector2.zero;
+                TextMeshProUGUI cptText = ctrlTextT.GetComponent<TextMeshProUGUI>();
+                cptText.text = "◄ <color=#FF8866><b>[A]</b></color> DECREASE   |   INCREASE <color=#66DDFF><b>[D]</b></color> ►\n<size=10><color=#7A96B0>DRAG WHEEL OR USE [A] / [D] KEYS</color></size>";
+                cptText.fontSize = 12;
+                cptText.lineSpacing = 10;
+                cptText.alignment = TextAlignmentOptions.Center;
+                cptText.color = new Color(0.75f, 0.85f, 0.95f, 1f);
+                cptText.raycastTarget = false;
 
                 // ================= 3. BOTTOM BAY (STABILIZATION SYSTEM) =================
                 Transform bottomBay = terminalBox.Find("StabilityBay");
@@ -763,7 +748,7 @@ namespace TheLastSignal.UI.Tasks
                     bottomBay = bbGo.transform;
                 }
                 RectTransform bbRect = bottomBay.GetComponent<RectTransform>();
-                bbRect.sizeDelta = new Vector2(830, 115);
+                bbRect.sizeDelta = new Vector2(830, 120);
                 bbRect.anchoredPosition = new Vector2(0, -215);
                 Image bbImg = bottomBay.GetComponent<Image>();
                 bbImg.color = new Color(0.04f, 0.07f, 0.10f, 0.95f);
@@ -773,27 +758,27 @@ namespace TheLastSignal.UI.Tasks
                 bbOutline.effectColor = new Color(0.18f, 0.28f, 0.40f, 0.85f);
                 bbOutline.effectDistance = new Vector2(2, -2);
 
-                // Bottom Bay Header Label
+                // Bottom Bay Header Label (Spaced with 13px clearance above progress bar)
                 Transform bbHeader = bottomBay.Find("BayHeader");
                 if (bbHeader == null)
                 {
                     GameObject bbhGo = new GameObject("BayHeader", typeof(RectTransform), typeof(TextMeshProUGUI));
                     bbhGo.transform.SetParent(bottomBay, false);
                     bbHeader = bbhGo.transform;
-                    RectTransform bbhRect = bbhGo.GetComponent<RectTransform>();
-                    bbhRect.anchorMin = new Vector2(0f, 1f);
-                    bbhRect.anchorMax = new Vector2(1f, 1f);
-                    bbhRect.pivot = new Vector2(0.5f, 1f);
-                    bbhRect.anchoredPosition = new Vector2(0, -12);
-                    bbhRect.sizeDelta = new Vector2(-20, 20);
-                    TextMeshProUGUI bbhText = bbhGo.GetComponent<TextMeshProUGUI>();
-                    bbhText.text = "PRESSURE STABILIZATION LOCK";
-                    bbhText.fontSize = 12;
-                    bbhText.fontStyle = FontStyles.Bold;
-                    bbhText.alignment = TextAlignmentOptions.Center;
-                    bbhText.color = new Color(0.65f, 0.78f, 0.90f, 1f);
-                    bbhText.raycastTarget = false;
                 }
+                RectTransform bbhRect = bbHeader.GetComponent<RectTransform>();
+                bbhRect.anchorMin = new Vector2(0f, 1f);
+                bbhRect.anchorMax = new Vector2(1f, 1f);
+                bbhRect.pivot = new Vector2(0.5f, 1f);
+                bbhRect.anchoredPosition = new Vector2(0, -10);
+                bbhRect.sizeDelta = new Vector2(-20, 18);
+                TextMeshProUGUI bbhText = bbHeader.GetComponent<TextMeshProUGUI>();
+                bbhText.text = "PRESSURE STABILIZATION LOCK";
+                bbhText.fontSize = 11;
+                bbhText.fontStyle = FontStyles.Bold;
+                bbhText.alignment = TextAlignmentOptions.Center;
+                bbhText.color = new Color(0.65f, 0.78f, 0.90f, 1f);
+                bbhText.raycastTarget = false;
 
                 // Reparent StabilizationBarFrame into Bottom Bay
                 Transform barFrameT = stabilizationBarFrame != null ? stabilizationBarFrame :
@@ -802,8 +787,8 @@ namespace TheLastSignal.UI.Tasks
                 {
                     barFrameT.SetParent(bottomBay, false);
                     stabilizationBarFrame = barFrameT.GetComponent<RectTransform>();
-                    stabilizationBarFrame.anchoredPosition = new Vector2(0, 10);
-                    stabilizationBarFrame.sizeDelta = new Vector2(770, 24);
+                    stabilizationBarFrame.anchoredPosition = new Vector2(0, 8);
+                    stabilizationBarFrame.sizeDelta = new Vector2(770, 22);
 
                     if (barFrameT.TryGetComponent(out Image bfImg))
                     {
@@ -814,7 +799,7 @@ namespace TheLastSignal.UI.Tasks
                     bfOutline.effectDistance = new Vector2(1, -1);
                 }
 
-                // Reparent stabilizationPercentText into Bottom Bay
+                // Reparent stabilizationPercentText into Bottom Bay (Spaced with 15px clearance below progress bar)
                 Transform pctT = stabilizationPercentText != null ? stabilizationPercentText.transform : terminalBox.Find("PercentText");
                 if (pctT != null)
                 {
@@ -823,10 +808,10 @@ namespace TheLastSignal.UI.Tasks
                     {
                         stabilizationPercentText = pctTextComp;
                         RectTransform pctRect = stabilizationPercentText.rectTransform;
-                        pctRect.anchoredPosition = new Vector2(0, -24);
-                        pctRect.sizeDelta = new Vector2(770, 36);
+                        pctRect.anchoredPosition = new Vector2(0, -32);
+                        pctRect.sizeDelta = new Vector2(770, 28);
                         stabilizationPercentText.alignment = TextAlignmentOptions.Center;
-                        stabilizationPercentText.fontSize = 15;
+                        stabilizationPercentText.fontSize = 14;
                         stabilizationPercentText.raycastTarget = false;
                     }
                 }
@@ -853,13 +838,16 @@ namespace TheLastSignal.UI.Tasks
 
             EnsureAudioSources();
             AudioClip doneClip = successSfx ?? proceduralCompleteClip;
-            if (turnAudioSource != null && doneClip != null)
+            if (doneClip != null)
             {
-                turnAudioSource.PlayOneShot(doneClip, 1.0f);
-            }
-            else if (audioSource != null && doneClip != null)
-            {
-                audioSource.PlayOneShot(doneClip, 1.0f);
+                if (audioSource != null)
+                {
+                    audioSource.PlayOneShot(doneClip, 1.0f);
+                }
+                if (Camera.main != null && Camera.main.TryGetComponent(out AudioSource camAudio))
+                {
+                    camAudio.PlayOneShot(doneClip, 1.0f);
+                }
             }
 
             yield return new WaitForSeconds(0.6f);
@@ -931,13 +919,8 @@ namespace TheLastSignal.UI.Tasks
         {
             if (audioSource == null)
             {
-                AudioSource[] sources = GetComponents<AudioSource>();
-                if (sources != null && sources.Length > 0)
-                {
-                    audioSource = sources[0];
-                    if (sources.Length > 1) turnAudioSource = sources[1];
-                }
-                else
+                audioSource = GetComponent<AudioSource>();
+                if (audioSource == null)
                 {
                     audioSource = gameObject.AddComponent<AudioSource>();
                 }
@@ -947,33 +930,8 @@ namespace TheLastSignal.UI.Tasks
                 audioSource.playOnAwake = false;
                 audioSource.spatialBlend = 0f;
                 audioSource.volume = 1f;
-                audioSource.bypassEffects = true;
-                audioSource.bypassListenerEffects = true;
-                audioSource.bypassReverbZones = true;
+                audioSource.pitch = 1f;
                 audioSource.enabled = true;
-            }
-
-            if (turnAudioSource == null)
-            {
-                AudioSource[] sources = GetComponents<AudioSource>();
-                if (sources != null && sources.Length > 1)
-                {
-                    turnAudioSource = sources[1];
-                }
-                else
-                {
-                    turnAudioSource = gameObject.AddComponent<AudioSource>();
-                }
-            }
-            if (turnAudioSource != null)
-            {
-                turnAudioSource.playOnAwake = false;
-                turnAudioSource.spatialBlend = 0f;
-                turnAudioSource.volume = 1f;
-                turnAudioSource.bypassEffects = true;
-                turnAudioSource.bypassListenerEffects = true;
-                turnAudioSource.bypassReverbZones = true;
-                turnAudioSource.enabled = true;
             }
         }
 
@@ -997,54 +955,61 @@ namespace TheLastSignal.UI.Tasks
                 proceduralTurnClip = CreateValveRatchetTone();
             }
             AudioClip clip = valveTurnSfx ?? proceduralTurnClip;
+            if (clip == null) return;
 
-            if (turnAudioSource != null && clip != null)
+            float pitch = UnityEngine.Random.Range(0.96f, 1.04f);
+
+            // 1. Direct Playback on Panel AudioSource (2D Audio)
+            if (audioSource != null)
             {
-                turnAudioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-                turnAudioSource.PlayOneShot(clip, 1.0f);
-            }
-            else if (audioSource != null && clip != null)
-            {
-                audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+                audioSource.pitch = pitch;
                 audioSource.PlayOneShot(clip, 1.0f);
+            }
+
+            // 2. Direct Fallback to Main Camera AudioSource (at exact AudioListener position)
+            if (Camera.main != null)
+            {
+                AudioSource camAudio = Camera.main.GetComponent<AudioSource>();
+                if (camAudio == null)
+                {
+                    camAudio = Camera.main.gameObject.AddComponent<AudioSource>();
+                }
+                if (camAudio != null)
+                {
+                    camAudio.spatialBlend = 0f;
+                    camAudio.pitch = pitch;
+                    camAudio.PlayOneShot(clip, 0.90f);
+                }
             }
         }
 
+        /// <summary>
+        /// Crisp, tactile mechanical ratchet sound designed using the proven AudioSynthesis curve.
+        /// Stays loud and punchy throughout 100ms with prominent 750Hz/1500Hz metallic teeth harmonics.
+        /// </summary>
         private static AudioClip CreateValveRatchetTone()
         {
             int sampleRate = 44100;
-            float duration = 0.085f;
+            float duration = 0.10f;
             int samples = (int)(sampleRate * duration);
             float[] data = new float[samples];
             System.Random rng = new System.Random(1337);
 
-            float phase = 0f;
             for (int i = 0; i < samples; i++)
             {
                 float t = (float)i / sampleRate;
-                float progress = t / duration;
+                // Linear-power decay: maintains strong audible volume throughout the 100ms duration
+                float env = 1f - Mathf.Pow(t / duration, 0.65f);
 
-                // Attack ramp (2.5ms linear ramp to prevent DC pop)
-                float attack = Mathf.Clamp01(t / 0.0025f);
+                // Prominent mechanical metallic ratchet teeth ring (750Hz and 1500Hz) + heavy body thud (320Hz)
+                float wave = Mathf.Sin(2f * Mathf.PI * 750f * t) * 0.40f +
+                             Mathf.Sin(2f * Mathf.PI * 1500f * t) * 0.30f +
+                             Mathf.Sin(2f * Mathf.PI * 320f * t) * 0.35f;
 
-                // Smooth exponential decay (audible for full ~45ms)
-                float env = attack * Mathf.Exp(-progress * 6.5f);
+                // Crisp gear impact transient in first 12ms
+                float click = (t < 0.012f) ? ((float)rng.NextDouble() * 2f - 1f) * 0.35f : 0f;
 
-                // 1. Heavy physical gear tooth impact (dropping from 280Hz down to 110Hz)
-                float instFreq = Mathf.Lerp(280f, 110f, progress);
-                phase += 2f * Mathf.PI * instFreq / sampleRate;
-                float impactThud = Mathf.Sin(phase) * 0.50f;
-
-                // 2. High-frequency metallic ratchet gear click transients & harmonics
-                float clickRing = Mathf.Sin(2f * Mathf.PI * 680f * t) * 0.35f +
-                                  Mathf.Sin(2f * Mathf.PI * 1360f * t) * 0.25f +
-                                  Mathf.Sin(2f * Mathf.PI * 2720f * t) * 0.15f;
-
-                // 3. Tactile metallic friction grit (fast-decaying noise transient)
-                float grit = ((float)rng.NextDouble() * 2f - 1f) * 0.35f * Mathf.Exp(-progress * 16f);
-
-                float sample = (impactThud + clickRing + grit) * env;
-                data[i] = Mathf.Clamp(sample * 0.95f, -1f, 1f);
+                data[i] = Mathf.Clamp((wave + click) * env, -1f, 1f);
             }
 
             AudioClip clip = AudioClip.Create("ValveRatchetClick", samples, 1, sampleRate, false);
@@ -1113,7 +1078,7 @@ namespace TheLastSignal.UI.Tasks
             Sprite valveSprite = Resources.Load<Sprite>("UI/Tasks/ValveWheel");
 
             // Full Screen Dark Vignette Overlay
-            GameObject root = new GameObject("ValveMinigamePanel", typeof(RectTransform), typeof(AudioSource), typeof(AudioSource));
+            GameObject root = new GameObject("ValveMinigamePanel", typeof(RectTransform), typeof(AudioSource));
             root.transform.SetParent(canvas.transform, false);
 
             RectTransform rootRect = root.GetComponent<RectTransform>();
@@ -1214,8 +1179,8 @@ namespace TheLastSignal.UI.Tasks
             GameObject lbGo = new GameObject("PressureGaugeBay", typeof(RectTransform), typeof(Image));
             lbGo.transform.SetParent(box.transform, false);
             RectTransform lbRect = lbGo.GetComponent<RectTransform>();
-            lbRect.sizeDelta = new Vector2(400, 340);
-            lbRect.anchoredPosition = new Vector2(-215, 28);
+            lbRect.sizeDelta = new Vector2(400, 330);
+            lbRect.anchoredPosition = new Vector2(-215, 35);
             Image lbImg = lbGo.GetComponent<Image>();
             lbImg.color = new Color(0.04f, 0.07f, 0.10f, 0.95f);
             lbImg.raycastTarget = false;
@@ -1230,10 +1195,10 @@ namespace TheLastSignal.UI.Tasks
             lbhRect.anchorMax = new Vector2(1f, 1f);
             lbhRect.pivot = new Vector2(0.5f, 1f);
             lbhRect.anchoredPosition = new Vector2(0, -14);
-            lbhRect.sizeDelta = new Vector2(-20, 24);
+            lbhRect.sizeDelta = new Vector2(-20, 22);
             TextMeshProUGUI lbhText = lbhGo.GetComponent<TextMeshProUGUI>();
             lbhText.text = "[ PRESSURE MONITOR // TELEMETRY ]";
-            lbhText.fontSize = 13;
+            lbhText.fontSize = 12;
             lbhText.fontStyle = FontStyles.Bold;
             lbhText.alignment = TextAlignmentOptions.Center;
             lbhText.color = new Color(0.40f, 0.80f, 1f, 0.90f);
@@ -1242,8 +1207,8 @@ namespace TheLastSignal.UI.Tasks
             GameObject gaugeGo = new GameObject("GaugeHousing", typeof(RectTransform), typeof(Image));
             gaugeGo.transform.SetParent(lbGo.transform, false);
             RectTransform gRect = gaugeGo.GetComponent<RectTransform>();
-            gRect.sizeDelta = new Vector2(260, 260);
-            gRect.anchoredPosition = new Vector2(0, 10);
+            gRect.sizeDelta = new Vector2(240, 240);
+            gRect.anchoredPosition = new Vector2(0, 15);
             Image gImg = gaugeGo.GetComponent<Image>();
             if (dialSprite != null)
             {
@@ -1258,7 +1223,7 @@ namespace TheLastSignal.UI.Tasks
             GameObject needleGo = new GameObject("Needle", typeof(RectTransform), typeof(Image));
             needleGo.transform.SetParent(gaugeGo.transform, false);
             RectTransform needleRect = needleGo.GetComponent<RectTransform>();
-            needleRect.sizeDelta = new Vector2(34, 160);
+            needleRect.sizeDelta = new Vector2(28, 136);
             needleRect.pivot = new Vector2(0.5f, 0.18f);
             needleRect.anchoredPosition = Vector2.zero;
             Image needleImg = needleGo.GetComponent<Image>();
@@ -1276,7 +1241,7 @@ namespace TheLastSignal.UI.Tasks
             rpGo.transform.SetParent(lbGo.transform, false);
             RectTransform rpRect = rpGo.GetComponent<RectTransform>();
             rpRect.anchoredPosition = new Vector2(0, -135);
-            rpRect.sizeDelta = new Vector2(280, 42);
+            rpRect.sizeDelta = new Vector2(320, 42);
             Image rpImg = rpGo.GetComponent<Image>();
             rpImg.color = new Color(0.02f, 0.04f, 0.06f, 1f);
             rpImg.raycastTarget = false;
@@ -1287,31 +1252,22 @@ namespace TheLastSignal.UI.Tasks
             GameObject psiGo = new GameObject("PsiReadout", typeof(RectTransform), typeof(TextMeshProUGUI));
             psiGo.transform.SetParent(rpGo.transform, false);
             RectTransform psiRect = psiGo.GetComponent<RectTransform>();
-            psiRect.anchoredPosition = new Vector2(0, 4);
-            psiRect.sizeDelta = new Vector2(260, 26);
+            psiRect.anchorMin = Vector2.zero;
+            psiRect.anchorMax = Vector2.one;
+            psiRect.sizeDelta = Vector2.zero;
+            psiRect.anchoredPosition = Vector2.zero;
             TextMeshProUGUI psiText = psiGo.GetComponent<TextMeshProUGUI>();
-            psiText.text = "15.0 PSI";
-            psiText.fontSize = 20;
+            psiText.text = "<color=#00FF7F><size=20><b>15.0 PSI</b></size></color>\n<size=10><color=#7A96B0>NOMINAL: 50.0 — 88.0 PSI</color></size>";
+            psiText.lineSpacing = 10;
             psiText.alignment = TextAlignmentOptions.Center;
-            psiText.color = Color.white;
             psiText.raycastTarget = false;
-
-            GameObject rgtGo = new GameObject("RangeSubtext", typeof(RectTransform), typeof(TextMeshProUGUI));
-            rgtGo.transform.SetParent(rpGo.transform, false);
-            RectTransform rgtRect = rgtGo.GetComponent<RectTransform>();
-            rgtRect.anchoredPosition = new Vector2(0, -12);
-            rgtRect.sizeDelta = new Vector2(260, 14);
-            TextMeshProUGUI rgtText = rgtGo.GetComponent<TextMeshProUGUI>();
-            rgtText.text = "<size=10><color=#7A96B0>NOMINAL RANGE: 50.0 — 88.0 PSI</color></size>";
-            rgtText.alignment = TextAlignmentOptions.Center;
-            rgtText.raycastTarget = false;
 
             // ================= RIGHT BAY: ACTUATOR UNIT =================
             GameObject rbGo = new GameObject("ValveActuatorBay", typeof(RectTransform), typeof(Image));
             rbGo.transform.SetParent(box.transform, false);
             RectTransform rbRect = rbGo.GetComponent<RectTransform>();
-            rbRect.sizeDelta = new Vector2(400, 340);
-            rbRect.anchoredPosition = new Vector2(215, 28);
+            rbRect.sizeDelta = new Vector2(400, 330);
+            rbRect.anchoredPosition = new Vector2(215, 35);
             Image rbImg = rbGo.GetComponent<Image>();
             rbImg.color = new Color(0.04f, 0.07f, 0.10f, 0.95f);
             rbImg.raycastTarget = false;
@@ -1326,32 +1282,20 @@ namespace TheLastSignal.UI.Tasks
             rbhRect.anchorMax = new Vector2(1f, 1f);
             rbhRect.pivot = new Vector2(0.5f, 1f);
             rbhRect.anchoredPosition = new Vector2(0, -14);
-            rbhRect.sizeDelta = new Vector2(-20, 24);
+            rbhRect.sizeDelta = new Vector2(-20, 22);
             TextMeshProUGUI rbhText = rbhGo.GetComponent<TextMeshProUGUI>();
             rbhText.text = "[ MANUAL ACTUATOR // VALVE SERVO-A ]";
-            rbhText.fontSize = 13;
+            rbhText.fontSize = 12;
             rbhText.fontStyle = FontStyles.Bold;
             rbhText.alignment = TextAlignmentOptions.Center;
             rbhText.color = new Color(0.40f, 0.80f, 1f, 0.90f);
             rbhText.raycastTarget = false;
 
-            GameObject wwGo = new GameObject("WheelWell", typeof(RectTransform), typeof(Image));
-            wwGo.transform.SetParent(rbGo.transform, false);
-            RectTransform wwRect = wwGo.GetComponent<RectTransform>();
-            wwRect.sizeDelta = new Vector2(270, 270);
-            wwRect.anchoredPosition = new Vector2(0, 10);
-            Image wwImg = wwGo.GetComponent<Image>();
-            wwImg.color = new Color(0.02f, 0.04f, 0.07f, 1f);
-            wwImg.raycastTarget = false;
-            Outline wwOutline = wwGo.AddComponent<Outline>();
-            wwOutline.effectColor = new Color(0.18f, 0.28f, 0.40f, 0.60f);
-            wwOutline.effectDistance = new Vector2(1, -1);
-
             GameObject wheelGo = new GameObject("ValveWheel", typeof(RectTransform), typeof(Image));
             wheelGo.transform.SetParent(rbGo.transform, false);
             RectTransform wRect = wheelGo.GetComponent<RectTransform>();
-            wRect.sizeDelta = new Vector2(250, 250);
-            wRect.anchoredPosition = new Vector2(0, 10);
+            wRect.sizeDelta = new Vector2(240, 240);
+            wRect.anchoredPosition = new Vector2(0, 15);
             Image wImg = wheelGo.GetComponent<Image>();
             if (valveSprite != null)
             {
@@ -1368,7 +1312,7 @@ namespace TheLastSignal.UI.Tasks
             cpGo.transform.SetParent(rbGo.transform, false);
             RectTransform cpRect = cpGo.GetComponent<RectTransform>();
             cpRect.anchoredPosition = new Vector2(0, -135);
-            cpRect.sizeDelta = new Vector2(340, 42);
+            cpRect.sizeDelta = new Vector2(320, 42);
             Image cpImg = cpGo.GetComponent<Image>();
             cpImg.color = new Color(0.02f, 0.04f, 0.06f, 1f);
             cpImg.raycastTarget = false;
@@ -1379,30 +1323,23 @@ namespace TheLastSignal.UI.Tasks
             GameObject cpTextGo = new GameObject("ControlText", typeof(RectTransform), typeof(TextMeshProUGUI));
             cpTextGo.transform.SetParent(cpGo.transform, false);
             RectTransform cptRect = cpTextGo.GetComponent<RectTransform>();
-            cptRect.anchoredPosition = new Vector2(0, 4);
-            cptRect.sizeDelta = new Vector2(320, 24);
+            cptRect.anchorMin = Vector2.zero;
+            cptRect.anchorMax = Vector2.one;
+            cptRect.sizeDelta = Vector2.zero;
+            cptRect.anchoredPosition = Vector2.zero;
             TextMeshProUGUI cptText = cpTextGo.GetComponent<TextMeshProUGUI>();
-            cptText.text = "◄ <color=#FF8866><b>[A]</b></color> DECREASE   |   INCREASE <color=#66DDFF><b>[D]</b></color> ►";
-            cptText.fontSize = 13;
+            cptText.text = "◄ <color=#FF8866><b>[A]</b></color> DECREASE   |   INCREASE <color=#66DDFF><b>[D]</b></color> ►\n<size=10><color=#7A96B0>DRAG WHEEL OR USE [A] / [D] KEYS</color></size>";
+            cptText.fontSize = 12;
+            cptText.lineSpacing = 10;
             cptText.alignment = TextAlignmentOptions.Center;
             cptText.color = new Color(0.75f, 0.85f, 0.95f, 1f);
             cptText.raycastTarget = false;
-
-            GameObject cpsGo = new GameObject("ControlSubtext", typeof(RectTransform), typeof(TextMeshProUGUI));
-            cpsGo.transform.SetParent(cpGo.transform, false);
-            RectTransform cpsRect = cpsGo.GetComponent<RectTransform>();
-            cpsRect.anchoredPosition = new Vector2(0, -12);
-            cpsRect.sizeDelta = new Vector2(320, 14);
-            TextMeshProUGUI cpsText = cpsGo.GetComponent<TextMeshProUGUI>();
-            cpsText.text = "<size=10><color=#7A96B0>CONTROL: DRAG WHEEL OR USE [A] / [D] KEYS</color></size>";
-            cpsText.alignment = TextAlignmentOptions.Center;
-            cpsText.raycastTarget = false;
 
             // ================= BOTTOM BAY: STABILITY SYSTEM =================
             GameObject bbGo = new GameObject("StabilityBay", typeof(RectTransform), typeof(Image));
             bbGo.transform.SetParent(box.transform, false);
             RectTransform bbRect = bbGo.GetComponent<RectTransform>();
-            bbRect.sizeDelta = new Vector2(830, 115);
+            bbRect.sizeDelta = new Vector2(830, 120);
             bbRect.anchoredPosition = new Vector2(0, -215);
             Image bbImg = bbGo.GetComponent<Image>();
             bbImg.color = new Color(0.04f, 0.07f, 0.10f, 0.95f);
@@ -1417,11 +1354,11 @@ namespace TheLastSignal.UI.Tasks
             bbhRect.anchorMin = new Vector2(0f, 1f);
             bbhRect.anchorMax = new Vector2(1f, 1f);
             bbhRect.pivot = new Vector2(0.5f, 1f);
-            bbhRect.anchoredPosition = new Vector2(0, -12);
-            bbhRect.sizeDelta = new Vector2(-20, 20);
+            bbhRect.anchoredPosition = new Vector2(0, -10);
+            bbhRect.sizeDelta = new Vector2(-20, 18);
             TextMeshProUGUI bbhText = bbhGo.GetComponent<TextMeshProUGUI>();
             bbhText.text = "PRESSURE STABILIZATION LOCK";
-            bbhText.fontSize = 12;
+            bbhText.fontSize = 11;
             bbhText.fontStyle = FontStyles.Bold;
             bbhText.alignment = TextAlignmentOptions.Center;
             bbhText.color = new Color(0.65f, 0.78f, 0.90f, 1f);
@@ -1430,8 +1367,8 @@ namespace TheLastSignal.UI.Tasks
             GameObject barFrameGo = new GameObject("StabilityBarFrame", typeof(RectTransform), typeof(Image));
             barFrameGo.transform.SetParent(bbGo.transform, false);
             RectTransform bFrameRect = barFrameGo.GetComponent<RectTransform>();
-            bFrameRect.anchoredPosition = new Vector2(0, 10);
-            bFrameRect.sizeDelta = new Vector2(770, 24);
+            bFrameRect.anchoredPosition = new Vector2(0, 8);
+            bFrameRect.sizeDelta = new Vector2(770, 22);
             Image bFrameImg = barFrameGo.GetComponent<Image>();
             bFrameImg.color = new Color(0.02f, 0.04f, 0.06f, 1f);
             Outline barOutline = barFrameGo.AddComponent<Outline>();
@@ -1454,11 +1391,11 @@ namespace TheLastSignal.UI.Tasks
             GameObject pctGo = new GameObject("PercentText", typeof(RectTransform), typeof(TextMeshProUGUI));
             pctGo.transform.SetParent(bbGo.transform, false);
             RectTransform pctRect = pctGo.GetComponent<RectTransform>();
-            pctRect.anchoredPosition = new Vector2(0, -24);
-            pctRect.sizeDelta = new Vector2(770, 36);
+            pctRect.anchoredPosition = new Vector2(0, -32);
+            pctRect.sizeDelta = new Vector2(770, 28);
             TextMeshProUGUI pctText = pctGo.GetComponent<TextMeshProUGUI>();
-            pctText.text = "<color=#FFA500><b>LOW PRESSURE</b></color>  <size=14><color=#CCCCCC>— Turn Valve Right / Press [D] to Increase Value</color></size>";
-            pctText.fontSize = 15;
+            pctText.text = "<color=#FFA500><b>LOW PRESSURE</b></color>  <size=13><color=#CCCCCC>— Turn Valve Right / Press [D] to Increase Value</color></size>";
+            pctText.fontSize = 14;
             pctText.alignment = TextAlignmentOptions.Center;
             pctText.raycastTarget = false;
 
