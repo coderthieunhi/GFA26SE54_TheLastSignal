@@ -702,13 +702,31 @@ namespace TheLastSignal.UI.Tasks
             }
 
             Sprite bezelSprite = Resources.Load<Sprite>("UI/Tasks/TerminalBezel");
-            if (terminalBox != null && bezelSprite != null)
+            if (terminalBox != null)
             {
-                if (terminalBox.TryGetComponent(out Image bImg))
+                if (terminalBox.TryGetComponent(out Image bImg) && bezelSprite != null)
                 {
                     bImg.sprite = bezelSprite;
                     bImg.color = Color.white;
                 }
+
+                // Solid dark background chassis backing so world never shows through bezel
+                Transform chassisBg = terminalBox.Find("TerminalChassisBackground");
+                if (chassisBg == null)
+                {
+                    GameObject cbgGo = new GameObject("TerminalChassisBackground", typeof(RectTransform), typeof(Image));
+                    cbgGo.transform.SetParent(terminalBox, false);
+                    cbgGo.transform.SetAsFirstSibling();
+                    chassisBg = cbgGo.transform;
+                }
+                RectTransform cbgRect = chassisBg.GetComponent<RectTransform>();
+                cbgRect.anchorMin = Vector2.zero;
+                cbgRect.anchorMax = Vector2.one;
+                cbgRect.sizeDelta = new Vector2(-16, -16);
+                cbgRect.anchoredPosition = Vector2.zero;
+                Image cbgImg = chassisBg.GetComponent<Image>();
+                cbgImg.color = new Color(0.06f, 0.08f, 0.11f, 1f);
+                cbgImg.raycastTarget = false;
             }
         }
 
@@ -780,6 +798,19 @@ namespace TheLastSignal.UI.Tasks
                 outline.effectColor = new Color(0.2f, 0.35f, 0.5f, 1f);
                 outline.effectDistance = new Vector2(3, -3);
             }
+
+            // Solid dark background chassis backing so world never shows through bezel
+            GameObject cbgGo = new GameObject("TerminalChassisBackground", typeof(RectTransform), typeof(Image));
+            cbgGo.transform.SetParent(box.transform, false);
+            cbgGo.transform.SetAsFirstSibling();
+            RectTransform cbgRect = cbgGo.GetComponent<RectTransform>();
+            cbgRect.anchorMin = Vector2.zero;
+            cbgRect.anchorMax = Vector2.one;
+            cbgRect.sizeDelta = new Vector2(-16, -16);
+            cbgRect.anchoredPosition = Vector2.zero;
+            Image cbgImg = cbgGo.GetComponent<Image>();
+            cbgImg.color = new Color(0.06f, 0.08f, 0.11f, 1f);
+            cbgImg.raycastTarget = false;
 
             // Header Title
             GameObject headerGo = new GameObject("HeaderTitle", typeof(RectTransform), typeof(TextMeshProUGUI));

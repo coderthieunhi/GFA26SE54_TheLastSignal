@@ -432,6 +432,24 @@ namespace TheLastSignal.UI.Tasks
                     boxImg.color = Color.white;
                 }
 
+                // Solid dark sci-fi background chassis backing so world never shows through bezel
+                Transform chassisBg = terminalBox.Find("TerminalChassisBackground");
+                if (chassisBg == null)
+                {
+                    GameObject cbgGo = new GameObject("TerminalChassisBackground", typeof(RectTransform), typeof(Image));
+                    cbgGo.transform.SetParent(terminalBox, false);
+                    cbgGo.transform.SetAsFirstSibling();
+                    chassisBg = cbgGo.transform;
+                }
+                RectTransform cbgRect = chassisBg.GetComponent<RectTransform>();
+                cbgRect.anchorMin = Vector2.zero;
+                cbgRect.anchorMax = Vector2.one;
+                cbgRect.sizeDelta = new Vector2(-16, -16);
+                cbgRect.anchoredPosition = Vector2.zero;
+                Image cbgImg = chassisBg.GetComponent<Image>();
+                cbgImg.color = new Color(0.06f, 0.08f, 0.11f, 1f);
+                cbgImg.raycastTarget = false;
+
                 // Header Title positioning
                 Transform headerT = terminalBox.Find("HeaderTitle");
                 if (headerT != null && headerT.TryGetComponent(out RectTransform hdrRect))
@@ -696,11 +714,22 @@ namespace TheLastSignal.UI.Tasks
                         wImg.raycastTarget = true;
                     }
 
+                    // Attach dedicated DragProxy directly on ValveWheel to guarantee pointer capture
+                    var wheelProxy = valveWheel.GetComponent<ValveWheelDragProxy>() ?? valveWheel.gameObject.AddComponent<ValveWheelDragProxy>();
+                    wheelProxy.targetUI = this;
+
                     // Deactivate legacy spokes or knob children
                     for (int i = 0; i < valveWheel.childCount; i++)
                     {
                         valveWheel.GetChild(i).gameObject.SetActive(false);
                     }
+                }
+
+                // Also attach DragProxy to rightBay so dragging near the wheel is captured seamlessly
+                if (rightBay != null)
+                {
+                    var bayProxy = rightBay.GetComponent<ValveWheelDragProxy>() ?? rightBay.gameObject.AddComponent<ValveWheelDragProxy>();
+                    bayProxy.targetUI = this;
                 }
 
                 // Right Bay Controls Guidance Plate (Exact 320x42 match with Left Bay ReadoutPlate)
@@ -844,20 +873,28 @@ namespace TheLastSignal.UI.Tasks
             }
 
             EnsureAudioSources();
-            AudioClip doneClip = successSfx ?? proceduralCompleteClip;
+            if (successSfx == null)
+            {
+                successSfx = Resources.Load<AudioClip>("Audio/sfx_valve_complete");
+            }
+            AudioClip doneClip = successSfx ?? proceduralCompleteClip ?? CreateValveCompleteTone();
             if (doneClip != null)
             {
+                if (audioSource != null)
+                {
+                    audioSource.spatialBlend = 0f;
+                    audioSource.pitch = 1.0f;
+                    audioSource.volume = 1.0f;
+                    audioSource.PlayOneShot(doneClip, 1.0f);
+                }
                 AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
-                if (listener != null)
+                if (listener != null && listener.gameObject != gameObject)
                 {
                     AudioSource listenerSrc = listener.GetComponent<AudioSource>() ?? listener.gameObject.AddComponent<AudioSource>();
                     listenerSrc.spatialBlend = 0f;
-                    listenerSrc.volume = 1f;
+                    listenerSrc.pitch = 1.0f;
+                    listenerSrc.volume = 1.0f;
                     listenerSrc.PlayOneShot(doneClip, 1.0f);
-                }
-                if (audioSource != null)
-                {
-                    audioSource.PlayOneShot(doneClip, 1.0f);
                 }
             }
 
@@ -948,6 +985,15 @@ namespace TheLastSignal.UI.Tasks
 
         private void GenerateProceduralAudio()
         {
+            if (valveTurnSfx == null)
+            {
+                valveTurnSfx = Resources.Load<AudioClip>("Audio/sfx_valve_ratchet");
+            }
+            if (successSfx == null)
+            {
+                successSfx = Resources.Load<AudioClip>("Audio/sfx_valve_complete");
+            }
+
             if (proceduralTurnClip == null)
             {
                 proceduralTurnClip = CreateValveRatchetTone();
@@ -961,6 +1007,10 @@ namespace TheLastSignal.UI.Tasks
         private void PlayValveTurnSound()
         {
             EnsureAudioSources();
+            if (valveTurnSfx == null)
+            {
+                valveTurnSfx = Resources.Load<AudioClip>("Audio/sfx_valve_ratchet");
+            }
             if (proceduralTurnClip == null)
             {
                 proceduralTurnClip = CreateValveRatchetTone();
@@ -970,9 +1020,18 @@ namespace TheLastSignal.UI.Tasks
 
             float pitch = UnityEngine.Random.Range(0.96f, 1.04f);
 
-            // 1. Guaranteed Playback directly on the active AudioListener (Zero distance, pure 2D)
+            // 1. Play directly on Panel AudioSource (exact pattern used by CalibrationTaskUI and WireTaskUI)
+            if (audioSource != null)
+            {
+                audioSource.spatialBlend = 0f;
+                audioSource.pitch = pitch;
+                audioSource.volume = 1f;
+                audioSource.PlayOneShot(clip, 1.0f);
+            }
+
+            // 2. Guaranteed fallback on active AudioListener
             AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
-            if (listener != null)
+            if (listener != null && listener.gameObject != gameObject)
             {
                 AudioSource listenerSrc = listener.GetComponent<AudioSource>() ?? listener.gameObject.AddComponent<AudioSource>();
                 listenerSrc.spatialBlend = 0f;
@@ -981,14 +1040,7 @@ namespace TheLastSignal.UI.Tasks
                 listenerSrc.PlayOneShot(clip, 1.0f);
             }
 
-            // 2. Play on Panel AudioSource as secondary
-            if (audioSource != null)
-            {
-                audioSource.spatialBlend = 0f;
-                audioSource.pitch = pitch;
-                audioSource.volume = 1f;
-                audioSource.PlayOneShot(clip, 1.0f);
-            }
+            Debug.Log($"<color=cyan>[ValveTaskUI]</color> Ratchet Click played! Clip={clip.name}, Vol=1.0, Source={audioSource?.name}");
         }
 
         /// <summary>
@@ -1124,6 +1176,19 @@ namespace TheLastSignal.UI.Tasks
                 outline.effectColor = new Color(0.35f, 0.42f, 0.5f, 1f);
                 outline.effectDistance = new Vector2(3, -3);
             }
+
+            // Solid dark background chassis backing so world never shows through bezel
+            GameObject cbgGo = new GameObject("TerminalChassisBackground", typeof(RectTransform), typeof(Image));
+            cbgGo.transform.SetParent(box.transform, false);
+            cbgGo.transform.SetAsFirstSibling();
+            RectTransform cbgRect = cbgGo.GetComponent<RectTransform>();
+            cbgRect.anchorMin = Vector2.zero;
+            cbgRect.anchorMax = Vector2.one;
+            cbgRect.sizeDelta = new Vector2(-16, -16);
+            cbgRect.anchoredPosition = Vector2.zero;
+            Image cbgImg = cbgGo.GetComponent<Image>();
+            cbgImg.color = new Color(0.06f, 0.08f, 0.11f, 1f);
+            cbgImg.raycastTarget = false;
 
             // Header Title
             GameObject headerGo = new GameObject("HeaderTitle", typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -1411,8 +1476,42 @@ namespace TheLastSignal.UI.Tasks
             valveTask.Configure(root, null, headerText, instText, psiText, closeBtn,
                                 gImg, needleRect, barFillImg, bFrameRect, pctText, wRect);
 
+            var wheelProxy = wheelGo.AddComponent<ValveWheelDragProxy>();
+            wheelProxy.targetUI = valveTask;
+            var bayProxy = rbGo.AddComponent<ValveWheelDragProxy>();
+            bayProxy.targetUI = valveTask;
+
             root.SetActive(false);
             return valveTask;
+        }
+    }
+
+    /// <summary>
+    /// Captures mouse pointer drag events directly on the valve wheel or its container bay
+    /// and delegates them to the parent ValveTaskUI instance.
+    /// </summary>
+    public class ValveWheelDragProxy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
+    {
+        public ValveTaskUI targetUI;
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            // Captures pointer focus immediately on mouse down
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (targetUI != null) targetUI.OnBeginDrag(eventData);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (targetUI != null) targetUI.OnDrag(eventData);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (targetUI != null) targetUI.OnEndDrag(eventData);
         }
     }
 }

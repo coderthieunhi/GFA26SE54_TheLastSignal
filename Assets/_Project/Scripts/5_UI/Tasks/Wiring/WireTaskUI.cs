@@ -622,6 +622,24 @@ namespace TheLastSignal.UI.Tasks
                 boxImg.color = Color.white;
             }
 
+            // Solid dark background chassis backing so world never shows through bezel
+            Transform chassisBg = boxT.Find("TerminalChassisBackground");
+            if (chassisBg == null)
+            {
+                GameObject cbgGo = new GameObject("TerminalChassisBackground", typeof(RectTransform), typeof(Image));
+                cbgGo.transform.SetParent(boxT, false);
+                cbgGo.transform.SetAsFirstSibling();
+                chassisBg = cbgGo.transform;
+            }
+            RectTransform cbgRect = chassisBg.GetComponent<RectTransform>();
+            cbgRect.anchorMin = Vector2.zero;
+            cbgRect.anchorMax = Vector2.one;
+            cbgRect.sizeDelta = new Vector2(-16, -16);
+            cbgRect.anchoredPosition = Vector2.zero;
+            Image cbgImg = chassisBg.GetComponent<Image>();
+            cbgImg.color = new Color(0.06f, 0.08f, 0.11f, 1f);
+            cbgImg.raycastTarget = false;
+
             // Remove/hide masterStatusLight (Bỏ cục vàng/đỏ góc trên)
             if (masterStatusLight != null)
             {
