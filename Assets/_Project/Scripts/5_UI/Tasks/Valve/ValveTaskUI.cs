@@ -290,9 +290,16 @@ namespace TheLastSignal.UI.Tasks
         private float GetMouseAngleOnValve(Vector2 screenPos)
         {
             Camera cam = canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(valveWheel, screenPos, cam, out Vector2 localPoint))
+            RectTransform parentRect = valveWheel != null ? valveWheel.parent as RectTransform : null;
+            if (parentRect != null && RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, screenPos, cam, out Vector2 localPoint))
             {
-                return Mathf.Atan2(localPoint.y, localPoint.x) * Mathf.Rad2Deg;
+                Vector2 center = valveWheel.anchoredPosition;
+                Vector2 dir = localPoint - center;
+                return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            }
+            else if (valveWheel != null && RectTransformUtility.ScreenPointToLocalPointInRectangle(valveWheel, screenPos, cam, out Vector2 fallbackPoint))
+            {
+                return Mathf.Atan2(fallbackPoint.y, fallbackPoint.x) * Mathf.Rad2Deg;
             }
             return 0f;
         }
@@ -840,13 +847,17 @@ namespace TheLastSignal.UI.Tasks
             AudioClip doneClip = successSfx ?? proceduralCompleteClip;
             if (doneClip != null)
             {
+                AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
+                if (listener != null)
+                {
+                    AudioSource listenerSrc = listener.GetComponent<AudioSource>() ?? listener.gameObject.AddComponent<AudioSource>();
+                    listenerSrc.spatialBlend = 0f;
+                    listenerSrc.volume = 1f;
+                    listenerSrc.PlayOneShot(doneClip, 1.0f);
+                }
                 if (audioSource != null)
                 {
                     audioSource.PlayOneShot(doneClip, 1.0f);
-                }
-                if (Camera.main != null && Camera.main.TryGetComponent(out AudioSource camAudio))
-                {
-                    camAudio.PlayOneShot(doneClip, 1.0f);
                 }
             }
 
@@ -959,38 +970,35 @@ namespace TheLastSignal.UI.Tasks
 
             float pitch = UnityEngine.Random.Range(0.96f, 1.04f);
 
-            // 1. Direct Playback on Panel AudioSource (2D Audio)
-            if (audioSource != null)
+            // 1. Guaranteed Playback directly on the active AudioListener (Zero distance, pure 2D)
+            AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
+            if (listener != null)
             {
-                audioSource.pitch = pitch;
-                audioSource.PlayOneShot(clip, 1.0f);
+                AudioSource listenerSrc = listener.GetComponent<AudioSource>() ?? listener.gameObject.AddComponent<AudioSource>();
+                listenerSrc.spatialBlend = 0f;
+                listenerSrc.pitch = pitch;
+                listenerSrc.volume = 1f;
+                listenerSrc.PlayOneShot(clip, 1.0f);
             }
 
-            // 2. Direct Fallback to Main Camera AudioSource (at exact AudioListener position)
-            if (Camera.main != null)
+            // 2. Play on Panel AudioSource as secondary
+            if (audioSource != null)
             {
-                AudioSource camAudio = Camera.main.GetComponent<AudioSource>();
-                if (camAudio == null)
-                {
-                    camAudio = Camera.main.gameObject.AddComponent<AudioSource>();
-                }
-                if (camAudio != null)
-                {
-                    camAudio.spatialBlend = 0f;
-                    camAudio.pitch = pitch;
-                    camAudio.PlayOneShot(clip, 0.90f);
-                }
+                audioSource.spatialBlend = 0f;
+                audioSource.pitch = pitch;
+                audioSource.volume = 1f;
+                audioSource.PlayOneShot(clip, 1.0f);
             }
         }
 
         /// <summary>
         /// Crisp, tactile mechanical ratchet sound designed using the proven AudioSynthesis curve.
-        /// Stays loud and punchy throughout 100ms with prominent 750Hz/1500Hz metallic teeth harmonics.
+        /// Stays loud and punchy throughout 140ms with prominent 860Hz/1720Hz metallic teeth harmonics.
         /// </summary>
         private static AudioClip CreateValveRatchetTone()
         {
             int sampleRate = 44100;
-            float duration = 0.10f;
+            float duration = 0.14f;
             int samples = (int)(sampleRate * duration);
             float[] data = new float[samples];
             System.Random rng = new System.Random(1337);
@@ -998,18 +1006,18 @@ namespace TheLastSignal.UI.Tasks
             for (int i = 0; i < samples; i++)
             {
                 float t = (float)i / sampleRate;
-                // Linear-power decay: maintains strong audible volume throughout the 100ms duration
-                float env = 1f - Mathf.Pow(t / duration, 0.65f);
+                float env = 1f - Mathf.Pow(t / duration, 0.55f);
 
-                // Prominent mechanical metallic ratchet teeth ring (750Hz and 1500Hz) + heavy body thud (320Hz)
-                float wave = Mathf.Sin(2f * Mathf.PI * 750f * t) * 0.40f +
-                             Mathf.Sin(2f * Mathf.PI * 1500f * t) * 0.30f +
-                             Mathf.Sin(2f * Mathf.PI * 320f * t) * 0.35f;
+                // Rich metallic gear ratchet harmonics:
+                // Heavy body clank (340Hz) + high teeth resonance (860Hz & 1720Hz)
+                float thud = Mathf.Sin(2f * Mathf.PI * 340f * t) * 0.40f;
+                float ring = Mathf.Sin(2f * Mathf.PI * 860f * t) * 0.40f +
+                             Mathf.Sin(2f * Mathf.PI * 1720f * t) * 0.25f;
 
-                // Crisp gear impact transient in first 12ms
-                float click = (t < 0.012f) ? ((float)rng.NextDouble() * 2f - 1f) * 0.35f : 0f;
+                // Sharp initial metallic tooth contact snap (first 10ms)
+                float snap = (t < 0.010f) ? ((float)rng.NextDouble() * 2f - 1f) * 0.45f : 0f;
 
-                data[i] = Mathf.Clamp((wave + click) * env, -1f, 1f);
+                data[i] = Mathf.Clamp((thud + ring + snap) * env, -1f, 1f);
             }
 
             AudioClip clip = AudioClip.Create("ValveRatchetClick", samples, 1, sampleRate, false);
