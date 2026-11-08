@@ -56,8 +56,8 @@ namespace TheLastSignal.UI.Tasks
         [SerializeField, Range(0.5f, 5f)] private float requiredHoldSeconds = 2.5f;
         [SerializeField] private float minSafePressure = 50f;
         [SerializeField] private float maxSafePressure = 88f;
-        [SerializeField] private float pressureDecayRate = 16f;
-        [SerializeField] private float valveSensitivity = 0.5f;
+        [SerializeField] private float pressureDecayRate = 0f;
+        [SerializeField] private float valveSensitivity = 0.25f;
 
         [Header("Audio")]
         [SerializeField] private AudioSource audioSource;
@@ -138,8 +138,8 @@ namespace TheLastSignal.UI.Tasks
             // Keyboard steering (A / D or Arrow keys)
             HandleKeyboardInput();
 
-            // Passive decay towards low resting pressure when not actively adjusting
-            if (!isDraggingValve)
+            // Passive decay towards resting pressure (disabled by default so needle stays exactly where player rotates it)
+            if (pressureDecayRate > 0f && !isDraggingValve)
             {
                 currentPressure = Mathf.MoveTowards(currentPressure, 10f, pressureDecayRate * Time.deltaTime);
             }
@@ -192,8 +192,14 @@ namespace TheLastSignal.UI.Tasks
 
             if (Mathf.Abs(keyDelta) > 0.01f)
             {
-                float rotDelta = -keyDelta * 180f * Time.deltaTime;
-                currentPressure += keyDelta * 48f * Time.deltaTime;
+                float rotSpeed = 160f; // degrees per second
+                float rotDelta = -keyDelta * rotSpeed * Time.deltaTime;
+
+                // Synchronize needle speed with wheel speed: exact same 0.25 PSI/deg scaling as mouse drag
+                float pressureDelta = keyDelta * (rotSpeed * valveSensitivity) * Time.deltaTime;
+                currentPressure += pressureDelta;
+                currentPressure = Mathf.Clamp(currentPressure, 0f, 100f);
+
                 wheelVisualRotation += rotDelta;
                 if (valveWheel != null)
                 {
@@ -268,6 +274,7 @@ namespace TheLastSignal.UI.Tasks
 
             float pressureDelta = -angleDelta * valveSensitivity;
             currentPressure += pressureDelta;
+            currentPressure = Mathf.Clamp(currentPressure, 0f, 100f);
 
             wheelVisualRotation += angleDelta;
             valveWheel.localEulerAngles = new Vector3(0, 0, wheelVisualRotation);
@@ -318,6 +325,8 @@ namespace TheLastSignal.UI.Tasks
             isFinished = false;
             isDraggingValve = false;
             accumulatedAngleForSfx = 0f;
+            pressureDecayRate = 0f;
+            valveSensitivity = 0.25f;
 
             if (canvas == null)
             {
@@ -392,6 +401,8 @@ namespace TheLastSignal.UI.Tasks
 
             minSafePressure = 50f;
             maxSafePressure = 88f;
+            pressureDecayRate = 0f;
+            valveSensitivity = 0.25f;
 
             // Remove legacy status lights
             if (masterStatusLight != null)
@@ -884,17 +895,26 @@ namespace TheLastSignal.UI.Tasks
                 {
                     audioSource.spatialBlend = 0f;
                     audioSource.pitch = 1.0f;
-                    audioSource.volume = 1.0f;
-                    audioSource.PlayOneShot(doneClip, 1.0f);
+                    audioSource.volume = 0.65f;
+                    audioSource.PlayOneShot(doneClip, 0.65f);
                 }
-                AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
-                if (listener != null && listener.gameObject != gameObject)
+                else
                 {
-                    AudioSource listenerSrc = listener.GetComponent<AudioSource>() ?? listener.gameObject.AddComponent<AudioSource>();
-                    listenerSrc.spatialBlend = 0f;
-                    listenerSrc.pitch = 1.0f;
-                    listenerSrc.volume = 1.0f;
-                    listenerSrc.PlayOneShot(doneClip, 1.0f);
+                    AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
+                    if (listener != null)
+                    {
+                        if (!listener.TryGetComponent(out AudioSource listenerSrc))
+                        {
+                            listenerSrc = listener.gameObject.AddComponent<AudioSource>();
+                        }
+                        if (listenerSrc != null)
+                        {
+                            listenerSrc.spatialBlend = 0f;
+                            listenerSrc.pitch = 1.0f;
+                            listenerSrc.volume = 0.65f;
+                            listenerSrc.PlayOneShot(doneClip, 0.65f);
+                        }
+                    }
                 }
             }
 
@@ -977,7 +997,7 @@ namespace TheLastSignal.UI.Tasks
             {
                 audioSource.playOnAwake = false;
                 audioSource.spatialBlend = 0f;
-                audioSource.volume = 1f;
+                audioSource.volume = 0.35f;
                 audioSource.pitch = 1f;
                 audioSource.enabled = true;
             }
@@ -1020,27 +1040,33 @@ namespace TheLastSignal.UI.Tasks
 
             float pitch = UnityEngine.Random.Range(0.96f, 1.04f);
 
-            // 1. Play directly on Panel AudioSource (exact pattern used by CalibrationTaskUI and WireTaskUI)
+            // 1. Play directly on Panel AudioSource with comfortable tactile volume (0.35)
             if (audioSource != null)
             {
                 audioSource.spatialBlend = 0f;
                 audioSource.pitch = pitch;
-                audioSource.volume = 1f;
-                audioSource.PlayOneShot(clip, 1.0f);
+                audioSource.volume = 0.35f;
+                audioSource.PlayOneShot(clip, 0.35f);
             }
-
-            // 2. Guaranteed fallback on active AudioListener
-            AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
-            if (listener != null && listener.gameObject != gameObject)
+            else
             {
-                AudioSource listenerSrc = listener.GetComponent<AudioSource>() ?? listener.gameObject.AddComponent<AudioSource>();
-                listenerSrc.spatialBlend = 0f;
-                listenerSrc.pitch = pitch;
-                listenerSrc.volume = 1f;
-                listenerSrc.PlayOneShot(clip, 1.0f);
+                // Fallback only if Panel AudioSource is missing
+                AudioListener listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
+                if (listener != null)
+                {
+                    if (!listener.TryGetComponent(out AudioSource listenerSrc))
+                    {
+                        listenerSrc = listener.gameObject.AddComponent<AudioSource>();
+                    }
+                    if (listenerSrc != null)
+                    {
+                        listenerSrc.spatialBlend = 0f;
+                        listenerSrc.pitch = pitch;
+                        listenerSrc.volume = 0.35f;
+                        listenerSrc.PlayOneShot(clip, 0.35f);
+                    }
+                }
             }
-
-            Debug.Log($"<color=cyan>[ValveTaskUI]</color> Ratchet Click played! Clip={clip.name}, Vol=1.0, Source={audioSource?.name}");
         }
 
         /// <summary>

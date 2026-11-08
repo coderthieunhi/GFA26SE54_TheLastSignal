@@ -60979,8 +60979,8 @@ MonoBehaviour:
   requiredHoldSeconds: 2.5
   minSafePressure: 50
   maxSafePressure: 88
-  pressureDecayRate: 18
-  valveSensitivity: 0.45
+  pressureDecayRate: 0
+  valveSensitivity: 0.25
   audioSource: {fileID: 0}
   turnAudioSource: {fileID: 0}
   valveTurnSfx: {fileID: 0}
