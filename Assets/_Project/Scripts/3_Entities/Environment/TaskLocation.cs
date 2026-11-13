@@ -15,7 +15,10 @@ namespace TheLastSignal.Entities.Environment
         ValveBalancing,
         MemorySequence,
         WaveformTuning,
-        TimingCalibration
+        TimingCalibration,
+        PowerGridRouting,
+        IsotopeDecryption,
+        CipherRingAlignment
     }
     public enum TaskStationType
     {
@@ -119,7 +122,7 @@ namespace TheLastSignal.Entities.Environment
         /// </summary>
         private void EnsureSubTasksPlaylist(bool forceReshuffle = false)
         {
-            if (!forceReshuffle && subTasksPlaylist != null && subTasksPlaylist.Count >= 5) return;
+            if (!forceReshuffle && subTasksPlaylist != null && subTasksPlaylist.Count >= 8) return;
 
             subTasksPlaylist = new List<TaskMinigameType>
             {
@@ -127,7 +130,10 @@ namespace TheLastSignal.Entities.Environment
                 TaskMinigameType.ValveBalancing,
                 TaskMinigameType.MemorySequence,
                 TaskMinigameType.WaveformTuning,
-                TaskMinigameType.TimingCalibration
+                TaskMinigameType.TimingCalibration,
+                TaskMinigameType.PowerGridRouting,
+                TaskMinigameType.IsotopeDecryption,
+                TaskMinigameType.CipherRingAlignment
             };
 
             // Deterministic stable shuffle based on stationId polynomial hash
@@ -256,6 +262,21 @@ namespace TheLastSignal.Entities.Environment
                     valveUI?.Open(player, this);
                     break;
 
+                case TaskMinigameType.PowerGridRouting:
+                    var gridUI = PowerGridTaskUI.Instance ?? PowerGridTaskUI.GetOrCreateInstance();
+                    gridUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.IsotopeDecryption:
+                    var isoUI = IsotopeTaskUI.Instance ?? IsotopeTaskUI.GetOrCreateInstance();
+                    isoUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.CipherRingAlignment:
+                    var cipherUI = CipherRingTaskUI.Instance ?? CipherRingTaskUI.GetOrCreateInstance();
+                    cipherUI?.Open(player, this);
+                    break;
+
                 case TaskMinigameType.WireBridging:
                 default:
                     var wireUI = WireTaskUI.Instance ?? WireTaskUI.GetOrCreateInstance();
@@ -329,6 +350,9 @@ namespace TheLastSignal.Entities.Environment
             else if (minigameUI is MemoryTaskUI mem) mem.CloseMinigame();
             else if (minigameUI is WaveformTaskUI wave) wave.CloseMinigame();
             else if (minigameUI is CalibrationTaskUI calib) calib.CloseMinigame();
+            else if (minigameUI is PowerGridTaskUI grid) grid.CloseMinigame();
+            else if (minigameUI is IsotopeTaskUI iso) iso.CloseMinigame();
+            else if (minigameUI is CipherRingTaskUI cipher) cipher.CloseMinigame();
         }
 
         private IEnumerator CloseMinigameRoutine(MonoBehaviour minigameUI, float delay, PlayerController player)
@@ -350,6 +374,9 @@ namespace TheLastSignal.Entities.Environment
                 case TaskMinigameType.MemorySequence: return "REACTOR MEMORY CORE KEYPAD";
                 case TaskMinigameType.WaveformTuning: return "RADIO WAVEFORM SYNCHRONIZER";
                 case TaskMinigameType.TimingCalibration: return "POWER SURGE PULSE CALIBRATION";
+                case TaskMinigameType.PowerGridRouting: return "HIGH-VOLTAGE POWER GRID ROUTING";
+                case TaskMinigameType.IsotopeDecryption: return "REACTOR ISOTOPE DECRYPTION";
+                case TaskMinigameType.CipherRingAlignment: return "CONCENTRIC CIPHER RING ALIGNMENT";
                 default: return "SYSTEM MAINTENANCE";
             }
         }

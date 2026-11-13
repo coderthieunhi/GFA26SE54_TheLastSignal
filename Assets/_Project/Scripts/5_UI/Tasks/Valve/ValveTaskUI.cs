@@ -56,7 +56,7 @@ namespace TheLastSignal.UI.Tasks
         [SerializeField, Range(0.5f, 5f)] private float requiredHoldSeconds = 2.5f;
         [SerializeField] private float minSafePressure = 50f;
         [SerializeField] private float maxSafePressure = 88f;
-        [SerializeField] private float pressureDecayRate = 0f;
+        [SerializeField] private float pressureDecayRate = 16f;
         [SerializeField] private float valveSensitivity = 0.25f;
 
         [Header("Audio")]
@@ -77,6 +77,8 @@ namespace TheLastSignal.UI.Tasks
         private float holdTimer = 0f;
         private bool isFinished = false;
         private bool isDraggingValve = false;
+        private bool isKeyboardTurning = false;
+        private float lastActiveTurnTime = 0f;
         private float previousMouseAngle = 0f;
         private float wheelVisualRotation = 0f;
 
@@ -138,10 +140,23 @@ namespace TheLastSignal.UI.Tasks
             // Keyboard steering (A / D or Arrow keys)
             HandleKeyboardInput();
 
-            // Passive decay towards resting pressure (disabled by default so needle stays exactly where player rotates it)
-            if (pressureDecayRate > 0f && !isDraggingValve)
+            // Check if player is actively rotating the valve (moving mouse while dragging OR holding keyboard keys)
+            bool isActivelyRotating = isKeyboardTurning || (isDraggingValve && (Time.time - lastActiveTurnTime <= 0.12f));
+
+            // Passive decay towards resting pressure (10 PSI) when player stops rotating/holding
+            if (!isActivelyRotating && pressureDecayRate > 0f)
             {
+                float prevPressure = currentPressure;
                 currentPressure = Mathf.MoveTowards(currentPressure, 10f, pressureDecayRate * Time.deltaTime);
+
+                // Naturally rotate the valve wheel backwards as pipe pressure bleeds
+                float pressureLost = prevPressure - currentPressure;
+                if (valveWheel != null && pressureLost > 0f && !isDraggingValve)
+                {
+                    float rotSlip = pressureLost / valveSensitivity;
+                    wheelVisualRotation += rotSlip;
+                    valveWheel.localEulerAngles = new Vector3(0, 0, wheelVisualRotation);
+                }
             }
 
             currentPressure = Mathf.Clamp(currentPressure, 0f, 100f);
@@ -176,6 +191,7 @@ namespace TheLastSignal.UI.Tasks
         private void HandleKeyboardInput()
         {
             var kb = UnityEngine.InputSystem.Keyboard.current;
+            isKeyboardTurning = false;
             if (kb == null) return;
 
             // Immediate audio click on initial key down
@@ -192,6 +208,8 @@ namespace TheLastSignal.UI.Tasks
 
             if (Mathf.Abs(keyDelta) > 0.01f)
             {
+                isKeyboardTurning = true;
+                lastActiveTurnTime = Time.time;
                 float rotSpeed = 160f; // degrees per second
                 float rotDelta = -keyDelta * rotSpeed * Time.deltaTime;
 
@@ -261,6 +279,7 @@ namespace TheLastSignal.UI.Tasks
             if (isFinished || valveWheel == null) return;
             isDraggingValve = true;
             previousMouseAngle = GetMouseAngleOnValve(eventData.position);
+            lastActiveTurnTime = Time.time;
             PlayValveTurnSound();
             accumulatedAngleForSfx = 0f;
         }
@@ -271,6 +290,11 @@ namespace TheLastSignal.UI.Tasks
 
             float currentAngle = GetMouseAngleOnValve(eventData.position);
             float angleDelta = Mathf.DeltaAngle(previousMouseAngle, currentAngle);
+
+            if (Mathf.Abs(angleDelta) > 0.05f)
+            {
+                lastActiveTurnTime = Time.time;
+            }
 
             float pressureDelta = -angleDelta * valveSensitivity;
             currentPressure += pressureDelta;
@@ -324,8 +348,10 @@ namespace TheLastSignal.UI.Tasks
             holdTimer = 0f;
             isFinished = false;
             isDraggingValve = false;
+            isKeyboardTurning = false;
+            lastActiveTurnTime = 0f;
             accumulatedAngleForSfx = 0f;
-            pressureDecayRate = 0f;
+            if (pressureDecayRate <= 0f) pressureDecayRate = 16f;
             valveSensitivity = 0.25f;
 
             if (canvas == null)
@@ -401,7 +427,7 @@ namespace TheLastSignal.UI.Tasks
 
             minSafePressure = 50f;
             maxSafePressure = 88f;
-            pressureDecayRate = 0f;
+            if (pressureDecayRate <= 0f) pressureDecayRate = 16f;
             valveSensitivity = 0.25f;
 
             // Remove legacy status lights

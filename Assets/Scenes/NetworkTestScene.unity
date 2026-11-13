@@ -1503,6 +1503,7 @@ GameObject:
   - component: {fileID: 23010719}
   - component: {fileID: 23010721}
   - component: {fileID: 23010720}
+  - component: {fileID: 23010722}
   m_Layer: 9
   m_Name: Airlock_Prop_Radar_CRT
   m_TagString: Untagged
@@ -1631,6 +1632,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &23010722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23010718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 679284a4c85e4cf29b9a8eb9bad42655, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Stations.DroneStation
+  promptMessage: <color=#00FFCC>[E]</color> Pilot Recon Drone
+  isAvailable: 1
+  onInteractionSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractionFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  authorizedPrompt: <color=#00FFCC>[E]</color> Pilot Recon Drone
+  restrictedPrompt: <color=#FF4444>[RESTRICTED]</color> Drone Operator Clearance Required
+  bypassRoleCheckInEditor: 0
+  droneController: {fileID: 1066183841}
+  dockStation: {fileID: 340937954}
+  dockPositionOffset: {x: 1.5, y: -0.65}
+  consoleLight: {fileID: 1127608650}
+  activeConsoleColor: {r: 0, g: 0.95, b: 1, a: 1}
+  idleConsoleColor: {r: 0.2, g: 0.7, b: 0.5, a: 0.8}
+  deniedConsoleColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  audioSource: {fileID: 0}
 --- !u!1 &28655376
 GameObject:
   m_ObjectHideFlags: 0
@@ -9490,9 +9522,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 154729057}
   socketLight: {fileID: 2062626875}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &154729057
 MonoBehaviour:
@@ -10040,6 +10074,23 @@ MonoBehaviour:
   instructionText: {fileID: 0}
   progressText: {fileID: 1164157009}
   closeButton: {fileID: 1941025218}
+  activeDirectiveText: {fileID: 0}
+  telemetryLogText: {fileID: 0}
+  sequenceBadgeBgs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  sequenceBadgeTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  sequenceBadgeOutlines:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   connectionLeds:
   - {fileID: 0}
   - {fileID: 0}
@@ -11732,7 +11783,7 @@ Sprite:
       height: 64
     textureRectOffset: {x: 0, y: 0}
     atlasRectOffset: {x: -1, y: -1}
-    settingsRaw: 64
+    settingsRaw: 3136
     uvTransform: {x: 64, y: 32, z: 64, w: 32}
     downscaleMultiplier: 1
   m_AtlasRD:
@@ -19846,6 +19897,106 @@ MonoBehaviour:
           rid: -2
         m_Provider2DCache:
           rid: -2
+--- !u!1 &340937952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 340937953}
+  - component: {fileID: 340937954}
+  - component: {fileID: 340937955}
+  m_Layer: 9
+  m_Name: Prop_Drone_Dock_Station
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &340937953
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340937952}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3, y: 14, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 989349743}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &340937954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340937952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d070e6c641794535351700426000002, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Stations.DroneDockStation
+  dockRenderer: {fileID: 0}
+  dockLight: {fileID: 0}
+  dockCollider: {fileID: 0}
+  colliderSize: {x: 1.5, y: 1.5}
+  activeChargeColor: {r: 0, g: 0.95, b: 1, a: 1}
+  idleStandbyColor: {r: 0, g: 0.5, b: 0.6, a: 0.6}
+  pulseSpeed: 2
+  minIntensity: 0.4
+  maxIntensity: 0.9
+--- !u!61 &340937955
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340937952}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.5, y: 1.5}
+  m_EdgeRadius: 0
 --- !u!1 &343327384
 GameObject:
   m_ObjectHideFlags: 0
@@ -20274,9 +20425,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 347122600}
   socketLight: {fileID: 609086875}
   wireLine: {fileID: 1371824087}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &347122600
 MonoBehaviour:
@@ -23060,9 +23213,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 404674111}
   socketLight: {fileID: 305422140}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &404674111
 MonoBehaviour:
@@ -25895,9 +26050,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 447961442}
   socketLight: {fileID: 1166518251}
   wireLine: {fileID: 1676269933}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &447961442
 MonoBehaviour:
@@ -29044,9 +29201,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 539822864}
   socketLight: {fileID: 1395562923}
   wireLine: {fileID: 1112735686}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &539822864
 MonoBehaviour:
@@ -44713,9 +44872,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 818337119}
   socketLight: {fileID: 947562898}
   wireLine: {fileID: 939751023}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &818337119
 MonoBehaviour:
@@ -47275,6 +47436,70 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!1 &861370561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 861370562}
+  - component: {fileID: 861370563}
+  m_Layer: 0
+  m_Name: DroneHUDOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &861370562
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861370561}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1268739702}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &861370563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861370561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bda3e36465e4706a6f28ba4e670f435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.DroneHUDOverlay
+  titleText: {fileID: 0}
+  signalText: {fileID: 0}
+  coordsText: {fileID: 0}
+  flightSpeedText: {fileID: 0}
+  operatorStatusText: {fileID: 0}
+  batteryBarFill: {fileID: 0}
+  batteryText: {fileID: 0}
+  lowBatteryWarningBanner: {fileID: 0}
+  radarScopeRect: {fileID: 0}
+  radarSweepArm: {fileID: 0}
+  radarTargetCountText: {fileID: 0}
+  radarBlipContainer: {fileID: 0}
+  threatAlertBanner: {fileID: 0}
+  threatAlertText: {fileID: 0}
+  overlayRoot: {fileID: 0}
+  showCenterReticle: 0
 --- !u!1 &862465648
 GameObject:
   m_ObjectHideFlags: 0
@@ -47420,9 +47645,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 864239853}
   socketLight: {fileID: 1477271505}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &864239853
 MonoBehaviour:
@@ -55844,6 +56071,7 @@ Transform:
   - {fileID: 394832303}
   - {fileID: 575785773}
   - {fileID: 1127608649}
+  - {fileID: 340937953}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &989953881
@@ -56095,9 +56323,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 991546534}
   socketLight: {fileID: 165157234}
   wireLine: {fileID: 1438376828}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &991546534
 MonoBehaviour:
@@ -56548,9 +56778,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 997230994}
   socketLight: {fileID: 1846148958}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &997230994
 MonoBehaviour:
@@ -59434,6 +59666,116 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!1 &1066183839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1066183843}
+  - component: {fileID: 1066183842}
+  - component: {fileID: 1066183841}
+  - component: {fileID: 1066183840}
+  m_Layer: 0
+  m_Name: ReconDrone_Spectre
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1066183840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066183839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5562e38130b5a94295526a983d5e508, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Drone.DroneView
+  chassisRenderer: {fileID: 0}
+  visualRoot: {fileID: 0}
+  spotlightLight2D: {fileID: 0}
+  motorAudioSource: {fileID: 0}
+  sfxAudioSource: {fileID: 0}
+  hoverFrequency: 3.5
+  hoverAmplitude: 0.06
+  maxBankAngle: 8
+  rotorSpinSpeed: 1440
+--- !u!114 &1066183841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066183839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53a13147513745d8a57920480de3469e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Drone.DroneController
+  ShowTopMostFoldoutHeaderGroup: 1
+  flightSpeed: 4.8
+  acceleration: 18
+  deceleration: 24
+  spotlightRange: 8
+  spotlightAngle: 45
+  spotlightPivot: {fileID: 0}
+  gameplayLightSource: {fileID: 0}
+  maxBattery: 100
+  batteryDrainRate: 4
+  batteryRechargeRate: 12
+  radarRadius: 12
+  radarPingInterval: 1.5
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!50 &1066183842
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066183839}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!4 &1066183843
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066183839}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3, y: 14, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1067676750
 GameObject:
   m_ObjectHideFlags: 0
@@ -60009,9 +60351,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 1078147427}
   socketLight: {fileID: 1842130702}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &1078147427
 MonoBehaviour:
@@ -60982,7 +61326,6 @@ MonoBehaviour:
   pressureDecayRate: 0
   valveSensitivity: 0.25
   audioSource: {fileID: 0}
-  turnAudioSource: {fileID: 0}
   valveTurnSfx: {fileID: 0}
   successSfx: {fileID: 0}
 --- !u!114 &1096294946
@@ -62352,9 +62695,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 1126055607}
   socketLight: {fileID: 821796847}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &1126055607
 MonoBehaviour:
@@ -67318,9 +67663,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 1241827658}
   socketLight: {fileID: 1771528735}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &1241827658
 MonoBehaviour:
@@ -67731,7 +68078,7 @@ MonoBehaviour:
     rid: 3389542127196439085
   m_FalloffIntensity: 0.35
   m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.26885
+  m_Intensity: 0.38
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -68444,6 +68791,7 @@ RectTransform:
   - {fileID: 343415826}
   - {fileID: 1902110617}
   - {fileID: 1096294944}
+  - {fileID: 861370562}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -79830,9 +80178,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 1402911445}
   socketLight: {fileID: 1073110584}
   wireLine: {fileID: 878149509}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &1402911445
 MonoBehaviour:
@@ -86621,7 +86971,7 @@ MonoBehaviour:
     rid: 3389542127196439098
   m_FalloffIntensity: 0.35
   m_Color: {r: 0.92, g: 0.12, b: 0.1, a: 1}
-  m_Intensity: 0.26885
+  m_Intensity: 0.38
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000005e70fa6d202b7e97dbd9d9bei
@@ -105717,9 +106067,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 0
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 1860382059}
   socketLight: {fileID: 1640486285}
   wireLine: {fileID: 0}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &1860382059
 MonoBehaviour:
@@ -109481,6 +109833,23 @@ MonoBehaviour:
   instructionText: {fileID: 0}
   progressText: {fileID: 1020996669}
   closeButton: {fileID: 1186571312}
+  activeDirectiveText: {fileID: 0}
+  telemetryLogText: {fileID: 0}
+  sequenceBadgeBgs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  sequenceBadgeTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  sequenceBadgeOutlines:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   connectionLeds:
   - {fileID: 0}
   - {fileID: 0}
@@ -137637,9 +138006,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 1935711120}
   socketLight: {fileID: 565547566}
   wireLine: {fileID: 668979135}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &1935711120
 MonoBehaviour:
@@ -138977,9 +139348,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.UI.Tasks.WirePointUI
   isLeft: 1
   colorType: 0
+  socketIndex: 0
   socketIndicator: {fileID: 1968918438}
   socketLight: {fileID: 1418312051}
   wireLine: {fileID: 473214106}
+  terminalLabel: {fileID: 0}
   wireThickness: 14
 --- !u!114 &1968918438
 MonoBehaviour:
@@ -149948,3 +150321,4 @@ SceneRoots:
   - {fileID: 229505053}
   - {fileID: 1562917886}
   - {fileID: 208535976}
+  - {fileID: 1066183843}

@@ -17,6 +17,16 @@ namespace TheLastSignal.Core
         [Tooltip("Multiplies StationRepair's progress-per-interact for whoever is repairing.")]
         public float repairSpeedMultiplier = 1f;
 
+        [Header("Drone Operator ability (FR-SUR-06, BR-17)")]
+        public float droneBatteryCapacity = 100f;
+        public float droneBatteryDrainRate = 4.0f;
+        public float droneBatteryRechargeRate = 12.0f;
+        public float droneMoveSpeed = 4.8f;
+        public float droneSpotlightRange = 8.0f;
+        public float droneSpotlightAngle = 45f;
+        public float droneRadarRadius = 12f;
+        public float droneRadarPingInterval = 1.5f;
+
         [Header("Logistics stun ability (unused by other roles)")]
         public float stunDuration = 3f;
         public float stunCooldown = 15f;
@@ -41,10 +51,18 @@ namespace TheLastSignal.Core
 
         [SerializeField] private RoleData mechanic = new RoleData
         {
-            role = SurvivorRole.Mechanic,
-            displayName = "Mechanic",
+            role = SurvivorRole.DroneOperator,
+            displayName = "Drone Operator",
             staminaCapacity = 100f,
-            repairSpeedMultiplier = 1f
+            repairSpeedMultiplier = 1f,
+            droneBatteryCapacity = 100f,
+            droneBatteryDrainRate = 4.0f,
+            droneBatteryRechargeRate = 12.0f,
+            droneMoveSpeed = 4.8f,
+            droneSpotlightRange = 8.0f,
+            droneSpotlightAngle = 45f,
+            droneRadarRadius = 12f,
+            droneRadarPingInterval = 1.5f
         };
 
         [SerializeField] private RoleData logistics = new RoleData

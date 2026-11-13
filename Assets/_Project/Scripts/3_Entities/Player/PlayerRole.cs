@@ -20,9 +20,9 @@ namespace TheLastSignal.Entities.Player
         [SerializeField] private RoleConfigSO roleConfig;
 
         private readonly NetworkVariable<SurvivorRole> role = new NetworkVariable<SurvivorRole>(
-            SurvivorRole.Engineer, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            SurvivorRole.DroneOperator, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-        private SurvivorRole offlineRole = SurvivorRole.Engineer;
+        [SerializeField] private SurvivorRole offlineRole = SurvivorRole.DroneOperator;
 
         public event Action<SurvivorRole> OnRoleChanged;
 
@@ -52,6 +52,37 @@ namespace TheLastSignal.Entities.Player
             {
                 OnRoleChanged?.Invoke(offlineRole);
             }
+        }
+
+        private void Update()
+        {
+#if UNITY_EDITOR || DEBUG
+            bool isLocal = !IsNetworkSessionActive || (IsSpawned && IsOwner);
+            if (isLocal && UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame)
+            {
+                SurvivorRole nextRole = Role switch
+                {
+                    SurvivorRole.Engineer => SurvivorRole.DroneOperator,
+                    SurvivorRole.DroneOperator => SurvivorRole.Logistics,
+                    _ => SurvivorRole.Engineer
+                };
+                if (IsNetworkSessionActive && !IsServer)
+                {
+                    RequestSwitchRoleServerRpc(nextRole);
+                }
+                else
+                {
+                    ServerAssignRole(nextRole);
+                }
+                Debug.Log($"<color=cyan>[PlayerRole DEBUG]</color> Switched role to: <b>{nextRole}</b>");
+            }
+#endif
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void RequestSwitchRoleServerRpc(SurvivorRole newRole)
+        {
+            ServerAssignRole(newRole);
         }
 
         /// <summary>Server-only (and the offline-fallback writer). Called once by GameManager.AssignRoles

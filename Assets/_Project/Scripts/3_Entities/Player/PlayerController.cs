@@ -125,6 +125,9 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         public Collider2D CurrentInteractable { get; private set; }
 
+        private Vector2 lockedAnchorPosition;
+        private bool isPositionLocked;
+
         private void Awake()
         {
             if (!IsNetworkSessionActive || IsOwner)
@@ -137,6 +140,8 @@ namespace TheLastSignal.Entities.Player
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            rb.mass = 1000f; // High mass prevents dynamic objects/physics from pushing the player
+            rb.linearDamping = 10f; // High linear damping neutralizes unwanted drifting
 
             playerHealth = GetComponent<PlayerHealth>();
             if (playerHealth == null)
@@ -267,12 +272,13 @@ namespace TheLastSignal.Entities.Player
             base.OnNetworkDespawn();
         }
 
-        private void OnDestroy()
+        public override void OnDestroy()
         {
             if (Local == this)
             {
                 Local = null;
             }
+            base.OnDestroy();
         }
 
         /// <summary>
@@ -336,6 +342,24 @@ namespace TheLastSignal.Entities.Player
             {
                 moveInput = Vector2.zero;
                 currentVelocity = Vector2.zero;
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector2.zero;
+                    rb.angularVelocity = 0f;
+                    rb.constraints = RigidbodyConstraints2D.FreezeAll;
+                    lockedAnchorPosition = rb.position;
+                    isPositionLocked = true;
+                }
+            }
+            else
+            {
+                if (rb != null)
+                {
+                    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+                    rb.linearVelocity = Vector2.zero;
+                    rb.angularVelocity = 0f;
+                }
+                isPositionLocked = false;
             }
         }
 
@@ -361,6 +385,9 @@ namespace TheLastSignal.Entities.Player
             rb.position = worldPosition;
             transform.position = new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
             lastRemotePosition = transform.position;
+            lockedAnchorPosition = worldPosition;
+            isPositionLocked = true;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
             if (playerHealth != null)
             {
@@ -504,10 +531,19 @@ namespace TheLastSignal.Entities.Player
         {
             if (!controlEnabled)
             {
+                if (isPositionLocked && rb != null)
+                {
+                    rb.position = lockedAnchorPosition;
+                    rb.linearVelocity = Vector2.zero;
+                }
                 return;
             }
 
             ApplyMovement(moveInput);
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 namespace TheLastSignal.UI.Tasks
 {
@@ -9,11 +10,13 @@ namespace TheLastSignal.UI.Tasks
         [Header("Socket Configuration")]
         [SerializeField] private bool isLeft = true;
         [SerializeField] private WireColorType colorType;
+        [SerializeField] private int socketIndex = 0;
 
         [Header("Visual Elements")]
         [SerializeField] private Image socketIndicator;
         [SerializeField] private Image socketLight;
         [SerializeField] private RectTransform wireLine; // Image UI with pivot (0, 0.5)
+        [SerializeField] private TextMeshProUGUI terminalLabel;
 
         [Header("Line Settings")]
         [SerializeField] private float wireThickness = 14f;
@@ -25,6 +28,7 @@ namespace TheLastSignal.UI.Tasks
 
         public bool IsLeft => isLeft;
         public WireColorType ColorType => colorType;
+        public int SocketIndex => socketIndex;
         public bool IsConnected => isConnected;
         public Vector2 SocketPosition => ((RectTransform)transform).anchoredPosition;
 
@@ -33,12 +37,13 @@ namespace TheLastSignal.UI.Tasks
             EnsureWireParenting();
         }
 
-        public void Configure(bool left, Image socket, Image light, RectTransform line)
+        public void Configure(bool left, Image socket, Image light, RectTransform line, TextMeshProUGUI label = null)
         {
             isLeft = left;
             socketIndicator = socket;
             socketLight = light;
             wireLine = line;
+            if (label != null) terminalLabel = label;
             EnsureWireParenting();
         }
 
@@ -56,16 +61,18 @@ namespace TheLastSignal.UI.Tasks
             }
         }
 
-        public void Initialize(WireTaskUI taskManager, Canvas parentCanvas, WireColorType type)
+        public void Initialize(WireTaskUI taskManager, Canvas parentCanvas, WireColorType type, int index = 0)
         {
             manager = taskManager;
             canvas = parentCanvas;
             colorType = type;
+            socketIndex = index;
             isConnected = false;
 
             EnsureWireParenting();
 
             Color c = WireColorHelper.GetColor(colorType);
+            string vText = WireColorHelper.GetVoltageText(colorType);
 
             if (socketIndicator != null)
             {
@@ -75,6 +82,18 @@ namespace TheLastSignal.UI.Tasks
             if (socketLight != null)
             {
                 socketLight.color = new Color(0.2f, 0.2f, 0.2f, 0.8f); // Off
+            }
+
+            if (terminalLabel == null)
+            {
+                Transform lblT = transform.Find("TerminalLabel");
+                if (lblT != null) terminalLabel = lblT.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (terminalLabel != null)
+            {
+                terminalLabel.text = isLeft ? $"[A-{index + 1}]  {vText}" : $"{vText}  [B-{index + 1}]";
+                terminalLabel.color = isLeft ? new Color(0.85f, 0.92f, 1f, 1f) : new Color(0.75f, 0.85f, 0.95f, 1f);
             }
 
             if (wireLine != null)
@@ -89,7 +108,7 @@ namespace TheLastSignal.UI.Tasks
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (!isLeft || isConnected) return;
+            if (!isLeft || isConnected || (manager != null && manager.IsFaultLocked)) return;
 
             if (wireLine != null)
             {
@@ -101,7 +120,7 @@ namespace TheLastSignal.UI.Tasks
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (!isLeft || isConnected || wireLine == null) return;
+            if (!isLeft || isConnected || (manager != null && manager.IsFaultLocked) || wireLine == null) return;
             UpdateWireToScreenPoint(eventData.position);
         }
 
@@ -109,12 +128,17 @@ namespace TheLastSignal.UI.Tasks
         {
             if (!isLeft || isConnected) return;
 
-            // Check if dropped near matching target as a forgiving fallback
-            WirePointUI fallbackTarget = manager != null ? manager.CheckConnectTarget(eventData.position, colorType) : null;
-            if (fallbackTarget != null)
+            if (manager != null && manager.IsFaultLocked)
             {
-                ConnectTo(fallbackTarget);
-                manager.OnWireConnected(this, fallbackTarget);
+                ResetWire();
+                return;
+            }
+
+            // Check if dropped near matching target as a forgiving fallback
+            WirePointUI fallbackTarget = manager != null ? manager.FindHoveredTarget(eventData.position) : null;
+            if (fallbackTarget != null && !fallbackTarget.IsLeft && !fallbackTarget.IsConnected)
+            {
+                manager.TryConnectWire(this, fallbackTarget);
                 return;
             }
 
@@ -124,16 +148,15 @@ namespace TheLastSignal.UI.Tasks
         public void OnDrop(PointerEventData eventData)
         {
             // Drop happens on right socket when a left socket is dragged over it
-            if (isLeft || isConnected) return;
+            if (isLeft || isConnected || (manager != null && manager.IsFaultLocked)) return;
 
             if (eventData.pointerDrag != null && eventData.pointerDrag.TryGetComponent(out WirePointUI draggedPoint))
             {
-                if (draggedPoint.IsLeft && !draggedPoint.IsConnected && draggedPoint.ColorType == this.colorType)
+                if (draggedPoint.IsLeft && !draggedPoint.IsConnected)
                 {
-                    draggedPoint.ConnectTo(this);
                     if (manager != null)
                     {
-                        manager.OnWireConnected(draggedPoint, this);
+                        manager.TryConnectWire(draggedPoint, this);
                     }
                 }
             }
@@ -197,9 +220,16 @@ namespace TheLastSignal.UI.Tasks
         {
             if (!isLeft && !isConnected && eventData.dragging && eventData.pointerDrag != null)
             {
-                if (eventData.pointerDrag.TryGetComponent(out WirePointUI draggedPoint) && draggedPoint.ColorType == colorType)
+                if (eventData.pointerDrag.TryGetComponent(out WirePointUI draggedPoint))
                 {
-                    if (socketLight != null) socketLight.color = Color.yellow; // Hover highlight
+                    if (draggedPoint.ColorType == colorType)
+                    {
+                        if (socketLight != null) socketLight.color = Color.yellow; // Hover highlight
+                    }
+                    else
+                    {
+                        if (socketLight != null) socketLight.color = new Color(0.9f, 0.2f, 0.2f, 1f); // Mismatch hover warning
+                    }
                 }
             }
         }

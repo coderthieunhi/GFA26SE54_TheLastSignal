@@ -11,5 +11,10 @@ namespace TheLastSignal.Core
         {
             return role == SurvivorRole.Logistics;
         }
+
+        public static bool CanUseDroneAbility(SurvivorRole role)
+        {
+            return role == SurvivorRole.DroneOperator;
+        }
     }
 }

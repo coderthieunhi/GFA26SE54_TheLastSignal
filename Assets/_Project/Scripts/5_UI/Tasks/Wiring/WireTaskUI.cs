@@ -9,14 +9,14 @@ using TheLastSignal.Entities.Environment;
 namespace TheLastSignal.UI.Tasks
 {
     /// <summary>
-    /// Sci-Fi Brutalist Electrical Wire Bridging Minigame (Among Us style).
-    /// Synchronized with Reactor Memory and Valve Balancing terminal aesthetic:
+    /// Sci-Fi Brutalist Electrical Wire Bridging Minigame (Sequential Calibration Mode).
+    /// Synchronized with Reactor Memory, Concentric Cipher, and Valve Balancing terminal aesthetic:
     /// - Heavy metallic brutalist chassis (TerminalBezel) with hazard stripe header
     /// - Dual terminal bays: Feed Bus (A-Bay) on left, Load Bus (B-Bay) on right
-    /// - Recessed center bridging conduit trough
-    /// - Hex socket ports with colored cores and status indicator LEDs
-    /// - 4-stage connection progress LEDs
-    /// - Procedural audio synthesis for tactile connect clicks and victory chime
+    /// - Center inter-bus bridging conduit with active Sequential Calibration Roadmap
+    /// - Mandatory low-to-high voltage bridging sequence: [+5V -> +12V -> +24V -> +48V]
+    /// - Breaker Overload Fault & screen shake on sequence violation
+    /// - Procedural audio synthesis for relay connects, breaker fault sparks, and completion chime
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class WireTaskUI : MonoBehaviour
@@ -43,6 +43,13 @@ namespace TheLastSignal.UI.Tasks
         [SerializeField] private TextMeshProUGUI progressText;
         [SerializeField] private Button closeButton;
 
+        [Header("Sequence HUD Elements")]
+        [SerializeField] private TextMeshProUGUI activeDirectiveText;
+        [SerializeField] private TextMeshProUGUI telemetryLogText;
+        [SerializeField] private Image[] sequenceBadgeBgs = new Image[4];
+        [SerializeField] private TextMeshProUGUI[] sequenceBadgeTexts = new TextMeshProUGUI[4];
+        [SerializeField] private Outline[] sequenceBadgeOutlines = new Outline[4];
+
         [Header("Progress LEDs")]
         [SerializeField] private Image[] connectionLeds = new Image[4];
 
@@ -55,20 +62,35 @@ namespace TheLastSignal.UI.Tasks
         [SerializeField] private AudioClip wireConnectedSfx;
         [SerializeField] private AudioClip taskCompletedSfx;
 
+        // Sequence Order: Low Voltage Ground Reference -> High Tension Power
+        private readonly WireColorType[] RequiredSequence = new WireColorType[]
+        {
+            WireColorType.Green,   // Step 1: +5V Logic
+            WireColorType.Blue,    // Step 2: +12V Control
+            WireColorType.Yellow,  // Step 3: +24V Auxiliary
+            WireColorType.Red      // Step 4: +48V High Tension
+        };
+
         private Canvas canvas;
         private PlayerController activePlayer;
         private TaskLocation activeTaskLocation;
+        private int currentSequenceStep = 0;
         private int connectedCount = 0;
         private bool isFinished = false;
+        private bool isFaultLocked = false;
 
         private AudioClip proceduralConnectClip;
         private AudioClip proceduralCompleteClip;
+        private AudioClip proceduralOverloadClip;
+        private AudioClip proceduralMismatchClip;
 
         // Visual Colors
         private readonly Color LedInactive = new Color(0.18f, 0.22f, 0.28f, 1f);
         private readonly Color LedActive = new Color(0f, 1f, 0.5f, 1f);
+        private readonly Color LedFault = new Color(0.95f, 0.15f, 0.15f, 1f);
 
         public bool IsOpen => rootPanel != null && rootPanel.activeSelf;
+        public bool IsFaultLocked => isFaultLocked;
 
         private void Awake()
         {
@@ -226,7 +248,7 @@ namespace TheLastSignal.UI.Tasks
             headerRect.anchorMin = new Vector2(0f, 1f);
             headerRect.anchorMax = new Vector2(1f, 1f);
             headerRect.pivot = new Vector2(0.5f, 1f);
-            headerRect.anchoredPosition = new Vector2(0, -32);
+            headerRect.anchoredPosition = new Vector2(0, -30);
             headerRect.sizeDelta = new Vector2(-120, 36);
             TextMeshProUGUI headerText = headerGo.GetComponent<TextMeshProUGUI>();
             headerText.text = "ELECTRICAL JUNCTION PANEL // POWER DISTRIBUTION";
@@ -242,13 +264,13 @@ namespace TheLastSignal.UI.Tasks
             instRect.anchorMin = new Vector2(0f, 1f);
             instRect.anchorMax = new Vector2(1f, 1f);
             instRect.pivot = new Vector2(0.5f, 1f);
-            instRect.anchoredPosition = new Vector2(0, -68);
-            instRect.sizeDelta = new Vector2(-120, 26);
+            instRect.anchoredPosition = new Vector2(0, -66);
+            instRect.sizeDelta = new Vector2(-120, 24);
             TextMeshProUGUI instText = instGo.GetComponent<TextMeshProUGUI>();
-            instText.text = "Connect matching colored terminal lines [Drag Left to Right]";
-            instText.fontSize = 16;
+            instText.text = "SEQUENTIAL CALIBRATION: Bridge terminals in strict order [+5V -> +12V -> +24V -> +48V]";
+            instText.fontSize = 15;
             instText.alignment = TextAlignmentOptions.Center;
-            instText.color = new Color(0.72f, 0.82f, 0.92f, 1f);
+            instText.color = new Color(0.72f, 0.85f, 0.95f, 1f);
 
             // Close Button [ESC / X]
             GameObject closeGo = new GameObject("CloseButton", typeof(RectTransform), typeof(Image), typeof(Button));
@@ -328,11 +350,11 @@ namespace TheLastSignal.UI.Tasks
             GameObject progressGo = new GameObject("ProgressText", typeof(RectTransform), typeof(TextMeshProUGUI));
             progressGo.transform.SetParent(box.transform, false);
             RectTransform progressRect = progressGo.GetComponent<RectTransform>();
-            progressRect.anchoredPosition = new Vector2(0, -250);
-            progressRect.sizeDelta = new Vector2(600, 28);
+            progressRect.anchoredPosition = new Vector2(0, -248);
+            progressRect.sizeDelta = new Vector2(700, 28);
             TextMeshProUGUI progressText = progressGo.GetComponent<TextMeshProUGUI>();
-            progressText.text = "WIRES BRIDGED: <color=#00FF7F><b>0</b></color> / 4";
-            progressText.fontSize = 18;
+            progressText.text = "WIRES BRIDGED: <color=#00FF7F><b>0</b></color> / 4  //  NEXT REQUIRED: +5V [LOGIC]";
+            progressText.fontSize = 17;
             progressText.alignment = TextAlignmentOptions.Center;
             progressText.color = new Color(0.85f, 0.92f, 1f, 1f);
 
@@ -368,18 +390,23 @@ namespace TheLastSignal.UI.Tasks
                 Outline co = conGo.AddComponent<Outline>();
                 co.effectColor = new Color(0.12f, 0.18f, 0.24f, 1f);
                 co.effectDistance = new Vector2(2, -2);
+            }
 
+            // Header of Conduit
+            Transform conduitHeader = conduit != null ? conduit.Find("ConduitHeader") : boxT.Find("ConduitChamber/ConduitHeader");
+            if (conduitHeader == null && conduit != null)
+            {
                 GameObject hGo = new GameObject("ConduitHeader", typeof(RectTransform), typeof(TextMeshProUGUI));
-                hGo.transform.SetParent(conGo.transform, false);
+                hGo.transform.SetParent(conduit, false);
                 RectTransform hr = hGo.GetComponent<RectTransform>();
                 hr.anchoredPosition = new Vector2(0, 155);
                 hr.sizeDelta = new Vector2(320, 24);
                 TextMeshProUGUI ht = hGo.GetComponent<TextMeshProUGUI>();
-                ht.text = "INTER-BUS BRIDGING DUCT";
+                ht.text = "SEQUENTIAL CALIBRATION // PROTOCOL";
                 ht.fontSize = 12;
                 ht.fontStyle = FontStyles.Bold;
                 ht.alignment = TextAlignmentOptions.Center;
-                ht.color = new Color(0.35f, 0.50f, 0.65f, 1f);
+                ht.color = new Color(0.35f, 0.70f, 0.95f, 1f);
                 ht.raycastTarget = false;
             }
 
@@ -479,15 +506,26 @@ namespace TheLastSignal.UI.Tasks
                 GameObject lblGo = new GameObject("TerminalLabel", typeof(RectTransform), typeof(TextMeshProUGUI));
                 lblGo.transform.SetParent(socketT, false);
                 RectTransform lblR = lblGo.GetComponent<RectTransform>();
-                lblR.sizeDelta = new Vector2(60, 20);
-                lblR.anchoredPosition = isLeft ? new Vector2(48, 0) : new Vector2(-48, 0);
+                lblR.sizeDelta = new Vector2(90, 22);
+                lblR.anchoredPosition = isLeft ? new Vector2(65, 0) : new Vector2(-65, 0);
                 TextMeshProUGUI lt = lblGo.GetComponent<TextMeshProUGUI>();
                 lt.text = isLeft ? $"[A-{index + 1}]" : $"[B-{index + 1}]";
-                lt.fontSize = 12;
+                lt.fontSize = 13;
                 lt.fontStyle = FontStyles.Bold;
                 lt.alignment = isLeft ? TextAlignmentOptions.Left : TextAlignmentOptions.Right;
-                lt.color = isLeft ? new Color(0.45f, 0.65f, 0.85f, 1f) : new Color(0.70f, 0.80f, 0.90f, 1f);
+                lt.color = isLeft ? new Color(0.85f, 0.92f, 1f, 1f) : new Color(0.75f, 0.85f, 0.95f, 1f);
                 lt.raycastTarget = false;
+            }
+            else if (lblT is RectTransform lblR)
+            {
+                lblR.sizeDelta = new Vector2(90, 22);
+                lblR.anchoredPosition = isLeft ? new Vector2(65, 0) : new Vector2(-65, 0);
+                if (lblT.TryGetComponent(out TextMeshProUGUI lt))
+                {
+                    lt.fontSize = 13;
+                    lt.fontStyle = FontStyles.Bold;
+                    lt.alignment = isLeft ? TextAlignmentOptions.Left : TextAlignmentOptions.Right;
+                }
             }
         }
 
@@ -542,14 +580,14 @@ namespace TheLastSignal.UI.Tasks
             GameObject lblGo = new GameObject("TerminalLabel", typeof(RectTransform), typeof(TextMeshProUGUI));
             lblGo.transform.SetParent(socketGo.transform, false);
             RectTransform lblR = lblGo.GetComponent<RectTransform>();
-            lblR.sizeDelta = new Vector2(60, 20);
-            lblR.anchoredPosition = isLeft ? new Vector2(48, 0) : new Vector2(-48, 0);
+            lblR.sizeDelta = new Vector2(90, 22);
+            lblR.anchoredPosition = isLeft ? new Vector2(65, 0) : new Vector2(-65, 0);
             TextMeshProUGUI lt = lblGo.GetComponent<TextMeshProUGUI>();
             lt.text = isLeft ? $"[A-{index + 1}]" : $"[B-{index + 1}]";
-            lt.fontSize = 12;
+            lt.fontSize = 13;
             lt.fontStyle = FontStyles.Bold;
             lt.alignment = isLeft ? TextAlignmentOptions.Left : TextAlignmentOptions.Right;
-            lt.color = isLeft ? new Color(0.45f, 0.65f, 0.85f, 1f) : new Color(0.70f, 0.80f, 0.90f, 1f);
+            lt.color = isLeft ? new Color(0.85f, 0.92f, 1f, 1f) : new Color(0.75f, 0.85f, 0.95f, 1f);
             lt.raycastTarget = false;
 
             // Wire Line (only for left socket)
@@ -570,7 +608,7 @@ namespace TheLastSignal.UI.Tasks
             }
 
             WirePointUI pointUI = socketGo.AddComponent<WirePointUI>();
-            pointUI.Configure(isLeft, coreImg, lightImg, wireRect);
+            pointUI.Configure(isLeft, coreImg, lightImg, wireRect, lt);
 
             return pointUI;
         }
@@ -640,7 +678,7 @@ namespace TheLastSignal.UI.Tasks
             cbgImg.color = new Color(0.06f, 0.08f, 0.11f, 1f);
             cbgImg.raycastTarget = false;
 
-            // Remove/hide masterStatusLight (Bỏ cục vàng/đỏ góc trên)
+            // Remove/hide masterStatusLight
             if (masterStatusLight != null)
             {
                 masterStatusLight.gameObject.SetActive(false);
@@ -655,7 +693,7 @@ namespace TheLastSignal.UI.Tasks
                 headRect.anchorMin = new Vector2(0f, 1f);
                 headRect.anchorMax = new Vector2(1f, 1f);
                 headRect.pivot = new Vector2(0.5f, 1f);
-                headRect.anchoredPosition = new Vector2(0, -32);
+                headRect.anchoredPosition = new Vector2(0, -30);
                 headRect.sizeDelta = new Vector2(-120, 36);
 
                 if (headT.TryGetComponent(out TextMeshProUGUI headTxt))
@@ -678,13 +716,13 @@ namespace TheLastSignal.UI.Tasks
                 ir.anchorMin = new Vector2(0f, 1f);
                 ir.anchorMax = new Vector2(1f, 1f);
                 ir.pivot = new Vector2(0.5f, 1f);
-                ir.anchoredPosition = new Vector2(0, -68);
-                ir.sizeDelta = new Vector2(-120, 26);
+                ir.anchoredPosition = new Vector2(0, -66);
+                ir.sizeDelta = new Vector2(-120, 24);
                 TextMeshProUGUI it = instGo.GetComponent<TextMeshProUGUI>();
-                it.text = "Connect matching colored terminal lines [Drag Left to Right]";
-                it.fontSize = 16;
+                it.text = "SEQUENTIAL CALIBRATION: Bridge terminals in strict order [+5V -> +12V -> +24V -> +48V]";
+                it.fontSize = 15;
                 it.alignment = TextAlignmentOptions.Center;
-                it.color = new Color(0.72f, 0.82f, 0.92f, 1f);
+                it.color = new Color(0.72f, 0.85f, 0.95f, 1f);
                 instructionText = it;
             }
             else if (instT is RectTransform ir)
@@ -692,14 +730,14 @@ namespace TheLastSignal.UI.Tasks
                 ir.anchorMin = new Vector2(0f, 1f);
                 ir.anchorMax = new Vector2(1f, 1f);
                 ir.pivot = new Vector2(0.5f, 1f);
-                ir.anchoredPosition = new Vector2(0, -68);
-                ir.sizeDelta = new Vector2(-120, 26);
+                ir.anchoredPosition = new Vector2(0, -66);
+                ir.sizeDelta = new Vector2(-120, 24);
                 if (instT.TryGetComponent(out TextMeshProUGUI it))
                 {
-                    it.text = "Connect matching colored terminal lines [Drag Left to Right]";
-                    it.fontSize = 16;
+                    it.text = "SEQUENTIAL CALIBRATION: Bridge terminals in strict order [+5V -> +12V -> +24V -> +48V]";
+                    it.fontSize = 15;
                     it.alignment = TextAlignmentOptions.Center;
-                    it.color = new Color(0.72f, 0.82f, 0.92f, 1f);
+                    it.color = new Color(0.72f, 0.85f, 0.95f, 1f);
                     instructionText = it;
                 }
             }
@@ -716,11 +754,17 @@ namespace TheLastSignal.UI.Tasks
                 if (closeT.TryGetComponent(out Image ci)) ci.color = new Color(0.75f, 0.15f, 0.15f, 1f);
             }
 
-            // Check / Create Decorative Bays behind sockets
+            // Decorative Bays
             EnsureBayPanels(boxT);
 
-            // Reposition sockets and set WireSocket sprite
+            // Center Conduit Chamber HUD elements
+            EnsureConduitHUD(boxT);
+
+            // Sockets
             float[] socketY = new float[] { 114f, 50f, -14f, -78f };
+            if (leftPoints == null || leftPoints.Count < 4) leftPoints = new List<WirePointUI>();
+            if (rightPoints == null || rightPoints.Count < 4) rightPoints = new List<WirePointUI>();
+
             for (int i = 0; i < 4; i++)
             {
                 Transform lp = boxT.Find($"LeftSocket_{i}");
@@ -729,6 +773,10 @@ namespace TheLastSignal.UI.Tasks
                     lpr.sizeDelta = new Vector2(60, 60);
                     lpr.anchoredPosition = new Vector2(-310, socketY[i]);
                     UpgradeSocketVisual(lp, socketSprite, true, i);
+                    if (!leftPoints.Contains(lp.GetComponent<WirePointUI>()))
+                    {
+                        leftPoints.Add(lp.GetComponent<WirePointUI>());
+                    }
                 }
 
                 Transform rp = boxT.Find($"RightSocket_{i}");
@@ -737,10 +785,14 @@ namespace TheLastSignal.UI.Tasks
                     rpr.sizeDelta = new Vector2(60, 60);
                     rpr.anchoredPosition = new Vector2(310, socketY[i]);
                     UpgradeSocketVisual(rp, socketSprite, false, i);
+                    if (!rightPoints.Contains(rp.GetComponent<WirePointUI>()))
+                    {
+                        rightPoints.Add(rp.GetComponent<WirePointUI>());
+                    }
                 }
             }
 
-            // Check / Create ProgressFrame
+            // ProgressFrame
             Transform pfT = boxT.Find("ProgressFrame");
             if (pfT == null)
             {
@@ -795,17 +847,152 @@ namespace TheLastSignal.UI.Tasks
                 ptRect.anchorMin = new Vector2(0.5f, 0.5f);
                 ptRect.anchorMax = new Vector2(0.5f, 0.5f);
                 ptRect.pivot = new Vector2(0.5f, 0.5f);
-                ptRect.anchoredPosition = new Vector2(0, -250);
-                ptRect.sizeDelta = new Vector2(600, 28);
+                ptRect.anchoredPosition = new Vector2(0, -248);
+                ptRect.sizeDelta = new Vector2(700, 28);
                 if (ptT.TryGetComponent(out TextMeshProUGUI pt))
                 {
-                    pt.fontSize = 18;
+                    pt.fontSize = 17;
                     pt.alignment = TextAlignmentOptions.Center;
                     progressText = pt;
                 }
             }
 
             GenerateProceduralAudio();
+        }
+
+        private void EnsureConduitHUD(Transform boxT)
+        {
+            Transform conduit = boxT.Find("ConduitChamber");
+            if (conduit == null) return;
+
+            // 1. Sequence Roadmap Badges Bar
+            Transform barT = conduit.Find("SequenceRoadmapBar");
+            if (barT == null)
+            {
+                GameObject barGo = new GameObject("SequenceRoadmapBar", typeof(RectTransform));
+                barGo.transform.SetParent(conduit, false);
+                RectTransform br = barGo.GetComponent<RectTransform>();
+                br.anchoredPosition = new Vector2(0, 118);
+                br.sizeDelta = new Vector2(330, 32);
+                barT = barGo.transform;
+
+                sequenceBadgeBgs = new Image[4];
+                sequenceBadgeTexts = new TextMeshProUGUI[4];
+                sequenceBadgeOutlines = new Outline[4];
+
+                string[] labels = new string[] { "+5V", "+12V", "+24V", "+48V" };
+                float badgeW = 74f;
+                float badgeSpacing = 8f;
+                float startX = -(1.5f * (badgeW + badgeSpacing));
+
+                for (int i = 0; i < 4; i++)
+                {
+                    GameObject badgeGo = new GameObject($"Badge_{i}", typeof(RectTransform), typeof(Image), typeof(Outline));
+                    badgeGo.transform.SetParent(barT, false);
+                    RectTransform bRect = badgeGo.GetComponent<RectTransform>();
+                    bRect.sizeDelta = new Vector2(badgeW, 26);
+                    bRect.anchoredPosition = new Vector2(startX + i * (badgeW + badgeSpacing), 0);
+
+                    Image bi = badgeGo.GetComponent<Image>();
+                    bi.color = new Color(0.08f, 0.10f, 0.14f, 0.8f);
+                    sequenceBadgeBgs[i] = bi;
+
+                    Outline bo = badgeGo.GetComponent<Outline>();
+                    bo.effectColor = new Color(0.2f, 0.28f, 0.38f, 1f);
+                    bo.effectDistance = new Vector2(1, -1);
+                    sequenceBadgeOutlines[i] = bo;
+
+                    GameObject txtGo = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+                    txtGo.transform.SetParent(badgeGo.transform, false);
+                    RectTransform tr = txtGo.GetComponent<RectTransform>();
+                    tr.anchorMin = Vector2.zero;
+                    tr.anchorMax = Vector2.one;
+                    tr.sizeDelta = Vector2.zero;
+                    TextMeshProUGUI bt = txtGo.GetComponent<TextMeshProUGUI>();
+                    bt.text = labels[i];
+                    bt.fontSize = 12;
+                    bt.fontStyle = FontStyles.Bold;
+                    bt.alignment = TextAlignmentOptions.Center;
+                    bt.color = Color.white;
+                    sequenceBadgeTexts[i] = bt;
+                }
+            }
+            else
+            {
+                if (sequenceBadgeBgs == null || sequenceBadgeBgs.Length != 4)
+                {
+                    sequenceBadgeBgs = new Image[4];
+                    sequenceBadgeTexts = new TextMeshProUGUI[4];
+                    sequenceBadgeOutlines = new Outline[4];
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Transform bt = barT.Find($"Badge_{i}");
+                        if (bt != null)
+                        {
+                            sequenceBadgeBgs[i] = bt.GetComponent<Image>();
+                            sequenceBadgeOutlines[i] = bt.GetComponent<Outline>();
+                            Transform tt = bt.Find("Text");
+                            if (tt != null) sequenceBadgeTexts[i] = tt.GetComponent<TextMeshProUGUI>();
+                        }
+                    }
+                }
+            }
+
+            // 2. Active Directive Banner Box
+            Transform dirT = conduit.Find("DirectiveBox");
+            if (dirT == null)
+            {
+                GameObject dirGo = new GameObject("DirectiveBox", typeof(RectTransform), typeof(Image), typeof(Outline));
+                dirGo.transform.SetParent(conduit, false);
+                RectTransform dr = dirGo.GetComponent<RectTransform>();
+                dr.anchoredPosition = new Vector2(0, 75);
+                dr.sizeDelta = new Vector2(330, 28);
+
+                Image di = dirGo.GetComponent<Image>();
+                di.color = new Color(0.04f, 0.07f, 0.12f, 0.95f);
+
+                Outline @do = dirGo.GetComponent<Outline>();
+                @do.effectColor = new Color(0.18f, 0.45f, 0.75f, 1f);
+                @do.effectDistance = new Vector2(1, -1);
+
+                GameObject dtGo = new GameObject("DirectiveText", typeof(RectTransform), typeof(TextMeshProUGUI));
+                dtGo.transform.SetParent(dirGo.transform, false);
+                RectTransform dtr = dtGo.GetComponent<RectTransform>();
+                dtr.anchorMin = Vector2.zero;
+                dtr.anchorMax = Vector2.one;
+                dtr.sizeDelta = Vector2.zero;
+                activeDirectiveText = dtGo.GetComponent<TextMeshProUGUI>();
+                activeDirectiveText.text = "ACTIVE TARGET: [PHASE 1/4] CONNECT +5V LOGIC LINE (GREEN)";
+                activeDirectiveText.fontSize = 12.5f;
+                activeDirectiveText.fontStyle = FontStyles.Bold;
+                activeDirectiveText.alignment = TextAlignmentOptions.Center;
+                activeDirectiveText.color = new Color(0f, 1f, 0.5f, 1f);
+            }
+            else
+            {
+                Transform dt = dirT.Find("DirectiveText");
+                if (dt != null) activeDirectiveText = dt.GetComponent<TextMeshProUGUI>();
+            }
+
+            // 3. Center Telemetry Status Log (Bottom of chamber)
+            Transform logT = conduit.Find("TelemetryLog");
+            if (logT == null)
+            {
+                GameObject logGo = new GameObject("TelemetryLog", typeof(RectTransform), typeof(TextMeshProUGUI));
+                logGo.transform.SetParent(conduit, false);
+                RectTransform lr = logGo.GetComponent<RectTransform>();
+                lr.anchoredPosition = new Vector2(0, -145);
+                lr.sizeDelta = new Vector2(330, 42);
+                telemetryLogText = logGo.GetComponent<TextMeshProUGUI>();
+                telemetryLogText.text = "BUS STATUS: NOMINAL // AWAITING +5V GROUND REFERENCE";
+                telemetryLogText.fontSize = 11f;
+                telemetryLogText.alignment = TextAlignmentOptions.Center;
+                telemetryLogText.color = new Color(0.45f, 0.65f, 0.85f, 1f);
+            }
+            else
+            {
+                telemetryLogText = logT.GetComponent<TextMeshProUGUI>();
+            }
         }
 
         #endregion
@@ -822,8 +1009,10 @@ namespace TheLastSignal.UI.Tasks
 
             activePlayer = player;
             activeTaskLocation = station;
+            currentSequenceStep = 0;
             connectedCount = 0;
             isFinished = false;
+            isFaultLocked = false;
 
             if (canvas == null)
             {
@@ -849,15 +1038,13 @@ namespace TheLastSignal.UI.Tasks
                 headerText.text = $"ELECTRICAL JUNCTION PANEL // {station.StationDisplayName.ToUpper()}{pipelineInfo}";
             }
 
-            UpdateProgressText();
+            SetupWires();
 
             // Lock player controls while interacting with panel
             if (activePlayer != null)
             {
                 activePlayer.SetControlEnabled(false);
             }
-
-            SetupWires();
 
             if (closeButton != null)
             {
@@ -873,33 +1060,54 @@ namespace TheLastSignal.UI.Tasks
 
         private void SetupWires()
         {
-            List<WireColorType> colors = new List<WireColorType>
+            currentSequenceStep = 0;
+            connectedCount = 0;
+            isFinished = false;
+            isFaultLocked = false;
+
+            // Both bays are shuffled independently so positions are unpredictable!
+            List<WireColorType> leftColors = new List<WireColorType>
             {
-                WireColorType.Red,
+                WireColorType.Green,
                 WireColorType.Blue,
                 WireColorType.Yellow,
-                WireColorType.Green
+                WireColorType.Red
             };
-
-            for (int i = 0; i < leftPoints.Count && i < colors.Count; i++)
+            for (int i = 0; i < leftColors.Count; i++)
             {
-                leftPoints[i].Initialize(this, canvas, colors[i]);
+                int rnd = Random.Range(i, leftColors.Count);
+                (leftColors[i], leftColors[rnd]) = (leftColors[rnd], leftColors[i]);
             }
 
-            List<WireColorType> shuffledColors = new List<WireColorType>(colors);
-            for (int i = 0; i < shuffledColors.Count; i++)
+            List<WireColorType> rightColors = new List<WireColorType>
             {
-                int rnd = Random.Range(i, shuffledColors.Count);
-                (shuffledColors[i], shuffledColors[rnd]) = (shuffledColors[rnd], shuffledColors[i]);
+                WireColorType.Green,
+                WireColorType.Blue,
+                WireColorType.Yellow,
+                WireColorType.Red
+            };
+            for (int i = 0; i < rightColors.Count; i++)
+            {
+                int rnd = Random.Range(i, rightColors.Count);
+                (rightColors[i], rightColors[rnd]) = (rightColors[rnd], rightColors[i]);
             }
 
-            for (int i = 0; i < rightPoints.Count && i < shuffledColors.Count; i++)
+            for (int i = 0; i < leftPoints.Count && i < leftColors.Count; i++)
             {
-                rightPoints[i].Initialize(this, canvas, shuffledColors[i]);
+                leftPoints[i].Initialize(this, canvas, leftColors[i], i);
             }
+
+            for (int i = 0; i < rightPoints.Count && i < rightColors.Count; i++)
+            {
+                rightPoints[i].Initialize(this, canvas, rightColors[i], i);
+            }
+
+            UpdateSequenceHUD();
+            UpdateProgressText();
+            SetTelemetryStatus("BUS STATUS: NOMINAL // AWAITING +5V GROUND REFERENCE");
         }
 
-        public WirePointUI CheckConnectTarget(Vector2 screenPos, WireColorType wireColor)
+        public WirePointUI FindHoveredTarget(Vector2 screenPos)
         {
             Camera eventCam = (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : canvas.worldCamera;
 
@@ -909,24 +1117,217 @@ namespace TheLastSignal.UI.Tasks
 
                 if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)rightPoint.transform, screenPos, eventCam))
                 {
-                    if (rightPoint.ColorType == wireColor)
-                    {
-                        return rightPoint;
-                    }
+                    return rightPoint;
                 }
             }
             return null;
         }
 
-        public void OnWireConnected(WirePointUI left, WirePointUI right)
+        public bool TryConnectWire(WirePointUI leftPoint, WirePointUI rightPoint)
         {
+            if (isFinished || isFaultLocked) return false;
+            if (leftPoint == null || rightPoint == null) return false;
+            if (leftPoint.IsConnected || rightPoint.IsConnected) return false;
+
+            // Rule 1: Voltage Port Mismatch (e.g. 5V into 12V socket)
+            if (leftPoint.ColorType != rightPoint.ColorType)
+            {
+                PlaySfx(proceduralMismatchClip);
+                string lVolt = WireColorHelper.GetVoltageText(leftPoint.ColorType);
+                string rVolt = WireColorHelper.GetVoltageText(rightPoint.ColorType);
+                SetTelemetryStatus($"<color=#FF9933><b>[PORT MISMATCH] Incompatible pin: {lVolt} cannot mate with {rVolt} socket!</b></color>");
+                leftPoint.ResetWire();
+                return false;
+            }
+
+            // Rule 2: Sequential Calibration Order (Low to High voltage)
+            WireColorType requiredType = RequiredSequence[currentSequenceStep];
+            if (leftPoint.ColorType != requiredType)
+            {
+                // Sequence Violation: Breaker Overload Fault!
+                TriggerBreakerFault(leftPoint, rightPoint);
+                return false;
+            }
+
+            // Success! Complete this connection
+            leftPoint.ConnectTo(rightPoint);
+            currentSequenceStep++;
             connectedCount++;
-            PlaySfx(wireConnectedSfx);
+
+            float pitchFreq = 480f + currentSequenceStep * 90f;
+            PlaySfx(CreateTone(pitchFreq, 0.16f, 0.45f));
+
+            UpdateSequenceHUD();
             UpdateProgressText();
 
-            if (connectedCount >= leftPoints.Count && !isFinished)
+            if (connectedCount >= RequiredSequence.Length && !isFinished)
             {
                 StartCoroutine(CompleteRoutine());
+            }
+            else
+            {
+                WireColorType nextType = RequiredSequence[currentSequenceStep];
+                string nextVolt = WireColorHelper.GetVoltageText(nextType);
+                string nextRole = WireColorHelper.GetSubsystem(nextType);
+                SetTelemetryStatus($"<color=#00E5FF><b>[PHASE {connectedCount} CLOSED] BUS ENERGIZED. PROCEED WITH {nextVolt} [{nextRole}].</b></color>");
+            }
+
+            return true;
+        }
+
+        private void TriggerBreakerFault(WirePointUI attemptedLeft, WirePointUI attemptedRight)
+        {
+            if (isFaultLocked || isFinished) return;
+            StartCoroutine(BreakerFaultRoutine(attemptedLeft, attemptedRight));
+        }
+
+        private IEnumerator BreakerFaultRoutine(WirePointUI attemptedLeft, WirePointUI attemptedRight)
+        {
+            isFaultLocked = true;
+
+            if (attemptedLeft != null) attemptedLeft.ResetWire();
+
+            PlaySfx(proceduralOverloadClip);
+
+            WireColorType expectedType = RequiredSequence[currentSequenceStep];
+            string attemptedVolt = WireColorHelper.GetVoltageText(attemptedLeft.ColorType);
+            string expectedVolt = WireColorHelper.GetVoltageText(expectedType);
+
+            SetTelemetryStatus($"<color=#FF3333><b>[!] [BREAKER OVERLOAD] SEQUENCE FAULT! [!]\nCANNOT ENERGIZE {attemptedVolt} BEFORE {expectedVolt}!</b></color>");
+
+            // Screen shake on TerminalBox
+            Transform boxT = rootPanel != null ? rootPanel.transform.Find("TerminalBox") : null;
+            RectTransform boxRect = boxT != null ? boxT.GetComponent<RectTransform>() : null;
+            Vector2 origPos = boxRect != null ? boxRect.anchoredPosition : Vector2.zero;
+
+            float shakeTime = 0.4f;
+            float elapsed = 0f;
+            while (elapsed < shakeTime)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float p = 1f - (elapsed / shakeTime);
+                if (boxRect != null)
+                {
+                    boxRect.anchoredPosition = origPos + new Vector2(Random.Range(-7f, 7f) * p, Random.Range(-5f, 5f) * p);
+                }
+                yield return null;
+            }
+            if (boxRect != null) boxRect.anchoredPosition = origPos;
+
+            // Flash all Stage LEDs Red
+            if (connectionLeds != null)
+            {
+                for (int flash = 0; flash < 3; flash++)
+                {
+                    for (int i = 0; i < connectionLeds.Length; i++)
+                    {
+                        if (connectionLeds[i] != null) connectionLeds[i].color = LedFault;
+                    }
+                    yield return new WaitForSecondsRealtime(0.09f);
+                    for (int i = 0; i < connectionLeds.Length; i++)
+                    {
+                        if (connectionLeds[i] != null) connectionLeds[i].color = LedInactive;
+                    }
+                    yield return new WaitForSecondsRealtime(0.09f);
+                }
+            }
+
+            // Disconnect all connected wires (Breaker Trip discharges everything)
+            foreach (var lp in leftPoints)
+            {
+                if (lp != null) lp.ResetWire();
+            }
+            foreach (var rp in rightPoints)
+            {
+                if (rp != null) rp.ResetWire();
+            }
+
+            currentSequenceStep = 0;
+            connectedCount = 0;
+
+            UpdateSequenceHUD();
+            UpdateProgressText();
+
+            SetTelemetryStatus("<color=#FF9944><b>[CIRCUIT BREAKER RESET] ALL BUSES DISCHARGED. RE-CALIBRATING...</b></color>");
+
+            yield return new WaitForSecondsRealtime(0.35f);
+            SetTelemetryStatus("BUS STATUS: NOMINAL // AWAITING +5V GROUND REFERENCE");
+            isFaultLocked = false;
+        }
+
+        private void UpdateSequenceHUD()
+        {
+            if (sequenceBadgeBgs != null && sequenceBadgeBgs.Length == 4)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    WireColorType type = RequiredSequence[i];
+                    Color c = WireColorHelper.GetColor(type);
+                    string v = WireColorHelper.GetVoltageText(type);
+
+                    if (sequenceBadgeBgs[i] == null) continue;
+
+                    if (i < currentSequenceStep)
+                    {
+                        // Completed
+                        sequenceBadgeBgs[i].color = new Color(0.05f, 0.35f, 0.15f, 0.95f);
+                        if (sequenceBadgeOutlines[i] != null)
+                        {
+                            sequenceBadgeOutlines[i].effectColor = new Color(0f, 1f, 0.5f, 1f);
+                        }
+                        if (sequenceBadgeTexts[i] != null)
+                        {
+                            sequenceBadgeTexts[i].text = $"<b>[OK] {v}</b>";
+                            sequenceBadgeTexts[i].color = Color.white;
+                        }
+                    }
+                    else if (i == currentSequenceStep)
+                    {
+                        // Active Target
+                        sequenceBadgeBgs[i].color = c * 0.35f;
+                        if (sequenceBadgeOutlines[i] != null)
+                        {
+                            sequenceBadgeOutlines[i].effectColor = c;
+                        }
+                        if (sequenceBadgeTexts[i] != null)
+                        {
+                            sequenceBadgeTexts[i].text = $"<b>>> {v}</b>";
+                            sequenceBadgeTexts[i].color = Color.white;
+                        }
+                    }
+                    else
+                    {
+                        // Pending
+                        sequenceBadgeBgs[i].color = new Color(0.08f, 0.10f, 0.14f, 0.8f);
+                        if (sequenceBadgeOutlines[i] != null)
+                        {
+                            sequenceBadgeOutlines[i].effectColor = new Color(0.2f, 0.28f, 0.38f, 1f);
+                        }
+                        if (sequenceBadgeTexts[i] != null)
+                        {
+                            sequenceBadgeTexts[i].text = $"<color=#667788>{v}</color>";
+                        }
+                    }
+                }
+            }
+
+            // Update Directive Banner
+            if (activeDirectiveText != null)
+            {
+                if (currentSequenceStep < RequiredSequence.Length)
+                {
+                    WireColorType target = RequiredSequence[currentSequenceStep];
+                    string v = WireColorHelper.GetVoltageText(target);
+                    string r = WireColorHelper.GetSubsystem(target);
+                    string cName = target.ToString().ToUpper();
+                    activeDirectiveText.text = $">>> TARGET: [PHASE {currentSequenceStep + 1}/4] CONNECT {v} {r} ({cName}) <<<";
+                    activeDirectiveText.color = WireColorHelper.GetColor(target);
+                }
+                else
+                {
+                    activeDirectiveText.text = ">>> ALL CIRCUIT PHASES SYNCHRONIZED & LOCKED <<<";
+                    activeDirectiveText.color = new Color(0f, 1f, 0.5f, 1f);
+                }
             }
         }
 
@@ -936,11 +1337,14 @@ namespace TheLastSignal.UI.Tasks
             {
                 if (connectedCount >= 4)
                 {
-                    progressText.text = "<color=#00FF7F><b>>>> CIRCUIT COMPLETED — ALL TERMINALS BRIDGED <<<</b></color>";
+                    progressText.text = "<color=#00FF7F><b>>>> CIRCUIT COMPLETED -- ALL BUSES ENERGIZED <<<</b></color>";
                 }
                 else
                 {
-                    progressText.text = $"WIRES BRIDGED: <color=#00FF7F><b>{connectedCount}</b></color> / 4";
+                    WireColorType nextType = RequiredSequence[currentSequenceStep];
+                    string nextVolt = WireColorHelper.GetVoltageText(nextType);
+                    string nextRole = WireColorHelper.GetSubsystem(nextType);
+                    progressText.text = $"WIRES BRIDGED: <color=#00FF7F><b>{connectedCount}</b></color> / 4  //  NEXT REQUIRED: <color=#00E5FF><b>{nextVolt} [{nextRole}]</b></color>";
                 }
             }
 
@@ -956,6 +1360,14 @@ namespace TheLastSignal.UI.Tasks
             }
         }
 
+        private void SetTelemetryStatus(string msg)
+        {
+            if (telemetryLogText != null)
+            {
+                telemetryLogText.text = msg;
+            }
+        }
+
         private IEnumerator CompleteRoutine()
         {
             isFinished = true;
@@ -968,9 +1380,10 @@ namespace TheLastSignal.UI.Tasks
                 }
             }
 
+            SetTelemetryStatus("<color=#00FF7F><b>>>> SYSTEM VOLTAGE NOMINAL // APOMAT RELAYS LOCKED <<<</b></color>");
             PlaySfx(taskCompletedSfx ?? proceduralCompleteClip);
 
-            yield return new WaitForSeconds(0.85f);
+            yield return new WaitForSeconds(0.9f);
 
             // Notify station
             if (activeTaskLocation != null)
@@ -1028,12 +1441,22 @@ namespace TheLastSignal.UI.Tasks
 
             if (proceduralConnectClip == null)
             {
-                proceduralConnectClip = CreateTone(587.33f, 0.16f, 0.45f); // High D5 connect spark beep
+                proceduralConnectClip = CreateTone(587.33f, 0.16f, 0.45f);
             }
 
             if (proceduralCompleteClip == null)
             {
                 proceduralCompleteClip = CreateChimeTone();
+            }
+
+            if (proceduralOverloadClip == null)
+            {
+                proceduralOverloadClip = CreateOverloadTone();
+            }
+
+            if (proceduralMismatchClip == null)
+            {
+                proceduralMismatchClip = CreateMismatchTone();
             }
         }
 
@@ -1068,7 +1491,7 @@ namespace TheLastSignal.UI.Tasks
         private static AudioClip CreateChimeTone()
         {
             int sampleRate = 44100;
-            float duration = 0.55f;
+            float duration = 0.6f;
             int samples = (int)(sampleRate * duration);
             float[] data = new float[samples];
             for (int i = 0; i < samples; i++)
@@ -1080,6 +1503,44 @@ namespace TheLastSignal.UI.Tasks
                            Mathf.Sin(2f * Mathf.PI * 783.99f * t) * 0.35f) * env;
             }
             AudioClip clip = AudioClip.Create("WiringCompleteChime", samples, 1, sampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
+        }
+
+        private static AudioClip CreateOverloadTone()
+        {
+            int sampleRate = 44100;
+            float duration = 0.45f;
+            int samples = (int)(sampleRate * duration);
+            float[] data = new float[samples];
+            for (int i = 0; i < samples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float env = Mathf.Clamp01((duration - t) / duration);
+                float freq = Mathf.Lerp(180f, 42f, t / duration);
+                float wave = Mathf.Sign(Mathf.Sin(2f * Mathf.PI * freq * t)) * 0.4f;
+                float noise = (Random.value * 2f - 1f) * 0.35f;
+                data[i] = Mathf.Clamp((wave + noise) * env * 0.75f, -1f, 1f);
+            }
+            AudioClip clip = AudioClip.Create("WireOverloadTone", samples, 1, sampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
+        }
+
+        private static AudioClip CreateMismatchTone()
+        {
+            int sampleRate = 44100;
+            float duration = 0.15f;
+            int samples = (int)(sampleRate * duration);
+            float[] data = new float[samples];
+            for (int i = 0; i < samples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float env = Mathf.Sin(Mathf.PI * (t / duration));
+                float wave = Mathf.Sign(Mathf.Sin(2f * Mathf.PI * 160f * t)) * 0.3f;
+                data[i] = wave * env;
+            }
+            AudioClip clip = AudioClip.Create("WireMismatchTone", samples, 1, sampleRate, false);
             clip.SetData(data, 0);
             return clip;
         }
