@@ -58,6 +58,7 @@ namespace TheLastSignal.UI
             scaler.matchWidthOrHeight = 0.5f;
 
             DroneHUDOverlay overlay = hudGo.AddComponent<DroneHUDOverlay>();
+            overlay.EnsureCanvasAndHierarchy();
             return overlay;
         }
 
@@ -118,13 +119,16 @@ namespace TheLastSignal.UI
         {
             if (drone == null) return;
 
+            gameObject.SetActive(true);
+            EnsureCanvasAndHierarchy();
+            if (overlayRoot != null) overlayRoot.SetActive(true);
+
             activeDrone = drone;
             activeDrone.OnBatteryChanged += HandleBatteryChanged;
             activeDrone.OnRadarSweep += HandleRadarSweep;
             activeDrone.OnFlightStateChanged += HandleFlightStateChanged;
 
             isOpen = true;
-            if (overlayRoot != null) overlayRoot.SetActive(true);
 
             if (!showCenterReticle)
             {
@@ -149,6 +153,7 @@ namespace TheLastSignal.UI
 
             ClearBlips();
             if (overlayRoot != null) overlayRoot.SetActive(false);
+            gameObject.SetActive(false);
         }
 
         private void HandleFlightStateChanged(bool active)
@@ -366,61 +371,41 @@ namespace TheLastSignal.UI
 
         private void EnsureCanvasAndHierarchy()
         {
-            // 1. If currently parented to a non-ScreenSpaceOverlay canvas (e.g. WorldSpace player overhead health canvas!), detach to root immediately
+            // 1. Always detach to root so DroneHUDOverlay is never a child of any UI panel or world object
             if (transform.parent != null)
             {
-                Canvas parentCanvas = transform.parent.GetComponentInParent<Canvas>();
-                if (parentCanvas != null && parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
-                {
-                    transform.SetParent(null, false);
-                }
+                transform.SetParent(null, false);
             }
 
-            // 2. Ensure we have our own dedicated ScreenSpaceOverlay Canvas if not already inside an approved ScreenSpaceOverlay Canvas
+            // 2. Ensure Canvas is present and set to ScreenSpaceOverlay
             Canvas canvas = GetComponent<Canvas>();
             if (canvas == null)
             {
-                Canvas parentCanvas = GetComponentInParent<Canvas>();
-                if (parentCanvas == null || parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
-                {
-                    canvas = gameObject.AddComponent<Canvas>();
-                }
-                else
-                {
-                    canvas = parentCanvas;
-                }
+                canvas = gameObject.AddComponent<Canvas>();
             }
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 95;
 
-            if (canvas != null && canvas.gameObject == gameObject)
+            // 3. Ensure CanvasScaler scales with screen size (1920x1080 reference)
+            CanvasScaler scaler = GetComponent<CanvasScaler>();
+            if (scaler == null)
             {
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 95;
+                scaler = gameObject.AddComponent<CanvasScaler>();
+            }
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0.5f;
 
-                CanvasScaler scaler = GetComponent<CanvasScaler>();
-                if (scaler == null) scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920f, 1080f);
-                scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-                scaler.matchWidthOrHeight = 0.5f;
-
-                if (GetComponent<GraphicRaycaster>() == null)
-                {
-                    gameObject.AddComponent<GraphicRaycaster>();
-                }
+            if (GetComponent<GraphicRaycaster>() == null)
+            {
+                gameObject.AddComponent<GraphicRaycaster>();
             }
 
-            // 3. Ensure this GameObject stretches full-screen with normalized scale and rotation
-            RectTransform selfRect = GetComponent<RectTransform>();
-            if (selfRect == null) selfRect = gameObject.AddComponent<RectTransform>();
-            selfRect.anchorMin = Vector2.zero;
-            selfRect.anchorMax = Vector2.one;
-            selfRect.offsetMin = Vector2.zero;
-            selfRect.offsetMax = Vector2.zero;
-            selfRect.pivot = new Vector2(0.5f, 0.5f);
-            selfRect.localScale = Vector3.one;
-            selfRect.localRotation = Quaternion.identity;
+            // NOTE: Do NOT modify root RectTransform anchors, offsets, or scale!
+            // Unity Canvas and CanvasScaler fully control the root Canvas RectTransform.
 
-            // 4. If hierarchy is already built and valid, preserve it
+            // 4. If hierarchy is already built, enforce overlayRoot stretches full-screen
             if (overlayRoot != null && overlayRoot.transform.childCount > 0)
             {
                 RectTransform rootRt = overlayRoot.GetComponent<RectTransform>();
@@ -434,6 +419,7 @@ namespace TheLastSignal.UI
                     rootRt.localScale = Vector3.one;
                     rootRt.localRotation = Quaternion.identity;
                 }
+                Canvas.ForceUpdateCanvases();
                 return;
             }
 
@@ -444,6 +430,7 @@ namespace TheLastSignal.UI
             }
 
             BuildProceduralDroneHUD();
+            Canvas.ForceUpdateCanvases();
         }
 
         private void BuildProceduralDroneHUD()
@@ -510,8 +497,8 @@ namespace TheLastSignal.UI
             titleRt.anchorMin = new Vector2(0f, 0.5f);
             titleRt.anchorMax = new Vector2(0f, 0.5f);
             titleRt.pivot = new Vector2(0f, 0.5f);
-            titleRt.anchoredPosition = new Vector2(35f, 10f);
-            titleRt.sizeDelta = new Vector2(550f, 26f);
+            titleRt.anchoredPosition = new Vector2(30f, 10f);
+            titleRt.sizeDelta = new Vector2(460f, 26f);
 
             GameObject sigGo = new GameObject("SignalText", typeof(RectTransform), typeof(TextMeshProUGUI));
             sigGo.transform.SetParent(topBar.transform, false);
@@ -525,8 +512,8 @@ namespace TheLastSignal.UI
             sigRt.anchorMin = new Vector2(0f, 0.5f);
             sigRt.anchorMax = new Vector2(0f, 0.5f);
             sigRt.pivot = new Vector2(0f, 0.5f);
-            sigRt.anchoredPosition = new Vector2(35f, -14f);
-            sigRt.sizeDelta = new Vector2(550f, 22f);
+            sigRt.anchoredPosition = new Vector2(30f, -14f);
+            sigRt.sizeDelta = new Vector2(460f, 22f);
 
             // Center: Grid Coordinates & Velocity
             GameObject coordsGo = new GameObject("CoordsText", typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -542,7 +529,7 @@ namespace TheLastSignal.UI
             coordsRt.anchorMin = new Vector2(0.5f, 0.5f);
             coordsRt.anchorMax = new Vector2(0.5f, 0.5f);
             coordsRt.anchoredPosition = new Vector2(0f, 10f);
-            coordsRt.sizeDelta = new Vector2(380f, 24f);
+            coordsRt.sizeDelta = new Vector2(300f, 24f);
 
             GameObject speedGo = new GameObject("SpeedText", typeof(RectTransform), typeof(TextMeshProUGUI));
             speedGo.transform.SetParent(topBar.transform, false);
@@ -556,7 +543,7 @@ namespace TheLastSignal.UI
             spdRt.anchorMin = new Vector2(0.5f, 0.5f);
             spdRt.anchorMax = new Vector2(0.5f, 0.5f);
             spdRt.anchoredPosition = new Vector2(0f, -14f);
-            spdRt.sizeDelta = new Vector2(380f, 22f);
+            spdRt.sizeDelta = new Vector2(300f, 22f);
 
             // Right: Tactical Battery Gauge
             GameObject battCont = new GameObject("BatteryContainer", typeof(RectTransform));
@@ -565,8 +552,8 @@ namespace TheLastSignal.UI
             battContRt.anchorMin = new Vector2(1f, 0.5f);
             battContRt.anchorMax = new Vector2(1f, 0.5f);
             battContRt.pivot = new Vector2(1f, 0.5f);
-            battContRt.anchoredPosition = new Vector2(-35f, 0f);
-            battContRt.sizeDelta = new Vector2(320f, 50f);
+            battContRt.anchoredPosition = new Vector2(-30f, 0f);
+            battContRt.sizeDelta = new Vector2(280f, 48f);
 
             GameObject battLabel = new GameObject("BatteryLabel", typeof(RectTransform), typeof(TextMeshProUGUI));
             battLabel.transform.SetParent(battCont.transform, false);
@@ -775,8 +762,8 @@ namespace TheLastSignal.UI
             opRt.anchorMin = new Vector2(0f, 0.5f);
             opRt.anchorMax = new Vector2(0f, 0.5f);
             opRt.pivot = new Vector2(0f, 0.5f);
-            opRt.anchoredPosition = new Vector2(35f, 0f);
-            opRt.sizeDelta = new Vector2(650f, 30f);
+            opRt.anchoredPosition = new Vector2(30f, 0f);
+            opRt.sizeDelta = new Vector2(480f, 30f);
 
             // Right: Flight Controls Prompt
             GameObject ctrlGo = new GameObject("ControlsText", typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -792,8 +779,8 @@ namespace TheLastSignal.UI
             ctrlRt.anchorMin = new Vector2(1f, 0.5f);
             ctrlRt.anchorMax = new Vector2(1f, 0.5f);
             ctrlRt.pivot = new Vector2(1f, 0.5f);
-            ctrlRt.anchoredPosition = new Vector2(-35f, 0f);
-            ctrlRt.sizeDelta = new Vector2(800f, 30f);
+            ctrlRt.anchoredPosition = new Vector2(-30f, 0f);
+            ctrlRt.sizeDelta = new Vector2(640f, 30f);
 
             // 6. Tactical Center Reticle (Disabled by default per user request)
             if (showCenterReticle)

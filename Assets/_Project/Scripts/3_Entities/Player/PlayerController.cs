@@ -154,6 +154,11 @@ namespace TheLastSignal.Entities.Player
                 gameObject.AddComponent<PlayerOverheadUI>();
             }
 
+            if (GetComponent<TheLastSignal.Entities.Monster.ShadeCombatController>() == null)
+            {
+                gameObject.AddComponent<TheLastSignal.Entities.Monster.ShadeCombatController>();
+            }
+
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             if (capsuleCollider != null)
             {
@@ -208,6 +213,8 @@ namespace TheLastSignal.Entities.Player
 
         private void Start()
         {
+            TheLastSignal.UI.ShadeHUDOverlay.GetOrCreate();
+
             // When NGO is running, ownership is not known yet at Start — OnNetworkSpawn binds the camera instead.
             if (IsNetworkSessionActive)
             {
@@ -247,6 +254,7 @@ namespace TheLastSignal.Entities.Player
             Local = this;
             ResetState(ResolveNetworkSpawnPosition(slotIndex));
             SetControlEnabled(true);
+            TheLastSignal.UI.ShadeHUDOverlay.GetOrCreate();
 
             // Story 3.5: doors and the reactor console are now Host-authoritative via their own
             // NetworkVariables (DoorController, NetworkGameState) — those replicate automatically to
