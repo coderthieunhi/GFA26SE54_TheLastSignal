@@ -17,6 +17,18 @@ namespace TheLastSignal.Entities.Camera
         [Header("Follow")]
         [SerializeField] private float smoothTime = 0.12f;
 
+        [Header("Zoom & Tactical FOV")]
+        [SerializeField] private float defaultOrthoSize = 5.0f;
+        private float targetOrthoSize = 5.0f;
+        private float zoomVelocity = 0f;
+        [SerializeField] private float zoomSmoothTime = 0.35f;
+
+        [Header("Lookahead Offset")]
+        private Vector2 targetOffset = Vector2.zero;
+        private Vector2 currentOffset = Vector2.zero;
+        private Vector2 offsetVelocity = Vector2.zero;
+        [SerializeField] private float offsetSmoothTime = 0.25f;
+
         [Header("Map Bounds")]
         [Tooltip("If true or if boundsTilemaps is empty, automatically includes all active Tilemaps across all rooms in the scene.")]
         [SerializeField] private bool autoIncludeAllTilemaps = true;
@@ -43,6 +55,11 @@ namespace TheLastSignal.Entities.Camera
             }
 
             cam = GetComponent<UnityEngine.Camera>();
+            if (cam != null)
+            {
+                defaultOrthoSize = cam.orthographicSize;
+                targetOrthoSize = defaultOrthoSize;
+            }
             ComputeMapBounds();
         }
 
@@ -53,6 +70,24 @@ namespace TheLastSignal.Entities.Camera
         public void SetTarget(Transform newTarget)
         {
             target = newTarget;
+        }
+
+        public void SetTargetOrthoSize(float newSize, float smooth = 0.35f)
+        {
+            targetOrthoSize = newSize;
+            zoomSmoothTime = smooth;
+        }
+
+        public void ResetOrthoSize(float smooth = 0.35f)
+        {
+            targetOrthoSize = defaultOrthoSize;
+            zoomSmoothTime = smooth;
+        }
+
+        public void SetLookaheadOffset(Vector2 offset, float smooth = 0.25f)
+        {
+            targetOffset = offset;
+            offsetSmoothTime = smooth;
         }
 
         private void ComputeMapBounds()
@@ -111,7 +146,16 @@ namespace TheLastSignal.Entities.Camera
                 return;
             }
 
-            Vector3 desired = new Vector3(target.position.x, target.position.y, transform.position.z);
+            // Smooth dynamic zoom / FOV expansion
+            if (cam != null && Mathf.Abs(cam.orthographicSize - targetOrthoSize) > 0.005f)
+            {
+                cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetOrthoSize, ref zoomVelocity, zoomSmoothTime);
+            }
+
+            // Smooth lookahead offset
+            currentOffset = Vector2.SmoothDamp(currentOffset, targetOffset, ref offsetVelocity, offsetSmoothTime);
+
+            Vector3 desired = new Vector3(target.position.x + currentOffset.x, target.position.y + currentOffset.y, transform.position.z);
             Vector3 smoothed = Vector3.SmoothDamp(transform.position, desired, ref velocity, smoothTime);
 
             if (hasBounds)

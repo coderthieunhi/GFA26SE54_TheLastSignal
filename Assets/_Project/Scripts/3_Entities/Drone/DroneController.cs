@@ -341,7 +341,7 @@ namespace TheLastSignal.Entities.Drone
                 operatorHealth.OnHealthChanged += HandleOperatorHealthChanged;
             }
 
-            // Bind Camera to the Drone (Local pilot only to prevent camera stealing in multiplayer)
+            // Bind Camera to the Drone with Tactical Recon Zoom & Lookahead (Local pilot only)
             bool isLocalPilot = !IsNetworkSessionActive || pilot.IsOwner;
             if (isLocalPilot)
             {
@@ -349,6 +349,7 @@ namespace TheLastSignal.Entities.Drone
                 if (mainCam != null && mainCam.TryGetComponent(out CameraFollow cameraFollow))
                 {
                     cameraFollow.SetTarget(transform);
+                    cameraFollow.SetTargetOrthoSize(6.8f, 0.45f); // Tactical wide recon zoom
                 }
             }
 
@@ -449,6 +450,8 @@ namespace TheLastSignal.Entities.Drone
                     if (mainCam != null && mainCam.TryGetComponent(out CameraFollow cameraFollow))
                     {
                         cameraFollow.SetTarget(currentOperator.transform);
+                        cameraFollow.SetLookaheadOffset(Vector2.zero, 0.25f);
+                        cameraFollow.ResetOrthoSize(0.35f); // Return to standard player zoom
                     }
                 }
             }
@@ -530,6 +533,7 @@ namespace TheLastSignal.Entities.Drone
                 {
                     ReadFlightInput();
                     UpdateSpotlightAim();
+                    UpdateCameraLookahead();
                     HandleFlightHotkeys();
                     UpdateBatteryDrain(Time.deltaTime);
                     UpdateRadarSweep(Time.deltaTime);
@@ -786,25 +790,35 @@ namespace TheLastSignal.Entities.Drone
             }
         }
 
+        private const float GIMBAL_TURN_SPEED = 480f; // degrees per second
+        private float lastBumpSoundTime = 0f;
+
         private void UpdateSpotlightAim()
         {
             Mouse mouse = Mouse.current;
             UnityEngine.Camera cam = UnityEngine.Camera.main;
+            float targetAngle = aimAngleDegrees;
 
             if (mouse != null && cam != null)
             {
                 Vector2 mouseScreen = mouse.position.ReadValue();
-                Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, 0f));
+                float camDistance = Mathf.Abs(cam.transform.position.z - transform.position.z);
+                Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, camDistance));
+                mouseWorld.z = 0f;
+
                 Vector2 dir = (Vector2)mouseWorld - (Vector2)transform.position;
                 if (dir.sqrMagnitude > 0.09f) // 0.3m minimum deadzone to prevent erratic spinning
                 {
-                    aimAngleDegrees = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                    targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
                 }
             }
             else if (moveInput.sqrMagnitude > 0.01f)
             {
-                aimAngleDegrees = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
+                targetAngle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
             }
+
+            // Smooth motorized gimbal rotation
+            aimAngleDegrees = Mathf.MoveTowardsAngle(aimAngleDegrees, targetAngle, GIMBAL_TURN_SPEED * Time.deltaTime);
 
             UpdateSpotlightRotation(aimAngleDegrees);
             OnAimChanged?.Invoke(aimAngleDegrees);
@@ -815,11 +829,34 @@ namespace TheLastSignal.Entities.Drone
             }
         }
 
+        private void UpdateCameraLookahead()
+        {
+            UnityEngine.Camera mainCam = UnityEngine.Camera.main;
+            if (mainCam != null && mainCam.TryGetComponent(out CameraFollow camFollow))
+            {
+                Vector2 aimDir = new Vector2(Mathf.Cos(aimAngleDegrees * Mathf.Deg2Rad), Mathf.Sin(aimAngleDegrees * Mathf.Deg2Rad));
+                Vector2 lookahead = (aimDir * 1.6f) + (currentVelocity * 0.35f);
+                camFollow.SetLookaheadOffset(lookahead, 0.30f);
+            }
+        }
+
         private void UpdateSpotlightRotation(float angle)
         {
             if (spotlightPivot != null)
             {
                 spotlightPivot.rotation = Quaternion.Euler(0f, 0f, angle);
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (Time.time - lastBumpSoundTime > 0.18f)
+            {
+                lastBumpSoundTime = Time.time;
+                if (TryGetComponent(out DroneView view))
+                {
+                    view.PlayCollisionBumpSFX();
+                }
             }
         }
 
@@ -837,6 +874,8 @@ namespace TheLastSignal.Entities.Drone
 
         private void UpdateBatteryDrain(float dt)
         {
+            if (currentBattery <= 0f) return; // Prevent repeated triggers while on autopilot
+
             currentBattery = Mathf.Max(0f, currentBattery - (batteryDrainRate * dt));
             OnBatteryChanged?.Invoke(currentBattery);
 

@@ -385,6 +385,14 @@ namespace TheLastSignal.Entities.Drone
             }
         }
 
+        public void PlayCollisionBumpSFX()
+        {
+            if (sfxAudioSource != null)
+            {
+                sfxAudioSource.PlayOneShot(DroneAudioSynthesizer.GetCollisionBumpClip(), 0.55f);
+            }
+        }
+
         private void Update()
         {
             if (controller == null || !controller.IsFlightActive) return;

@@ -16,6 +16,7 @@ namespace TheLastSignal.Entities.Drone
         private static AudioClip terminalEngageClip;
         private static AudioClip terminalDisengageClip;
         private static AudioClip accessDeniedClip;
+        private static AudioClip collisionBumpClip;
 
         private const int SampleRate = 44100;
 
@@ -154,6 +155,29 @@ namespace TheLastSignal.Entities.Drone
                 accessDeniedClip.SetData(samples, 0);
             }
             return accessDeniedClip;
+        }
+
+        public static AudioClip GetCollisionBumpClip()
+        {
+            if (collisionBumpClip == null)
+            {
+                // Dull metallic tap / chassis bump with rapid decay (0.12s)
+                float duration = 0.12f;
+                int length = Mathf.FloorToInt(SampleRate * duration);
+                float[] samples = new float[length];
+                for (int i = 0; i < length; i++)
+                {
+                    float t = (float)i / SampleRate;
+                    float progress = t / duration;
+                    float freq = Mathf.Lerp(180f, 60f, progress);
+                    float env = Mathf.Exp(-progress * 18f); // rapid exponential decay
+                    float noise = (UnityEngine.Random.value * 2f - 1f) * 0.25f;
+                    samples[i] = (Mathf.Sin(2f * Mathf.PI * freq * t) + noise) * env * 0.45f;
+                }
+                collisionBumpClip = AudioClip.Create("Drone_CollisionBump", length, 1, SampleRate, false);
+                collisionBumpClip.SetData(samples, 0);
+            }
+            return collisionBumpClip;
         }
     }
 }
