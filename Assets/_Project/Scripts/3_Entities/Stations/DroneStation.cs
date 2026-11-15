@@ -20,7 +20,7 @@ namespace TheLastSignal.Entities.Stations
         [Header("Clearance & Prompt Settings")]
         [SerializeField] private string authorizedPrompt = "<color=#00FFCC>[E]</color> Pilot Recon Drone";
         [SerializeField] private string restrictedPrompt = "<color=#FF4444>[RESTRICTED]</color> Drone Operator Clearance Required";
-        [SerializeField] private bool bypassRoleCheckInEditor = false;
+        [SerializeField] private bool bypassRoleCheckInEditor = true;
 
         [Header("Drone Binding")]
         [SerializeField] private DroneController droneController;
@@ -188,6 +188,12 @@ namespace TheLastSignal.Entities.Stations
 #endif
                 }
             }
+            else
+            {
+#if UNITY_EDITOR || DEBUG
+                if (bypassRoleCheckInEditor) return authorizedPrompt;
+#endif
+            }
 
             return promptMessage;
         }
@@ -234,6 +240,12 @@ namespace TheLastSignal.Entities.Stations
                     EnsureDroneController();
                     droneController.ApplyRoleConfig(playerRole.Data);
                 }
+            }
+            else
+            {
+#if UNITY_EDITOR || DEBUG
+                if (bypassRoleCheckInEditor) hasClearance = true;
+#endif
             }
 
             if (hasClearance)

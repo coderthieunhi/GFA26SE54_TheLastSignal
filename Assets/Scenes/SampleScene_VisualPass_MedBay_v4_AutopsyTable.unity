@@ -753,7 +753,7 @@ MonoBehaviour:
       m_Calls: []
   authorizedPrompt: <color=#00FFCC>[E]</color> Pilot Recon Drone
   restrictedPrompt: <color=#FF4444>[RESTRICTED]</color> Drone Operator Clearance Required
-  bypassRoleCheckInEditor: 0
+  bypassRoleCheckInEditor: 1
   droneController: {fileID: 0}
   dockStation: {fileID: 0}
   dockPositionOffset: {x: 3, y: -0.85}
@@ -6130,6 +6130,17 @@ MonoBehaviour:
   m_Script: {fileID: 2002217852}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Environment.NodeBLockerContainer
+  promptMessage: "[E] T\u01B0\u01A1ng t\xE1c"
+  isAvailable: 1
+  onInteractionSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractionFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  lockerTitle: "T\u1EE7 V\u1EADt T\u01B0 K\u1EF9 Thu\u1EADt"
+  lootFoundDescription: "T\xECm th\u1EA5y: Pin N\u0103ng L\u01B0\u1EE3ng D\u1EF1 Ph\xF2ng & B\u0103ng G\u1EA1c V\xF4 Tr\xF9ng."
+  isSearched: 0
 --- !u!114 &90360717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17775,6 +17786,19 @@ MonoBehaviour:
   m_Script: {fileID: 659979039}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Environment.NodeBCommandLoreTerminal
+  promptMessage: "[E] T\u01B0\u01A1ng t\xE1c"
+  isAvailable: 1
+  onInteractionSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractionFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  logs:
+  - "NH\u1EACT K\xDD CA TR\u1EF0C #042: C\u1EA3nh b\xE1o \xE1p su\u1EA5t \u0111\u01B0\u1EDDng \u1ED1ng l\xE0m m\xE1t Vent Shaft ph\xEDa \u0110\xF4ng s\u1EE5t gi\u1EA3m b\u1EA5t th\u01B0\u1EDDng. \u0110\xE3 ph\xE1t hi\u1EC7n v\u1EBFt c\xE0o x\xE9 kim lo\u1EA1i t\u1EA1i ng\xE3 t\u01B0 Node B..."
+  - "C\u1EA2NH B\xC1O KH\u1EA8N: C\u1EEDa khoang Cargo Hold ph\xEDa B\u1EAFc \u0111\xE3 b\u1ECB c\u1EA1y ph\xE1 t\u1EEB b\xEAn trong. M\u1ECDi nh\xE2n vi\xEAn s\u01A1 t\xE1n v\u1EC1 ph\xEDa Airlock ngay l\u1EADp t\u1EE9c..."
+  - "TRUY\u1EC0N TIN CU\u1ED0I: 'H\u1EC7 th\u1ED1ng radar ph\xE1t hi\u1EC7n chuy\u1EC3n \u0111\u1ED9ng trong \u0111\u01B0\u1EDDng \u1ED1ng k\u1EF9 thu\u1EADt. \u0110\u1EEBng l\u1EA1i g\u1EA7n c\u1EEDa th\xF4ng gi\xF3 khi \u0111\xE8n b\xE1o chuy\u1EC3n \u0111\u1ECF!'"
+  screenGlow: {fileID: 0}
 --- !u!114 &314091473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38166,6 +38190,15 @@ MonoBehaviour:
   m_Script: {fileID: 1389853195}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Environment.NodeBTechDatapad
+  promptMessage: "[E] T\u01B0\u01A1ng t\xE1c"
+  isAvailable: 1
+  onInteractionSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractionFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  transmission: "GHI CH\xDA CH\u01AFA G\u1EECI: '...N\xF3 kh\xF4ng ph\u1EA3i l\xE0 h\u1ECFng h\xF3c k\u1EF9 thu\u1EADt th\xF4ng th\u01B0\u1EDDng. N\xF3 \u0111ang s\u0103n ch\xFAng t\xF4i. T\xF4i \u0111\xE3 ng\u1EAFt m\u1EA1ch tr\u1EA1m Junction \u0111\u1EC3 l\xE0m ch\u1EADm b\u01B0\u1EDBc ch\xE2n c\u1EE7a n\xF3... Ch\xFAa ph\xF9 h\u1ED9 ch\xFAng ta.'"
 --- !u!61 &745662877
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -73646,6 +73679,8 @@ GameObject:
   - component: {fileID: 1368240889}
   - component: {fileID: 1368240888}
   - component: {fileID: 1368240887}
+  - component: {fileID: 1368240895}
+  - component: {fileID: 1368240894}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -73942,6 +73977,40 @@ Transform:
   - {fileID: 482254534}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1368240894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368240886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219b2f392f3aec0459613472ad848815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerRole
+  ShowTopMostFoldoutHeaderGroup: 1
+  roleConfig: {fileID: 0}
+  offlineRole: 1
+--- !u!114 &1368240895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368240886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8e9f2a3c4d51607b8c9d0e1f2a3b4c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheLastSignal.Entities.Player.PlayerHealth
+  ShowTopMostFoldoutHeaderGroup: 1
+  maxHealth: 100
+  reviveHealthPercent: 0.35
+  downedCrawlSpeedMultiplier: 0.35
+  enableBleedout: 0
+  bleedoutDuration: 60
+  enableDebugKeys: 1
 --- !u!1 &1371421878
 GameObject:
   m_ObjectHideFlags: 0
