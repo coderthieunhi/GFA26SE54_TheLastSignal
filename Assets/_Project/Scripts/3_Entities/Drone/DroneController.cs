@@ -54,7 +54,7 @@ namespace TheLastSignal.Entities.Drone
         [Header("Battery & Radar Tunables")]
         [SerializeField] private float maxBattery = 100f;
         [SerializeField] private float batteryDrainRate = 4.0f;     // ~25 seconds of continuous flight
-        [SerializeField] private float batteryRechargeRate = 12.0f;  // ~8.3 seconds full recharge while docked
+        [SerializeField] private float batteryRechargeRate = 3.33f;  // ~30 seconds full recharge while docked (longer recharge duration)
         [SerializeField] private float radarRadius = 12.0f;
         [SerializeField] private float radarPingInterval = 1.5f;
 

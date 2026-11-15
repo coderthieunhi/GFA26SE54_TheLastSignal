@@ -186,7 +186,7 @@ namespace TheLastSignal.UI
             if (batteryText != null)
             {
                 string status = pct > 0.40f ? "<color=#00FFCC>NOMINAL</color>" : (pct > 0.20f ? "<color=#FFAA00>WARNING LOW</color>" : "<color=#FF2222>CRITICAL RECALL</color>");
-                string dockStatus = activeDrone.IsAtDockStation ? " [DOCKED]" : " [DEPLOYED]";
+                string dockStatus = activeDrone.IsAtDockStation ? (battery < 99.5f ? " [DOCKED - RECHARGING]" : " [DOCKED - FULL]") : " [DEPLOYED]";
                 batteryText.text = $"BATTERY: {battery:0.0}% [{status}]{dockStatus}";
             }
 
