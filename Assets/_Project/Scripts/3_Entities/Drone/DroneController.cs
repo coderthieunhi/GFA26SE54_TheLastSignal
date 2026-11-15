@@ -341,7 +341,7 @@ namespace TheLastSignal.Entities.Drone
                 operatorHealth.OnHealthChanged += HandleOperatorHealthChanged;
             }
 
-            // Bind Camera to the Drone with Tactical Recon Zoom & Lookahead (Local pilot only)
+            // Bind Camera to the Drone (Local pilot only)
             bool isLocalPilot = !IsNetworkSessionActive || pilot.IsOwner;
             if (isLocalPilot)
             {
@@ -349,7 +349,6 @@ namespace TheLastSignal.Entities.Drone
                 if (mainCam != null && mainCam.TryGetComponent(out CameraFollow cameraFollow))
                 {
                     cameraFollow.SetTarget(transform);
-                    cameraFollow.SetTargetOrthoSize(6.8f, 0.45f); // Tactical wide recon zoom
                 }
             }
 
@@ -451,7 +450,6 @@ namespace TheLastSignal.Entities.Drone
                     {
                         cameraFollow.SetTarget(currentOperator.transform);
                         cameraFollow.SetLookaheadOffset(Vector2.zero, 0.25f);
-                        cameraFollow.ResetOrthoSize(0.35f); // Return to standard player zoom
                     }
                 }
             }

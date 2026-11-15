@@ -128,24 +128,32 @@ namespace TheLastSignal.UI
             if (batteryBarFill != null)
             {
                 batteryBarFill.fillAmount = pct;
-                if (pct > 0.5f)
+                if (pct > 0.40f)
+                {
                     batteryBarFill.color = new Color(0.0f, 0.95f, 0.85f, 1f); // Vibrant Cyan
-                else if (pct > 0.2f)
-                    batteryBarFill.color = new Color(1.0f, 0.72f, 0.12f, 1f); // Amber
+                }
+                else if (pct > 0.20f)
+                {
+                    batteryBarFill.color = new Color(1.0f, 0.72f, 0.12f, 1f); // Warning Amber
+                }
                 else
-                    batteryBarFill.color = new Color(1.0f, 0.20f, 0.20f, 1f); // Critical Red
+                {
+                    // Flashing critical red
+                    float flash = (Mathf.Sin(Time.time * 10f) + 1f) * 0.5f;
+                    batteryBarFill.color = Color.Lerp(new Color(1f, 0.15f, 0.15f, 1f), new Color(1f, 0.65f, 0.65f, 1f), flash);
+                }
             }
 
             if (batteryText != null)
             {
-                string status = pct > 0.5f ? "NOMINAL" : (pct > 0.2f ? "CAUTION" : "<color=#FF2222>CRITICAL LOW</color>");
+                string status = pct > 0.40f ? "<color=#00FFCC>NOMINAL</color>" : (pct > 0.20f ? "<color=#FFAA00>WARNING LOW</color>" : "<color=#FF2222>CRITICAL RECALL</color>");
                 string dockStatus = activeDrone.IsAtDockStation ? " [DOCKED]" : " [DEPLOYED]";
                 batteryText.text = $"BATTERY: {battery:0.0}% [{status}]{dockStatus}";
             }
 
             if (lowBatteryWarningBanner != null)
             {
-                lowBatteryWarningBanner.SetActive(pct <= 0.2f);
+                lowBatteryWarningBanner.SetActive(pct <= 0.25f);
             }
         }
 
@@ -289,6 +297,12 @@ namespace TheLastSignal.UI
                         operatorStatusText.text = $"<color=#00FFCC>PILOT BODY: STATIONARY @ AIRLOCK CONSOLE [HP: {pilotHealth.CurrentHealth:0}/{pilotHealth.MaxHealth:0}]</color>";
                     }
                 }
+            }
+
+            // 4. Update low battery flashing in real-time
+            if (activeDrone.BatteryPercent <= 0.25f)
+            {
+                HandleBatteryChanged(activeDrone.CurrentBattery);
             }
         }
 
@@ -474,6 +488,7 @@ namespace TheLastSignal.UI
             bltRt.offsetMin = Vector2.zero;
             bltRt.offsetMax = Vector2.zero;
 
+            Sprite whiteSprite = GetSolidWhiteSprite();
             GameObject battTrack = new GameObject("BatteryTrack", typeof(RectTransform), typeof(Image));
             battTrack.transform.SetParent(battCont.transform, false);
             RectTransform btRt = battTrack.GetComponent<RectTransform>();
@@ -482,6 +497,7 @@ namespace TheLastSignal.UI
             btRt.offsetMin = Vector2.zero;
             btRt.offsetMax = Vector2.zero;
             Image btImg = battTrack.GetComponent<Image>();
+            btImg.sprite = whiteSprite;
             btImg.color = new Color(0.10f, 0.15f, 0.22f, 1f);
 
             GameObject battFill = new GameObject("BatteryFill", typeof(RectTransform), typeof(Image));
@@ -492,6 +508,7 @@ namespace TheLastSignal.UI
             bfRt.offsetMin = new Vector2(2f, 2f);
             bfRt.offsetMax = new Vector2(-2f, -2f);
             batteryBarFill = battFill.GetComponent<Image>();
+            batteryBarFill.sprite = whiteSprite;
             batteryBarFill.type = Image.Type.Filled;
             batteryBarFill.fillMethod = Image.FillMethod.Horizontal;
             batteryBarFill.fillAmount = 1f;
@@ -793,6 +810,23 @@ namespace TheLastSignal.UI
             Image tImg = tick.GetComponent<Image>();
             tImg.color = new Color(0.0f, 1f, 0.85f, 0.45f);
             tImg.raycastTarget = false;
+        }
+
+        private static Sprite cachedSolidSprite;
+        private static Sprite GetSolidWhiteSprite()
+        {
+            if (cachedSolidSprite == null)
+            {
+                Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                tex.filterMode = FilterMode.Point;
+                tex.SetPixel(0, 0, Color.white);
+                tex.SetPixel(0, 1, Color.white);
+                tex.SetPixel(1, 0, Color.white);
+                tex.SetPixel(1, 1, Color.white);
+                tex.Apply();
+                cachedSolidSprite = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f), 100f);
+            }
+            return cachedSolidSprite;
         }
     }
 }

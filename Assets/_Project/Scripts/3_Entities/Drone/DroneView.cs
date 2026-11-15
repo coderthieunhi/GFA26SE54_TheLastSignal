@@ -41,6 +41,12 @@ namespace TheLastSignal.Entities.Drone
         [SerializeField] private float maxBankAngle = 8.0f;
         [SerializeField] private float rotorSpinSpeed = 1440f;
 
+        [Header("World-Space Battery Bar")]
+        [SerializeField] private Transform batteryBarRoot;
+        [SerializeField] private SpriteRenderer batteryBgRenderer;
+        [SerializeField] private SpriteRenderer batteryFillRenderer;
+        private static Sprite cachedSolidPixel;
+
         private DroneController controller;
         private Transform[] rotorProps;
         private Vector3 baseVisualLocalPos;
@@ -65,6 +71,7 @@ namespace TheLastSignal.Entities.Drone
             EnsureShadowHierarchy();
             EnsureAudioSources();
             EnsureChassisSprite();
+            EnsureBatteryBarHierarchy();
         }
 
         private void EnsureShadowHierarchy()
@@ -393,9 +400,140 @@ namespace TheLastSignal.Entities.Drone
             }
         }
 
+        private static Sprite GetWhitePixelSprite()
+        {
+            if (cachedSolidPixel == null)
+            {
+                Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                tex.filterMode = FilterMode.Point;
+                tex.SetPixel(0, 0, Color.white);
+                tex.SetPixel(0, 1, Color.white);
+                tex.SetPixel(1, 0, Color.white);
+                tex.SetPixel(1, 1, Color.white);
+                tex.Apply();
+                cachedSolidPixel = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f), 1f);
+            }
+            return cachedSolidPixel;
+        }
+
+        private void EnsureBatteryBarHierarchy()
+        {
+            if (batteryBarRoot == null)
+            {
+                Transform found = transform.Find("WorldBatteryBar");
+                if (found != null)
+                {
+                    batteryBarRoot = found;
+                }
+                else
+                {
+                    GameObject barGo = new GameObject("WorldBatteryBar");
+                    barGo.transform.SetParent(transform, false);
+                    barGo.transform.localPosition = new Vector3(0f, 0.52f, 0f);
+                    batteryBarRoot = barGo.transform;
+                }
+            }
+
+            Sprite whiteSprite = GetWhitePixelSprite();
+
+            if (batteryBgRenderer == null)
+            {
+                Transform bg = batteryBarRoot.Find("BatteryBg");
+                if (bg == null)
+                {
+                    GameObject bgGo = new GameObject("BatteryBg");
+                    bgGo.transform.SetParent(batteryBarRoot, false);
+                    batteryBgRenderer = bgGo.AddComponent<SpriteRenderer>();
+                }
+                else
+                {
+                    batteryBgRenderer = bg.GetComponent<SpriteRenderer>();
+                }
+                batteryBgRenderer.sprite = whiteSprite;
+                batteryBgRenderer.color = new Color(0.06f, 0.10f, 0.14f, 0.90f);
+                batteryBgRenderer.sortingLayerName = "Characters";
+                batteryBgRenderer.sortingOrder = 14;
+                batteryBgRenderer.transform.localScale = new Vector3(0.65f, 0.08f, 1f);
+                batteryBgRenderer.transform.localPosition = Vector3.zero;
+            }
+
+            if (batteryFillRenderer == null)
+            {
+                Transform fill = batteryBarRoot.Find("BatteryFill");
+                if (fill == null)
+                {
+                    GameObject fillGo = new GameObject("BatteryFill");
+                    fillGo.transform.SetParent(batteryBarRoot, false);
+                    batteryFillRenderer = fillGo.AddComponent<SpriteRenderer>();
+                }
+                else
+                {
+                    batteryFillRenderer = fill.GetComponent<SpriteRenderer>();
+                }
+                batteryFillRenderer.sprite = whiteSprite;
+                batteryFillRenderer.color = new Color(0.0f, 0.95f, 0.85f, 1f);
+                batteryFillRenderer.sortingLayerName = "Characters";
+                batteryFillRenderer.sortingOrder = 15;
+            }
+        }
+
+        private void UpdateBatteryBarVisuals()
+        {
+            if (batteryBarRoot == null || controller == null) return;
+
+            float batteryPct = controller.BatteryPercent;
+            bool isReturning = controller.IsReturningToDock;
+            bool isFlight = controller.IsFlightActive;
+
+            // Bar is visible whenever deployed or not fully charged
+            bool shouldShow = isFlight || isReturning || batteryPct < 0.99f;
+            batteryBarRoot.gameObject.SetActive(shouldShow);
+
+            if (!shouldShow || batteryFillRenderer == null) return;
+
+            // Keep battery bar facing straight up regardless of drone bank / tilt
+            batteryBarRoot.rotation = Quaternion.identity;
+
+            float totalWidth = 0.61f;
+            float fillWidth = totalWidth * Mathf.Clamp01(batteryPct);
+            batteryFillRenderer.transform.localScale = new Vector3(fillWidth, 0.055f, 1f);
+            batteryFillRenderer.transform.localPosition = new Vector3((-totalWidth * 0.5f) + (fillWidth * 0.5f), 0f, -0.01f);
+
+            // Recharging at dock
+            if (controller.IsAtDockStation && !isFlight && !isReturning)
+            {
+                float chargePulse = (Mathf.Sin(Time.time * 4f) + 1f) * 0.5f;
+                batteryFillRenderer.color = Color.Lerp(new Color(0f, 0.8f, 0.6f, 1f), new Color(0.3f, 1f, 0.9f, 1f), chargePulse);
+                return;
+            }
+
+            // In-flight or returning color-coding
+            if (batteryPct > 0.40f)
+            {
+                batteryFillRenderer.color = new Color(0.0f, 0.95f, 0.85f, 1f); // Vibrant Cyan
+            }
+            else if (batteryPct > 0.20f)
+            {
+                batteryFillRenderer.color = new Color(1.0f, 0.72f, 0.12f, 1f); // Warning Amber
+            }
+            else
+            {
+                // Critical low battery: Rapid pulsing red flash (12Hz)
+                float flash = (Mathf.Sin(Time.time * 12f) + 1f) * 0.5f;
+                Color redLow = new Color(1.0f, 0.15f, 0.15f, 1f);
+                Color redHigh = new Color(1.0f, 0.7f, 0.7f, 1f);
+                batteryFillRenderer.color = Color.Lerp(redLow, redHigh, flash);
+            }
+        }
+
         private void Update()
         {
-            if (controller == null || !controller.IsFlightActive) return;
+            if (controller == null) return;
+
+            // Update world-space battery bar at all times (flying, returning, or recharging at dock)
+            UpdateBatteryBarVisuals();
+
+            if (!controller.IsFlightActive) return;
 
             // 1. Sinusoidal hover float (with slight takeoff altitude boost)
             float hoverOffset = Mathf.Sin(Time.time * hoverFrequency) * hoverAmplitude;

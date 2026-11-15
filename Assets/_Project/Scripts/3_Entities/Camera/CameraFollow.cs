@@ -146,12 +146,6 @@ namespace TheLastSignal.Entities.Camera
                 return;
             }
 
-            // Smooth dynamic zoom / FOV expansion
-            if (cam != null && Mathf.Abs(cam.orthographicSize - targetOrthoSize) > 0.005f)
-            {
-                cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetOrthoSize, ref zoomVelocity, zoomSmoothTime);
-            }
-
             // Smooth lookahead offset
             currentOffset = Vector2.SmoothDamp(currentOffset, targetOffset, ref offsetVelocity, offsetSmoothTime);
 
