@@ -60,6 +60,9 @@ namespace TheLastSignal.Entities.Drone
         [Header("Collision Layers")]
         [SerializeField] private LayerMask obstacleLayers;
 
+        [Header("Dock Settings")]
+        [SerializeField] private float dockRechargeRadius = 1.6f;
+
         // Replicated Netcode state (Server authoring, everyone reading)
         private readonly NetworkVariable<Vector2> netPosition = new NetworkVariable<Vector2>(
             Vector2.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -85,6 +88,9 @@ namespace TheLastSignal.Entities.Drone
         private bool isFlightActive = false;
         private float radarTimer = 0f;
         private readonly List<RadarPingData> detectedEntities = new List<RadarPingData>();
+        private float previousOperatorHealth = -1f;
+        private float networkSyncTimer = 0f;
+        private const float NETWORK_SYNC_INTERVAL = 0.05f; // 20 Hz sync rate
 
         // Offline / client prediction tracking
         private Vector2 dockAnchorPosition;
@@ -99,6 +105,7 @@ namespace TheLastSignal.Entities.Drone
         public float AimAngle => IsNetworkSessionActive && IsSpawned ? netAimAngle.Value : aimAngleDegrees;
         public PlayerController CurrentOperator => currentOperator;
         public IReadOnlyList<RadarPingData> DetectedEntities => detectedEntities;
+        public bool IsAtDockStation => Vector2.Distance(transform.position, dockAnchorPosition) <= dockRechargeRadius;
 
         // Events
         public event Action<float> OnBatteryChanged;
@@ -213,11 +220,13 @@ namespace TheLastSignal.Entities.Drone
             base.OnNetworkSpawn();
             netPosition.OnValueChanged += (prev, curr) =>
             {
-                if (!IsOwner) transform.position = curr;
+                bool isLocalDriver = isFlightActive && currentOperator != null && (!IsNetworkSessionActive || currentOperator.IsOwner);
+                if (!isLocalDriver && !IsOwner) transform.position = curr;
             };
             netAimAngle.OnValueChanged += (prev, curr) =>
             {
-                if (!IsOwner)
+                bool isLocalDriver = isFlightActive && currentOperator != null && (!IsNetworkSessionActive || currentOperator.IsOwner);
+                if (!isLocalDriver && !IsOwner)
                 {
                     aimAngleDegrees = curr;
                     UpdateSpotlightRotation(curr);
@@ -309,15 +318,20 @@ namespace TheLastSignal.Entities.Drone
             // Subscribe to pilot damage & downed events for emergency disengage
             if (currentOperator.TryGetComponent(out operatorHealth))
             {
+                previousOperatorHealth = operatorHealth.CurrentHealth;
                 operatorHealth.OnLifeStateChanged += HandleOperatorLifeStateChanged;
                 operatorHealth.OnHealthChanged += HandleOperatorHealthChanged;
             }
 
-            // Bind Camera to the Drone
-            UnityEngine.Camera mainCam = UnityEngine.Camera.main;
-            if (mainCam != null && mainCam.TryGetComponent(out CameraFollow cameraFollow))
+            // Bind Camera to the Drone (Local pilot only to prevent camera stealing in multiplayer)
+            bool isLocalPilot = !IsNetworkSessionActive || pilot.IsOwner;
+            if (isLocalPilot)
             {
-                cameraFollow.SetTarget(transform);
+                UnityEngine.Camera mainCam = UnityEngine.Camera.main;
+                if (mainCam != null && mainCam.TryGetComponent(out CameraFollow cameraFollow))
+                {
+                    cameraFollow.SetTarget(transform);
+                }
             }
 
             if (gameplayLightSource != null)
@@ -376,6 +390,7 @@ namespace TheLastSignal.Entities.Drone
                 operatorHealth.OnHealthChanged -= HandleOperatorHealthChanged;
                 operatorHealth = null;
             }
+            previousOperatorHealth = -1f;
 
             // Restore pilot body movement
             if (currentOperator != null)
@@ -388,11 +403,15 @@ namespace TheLastSignal.Entities.Drone
                 }
                 currentOperator.SetControlEnabled(true);
 
-                // Restore Camera back to the operator
-                UnityEngine.Camera mainCam = UnityEngine.Camera.main;
-                if (mainCam != null && mainCam.TryGetComponent(out CameraFollow cameraFollow))
+                // Restore Camera back to the operator (Local pilot only)
+                bool isLocalPilot = !IsNetworkSessionActive || currentOperator.IsOwner;
+                if (isLocalPilot)
                 {
-                    cameraFollow.SetTarget(currentOperator.transform);
+                    UnityEngine.Camera mainCam = UnityEngine.Camera.main;
+                    if (mainCam != null && mainCam.TryGetComponent(out CameraFollow cameraFollow))
+                    {
+                        cameraFollow.SetTarget(currentOperator.transform);
+                    }
                 }
             }
 
@@ -441,11 +460,12 @@ namespace TheLastSignal.Entities.Drone
 
         private void HandleOperatorHealthChanged(float current, float max)
         {
-            if (current < max)
+            if (previousOperatorHealth > 0f && current < previousOperatorHealth - 0.05f)
             {
-                // Operator is taking damage while at the console!
+                // Operator actually took new damage while at the console!
                 DisengageFlight("WARNING: OPERATOR BODY UNDER ATTACK!");
             }
+            previousOperatorHealth = current;
         }
 
         private void Update()
@@ -508,8 +528,10 @@ namespace TheLastSignal.Entities.Drone
             float rate = direction.sqrMagnitude > 0.0001f ? acceleration : deceleration;
             currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, rate * Time.fixedDeltaTime);
 
-            Vector2 newPos = rb.position + (currentVelocity * Time.fixedDeltaTime);
-            rb.MovePosition(newPos);
+            if (rb != null)
+            {
+                rb.linearVelocity = currentVelocity;
+            }
         }
 
         private void UpdateSpotlightAim()
@@ -522,7 +544,7 @@ namespace TheLastSignal.Entities.Drone
                 Vector2 mouseScreen = mouse.position.ReadValue();
                 Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, 0f));
                 Vector2 dir = (Vector2)mouseWorld - (Vector2)transform.position;
-                if (dir.sqrMagnitude > 0.01f)
+                if (dir.sqrMagnitude > 0.09f) // 0.3m minimum deadzone to prevent erratic spinning
                 {
                     aimAngleDegrees = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
                 }
@@ -554,8 +576,8 @@ namespace TheLastSignal.Entities.Drone
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null) return;
 
-            // [ESC] disengages drone feed
-            if (keyboard.escapeKey.wasPressedThisFrame)
+            // [Space] or [ESC] disengages drone feed
+            if (keyboard.spaceKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame)
             {
                 DisengageFlight("Operator Terminated Connection");
             }
@@ -574,6 +596,9 @@ namespace TheLastSignal.Entities.Drone
 
         private void UpdateBatteryRecharge(float dt)
         {
+            // Physical restriction: Drone must be physically rested on or beside the dock cradle in Airlock
+            if (!IsAtDockStation) return;
+
             if (currentBattery < maxBattery)
             {
                 currentBattery = Mathf.Min(maxBattery, currentBattery + (batteryRechargeRate * dt));
@@ -665,6 +690,11 @@ namespace TheLastSignal.Entities.Drone
         private void SyncNetworkState()
         {
             if (!IsNetworkSessionActive) return;
+
+            // Throttle network replication to 20 Hz (50ms) to prevent network congestion
+            networkSyncTimer += Time.deltaTime;
+            if (networkSyncTimer < NETWORK_SYNC_INTERVAL) return;
+            networkSyncTimer = 0f;
 
             if (IsServer)
             {

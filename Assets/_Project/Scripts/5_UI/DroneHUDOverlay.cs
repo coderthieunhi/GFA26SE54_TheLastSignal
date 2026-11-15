@@ -136,7 +136,8 @@ namespace TheLastSignal.UI
             if (batteryText != null)
             {
                 string status = pct > 0.5f ? "NOMINAL" : (pct > 0.2f ? "CAUTION" : "<color=#FF2222>CRITICAL LOW</color>");
-                batteryText.text = $"BATTERY: {battery:0.0}% [{status}]";
+                string dockStatus = activeDrone.IsAtDockStation ? " [DOCKED]" : " [DEPLOYED]";
+                batteryText.text = $"BATTERY: {battery:0.0}% [{status}]{dockStatus}";
             }
 
             if (lowBatteryWarningBanner != null)
@@ -244,13 +245,13 @@ namespace TheLastSignal.UI
                 var pilotHealth = activeDrone.CurrentOperator.GetComponent<TheLastSignal.Entities.Player.PlayerHealth>();
                 if (pilotHealth != null)
                 {
-                    if (pilotHealth.HealthPercent < 0.99f)
+                    if (pilotHealth.HealthPercent <= 0.35f)
                     {
-                        operatorStatusText.text = "<b><color=#FF2222>PILOT BODY: UNDER ATTACK AT AIRLOCK CONSOLE!</color></b>";
+                        operatorStatusText.text = $"<b><color=#FF2222>PILOT BODY: CRITICAL HEALTH [{pilotHealth.CurrentHealth:0}/{pilotHealth.MaxHealth:0} HP] @ CONSOLE!</color></b>";
                     }
                     else
                     {
-                        operatorStatusText.text = "<color=#00FFCC>PILOT BODY: STATIONARY @ AIRLOCK CONSOLE [VULNERABLE]</color>";
+                        operatorStatusText.text = $"<color=#00FFCC>PILOT BODY: STATIONARY @ AIRLOCK CONSOLE [HP: {pilotHealth.CurrentHealth:0}/{pilotHealth.MaxHealth:0}]</color>";
                     }
                 }
             }
@@ -633,7 +634,7 @@ namespace TheLastSignal.UI
             GameObject ctrlGo = new GameObject("ControlsText", typeof(RectTransform), typeof(TextMeshProUGUI));
             ctrlGo.transform.SetParent(bottomBar.transform, false);
             TextMeshProUGUI ctrlText = ctrlGo.GetComponent<TextMeshProUGUI>();
-            ctrlText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[ESC]</color></b>: Disengage Feed";
+            ctrlText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[SPACE / ESC]</color></b>: Disengage Feed";
             ctrlText.fontSize = 13;
             ctrlText.alignment = TextAlignmentOptions.Right;
             ctrlText.color = Color.white;

@@ -243,8 +243,18 @@ namespace TheLastSignal.Entities.Stations
 
                 if (droneController.IsFlightActive)
                 {
-                    // Already in flight; disengage
-                    droneController.DisengageFlight("Recalled via Station Terminal");
+                    // Check if the interacting player is the active operator
+                    if (droneController.CurrentOperator == player || droneController.CurrentOperator == null)
+                    {
+                        // Already in flight; disengage
+                        droneController.DisengageFlight("Recalled via Station Terminal");
+                    }
+                    else
+                    {
+                        // Console is currently occupied by another operator!
+                        PlayAccessDeniedFeedback(player);
+                        Debug.LogWarning($"<color=#FFAA00>[DroneStation]</color> Terminal busy: Operator {droneController.CurrentOperator.name} is currently in flight.");
+                    }
                 }
                 else
                 {

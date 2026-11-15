@@ -159,11 +159,15 @@ namespace TheLastSignal.Entities.Drone
                     spotlightLight2D.pointLightOuterRadius = 8.5f;
                     spotlightLight2D.color = new Color(0.85f, 0.95f, 1.0f, 1.0f);
                     spotlightLight2D.intensity = 1.6f;
+                    spotlightLight2D.shadowsEnabled = true;
+                    spotlightLight2D.shadowIntensity = 0.85f;
                 }
             }
 
             if (spotlightLight2D != null)
             {
+                spotlightLight2D.shadowsEnabled = true;
+                spotlightLight2D.shadowIntensity = 0.85f;
                 spotlightLight2D.enabled = false;
             }
         }
@@ -177,7 +181,10 @@ namespace TheLastSignal.Entities.Drone
                 motorAudioSource = motorGo.AddComponent<AudioSource>();
                 motorAudioSource.loop = true;
                 motorAudioSource.playOnAwake = false;
-                motorAudioSource.spatialBlend = 0.35f;
+                motorAudioSource.spatialBlend = 1.0f; // 3D spatialized sound for tactical positioning
+                motorAudioSource.rolloffMode = AudioRolloffMode.Linear;
+                motorAudioSource.minDistance = 2.0f;
+                motorAudioSource.maxDistance = 14.0f;
                 motorAudioSource.volume = 0.35f;
                 motorAudioSource.clip = DroneAudioSynthesizer.GetMotorHumClip();
             }
