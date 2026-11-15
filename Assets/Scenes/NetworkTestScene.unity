@@ -59728,7 +59728,7 @@ MonoBehaviour:
   gameplayLightSource: {fileID: 0}
   maxBattery: 100
   batteryDrainRate: 4
-  batteryRechargeRate: 3.33
+  batteryRechargeRate: 0.8333
   radarRadius: 12
   radarPingInterval: 1.5
   obstacleLayers:

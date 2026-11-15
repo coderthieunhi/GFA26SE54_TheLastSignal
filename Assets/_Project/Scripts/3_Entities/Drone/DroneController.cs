@@ -54,7 +54,7 @@ namespace TheLastSignal.Entities.Drone
         [Header("Battery & Radar Tunables")]
         [SerializeField] private float maxBattery = 100f;
         [SerializeField] private float batteryDrainRate = 4.0f;     // ~25 seconds of continuous flight
-        [SerializeField] private float batteryRechargeRate = 3.33f;  // ~30 seconds full recharge while docked (longer recharge duration)
+        [SerializeField] private float batteryRechargeRate = 0.8333f; // ~120 seconds (2 minutes) full recharge while docked
         [SerializeField] private float radarRadius = 12.0f;
         [SerializeField] private float radarPingInterval = 1.5f;
 
@@ -111,6 +111,8 @@ namespace TheLastSignal.Entities.Drone
         public float CurrentBattery => IsNetworkSessionActive && IsSpawned ? netBattery.Value : currentBattery;
         public float MaxBattery => maxBattery;
         public float BatteryPercent => maxBattery > 0.001f ? Mathf.Clamp01(CurrentBattery / maxBattery) : 0f;
+        public float BatteryRechargeRate => batteryRechargeRate;
+        public float BatteryDrainRate => batteryDrainRate;
         public float RadarRadius => radarRadius;
         public float AimAngle => IsNetworkSessionActive && IsSpawned ? netAimAngle.Value : aimAngleDegrees;
         public PlayerController CurrentOperator => currentOperator;

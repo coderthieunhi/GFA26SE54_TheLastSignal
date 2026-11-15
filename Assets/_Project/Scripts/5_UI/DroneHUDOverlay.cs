@@ -186,7 +186,22 @@ namespace TheLastSignal.UI
             if (batteryText != null)
             {
                 string status = pct > 0.40f ? "<color=#00FFCC>NOMINAL</color>" : (pct > 0.20f ? "<color=#FFAA00>WARNING LOW</color>" : "<color=#FF2222>CRITICAL RECALL</color>");
-                string dockStatus = activeDrone.IsAtDockStation ? (battery < 99.5f ? " [DOCKED - RECHARGING]" : " [DOCKED - FULL]") : " [DEPLOYED]";
+                string dockStatus = " [DEPLOYED]";
+                if (activeDrone.IsAtDockStation)
+                {
+                    if (battery < 99.5f && activeDrone.BatteryRechargeRate > 0.01f)
+                    {
+                        float remainingSec = Mathf.Max(0f, (activeDrone.MaxBattery - battery) / activeDrone.BatteryRechargeRate);
+                        int mins = Mathf.FloorToInt(remainingSec / 60f);
+                        int secs = Mathf.FloorToInt(remainingSec % 60f);
+                        string timeStr = mins > 0 ? $"{mins}m{secs:00}s" : $"{secs}s";
+                        dockStatus = $" [RECHARGING: {timeStr}]";
+                    }
+                    else
+                    {
+                        dockStatus = " [DOCKED - FULL]";
+                    }
+                }
                 batteryText.text = $"BATTERY: {battery:0.0}% [{status}]{dockStatus}";
             }
 

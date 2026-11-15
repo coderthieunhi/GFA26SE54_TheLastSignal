@@ -20,7 +20,7 @@ namespace TheLastSignal.Core
         [Header("Drone Operator ability (FR-SUR-06, BR-17)")]
         public float droneBatteryCapacity = 100f;
         public float droneBatteryDrainRate = 4.0f;
-        public float droneBatteryRechargeRate = 3.33f;
+        public float droneBatteryRechargeRate = 0.8333f; // 100% in 120s (2 minutes)
         public float droneMoveSpeed = 2.4f;
         public float droneSpotlightRange = 8.0f;
         public float droneSpotlightAngle = 45f;
@@ -57,7 +57,7 @@ namespace TheLastSignal.Core
             repairSpeedMultiplier = 1f,
             droneBatteryCapacity = 100f,
             droneBatteryDrainRate = 4.0f,
-            droneBatteryRechargeRate = 3.33f,
+            droneBatteryRechargeRate = 0.8333f,
             droneMoveSpeed = 2.4f,
             droneSpotlightRange = 8.0f,
             droneSpotlightAngle = 45f,
