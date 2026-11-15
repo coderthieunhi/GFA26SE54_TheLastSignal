@@ -86,6 +86,7 @@ namespace TheLastSignal.Editor
             {
                 GameObject dockGo = new GameObject("Prop_Drone_Dock_Station");
                 dockGo.transform.position = dockPos;
+                dockGo.transform.localScale = new Vector3(0.75f, 0.75f, 1f); // Reduced by 1/4 (0.75x)
                 dockGo.layer = 9;
                 if (radarCrt != null && radarCrt.transform.parent != null)
                 {
@@ -102,6 +103,8 @@ namespace TheLastSignal.Editor
                     dirty = true;
                 }
 
+                dock.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+
                 if (Vector3.Distance(dock.transform.position, dockPos) > 0.01f)
                 {
                     dock.transform.position = dockPos;
@@ -115,9 +118,13 @@ namespace TheLastSignal.Editor
                 if (dockCol == null)
                 {
                     dockCol = dock.gameObject.AddComponent<BoxCollider2D>();
-                    dockCol.size = new Vector2(1.5f, 1.5f);
+                    dockCol.size = new Vector2(1.125f, 1.125f);
                     dockCol.isTrigger = false;
                     dirty = true;
+                }
+                else
+                {
+                    dockCol.size = new Vector2(1.125f, 1.125f);
                 }
             }
 
@@ -127,12 +134,14 @@ namespace TheLastSignal.Editor
             {
                 GameObject droneGo = new GameObject("ReconDrone_Spectre");
                 droneGo.transform.position = dockPos;
+                droneGo.transform.localScale = new Vector3(0.75f, 0.75f, 1f); // Reduced by 1/4 (0.75x)
                 drone = droneGo.AddComponent<DroneController>();
                 droneGo.AddComponent<DroneView>();
                 dirty = true;
             }
             else
             {
+                drone.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
                 if (Vector3.Distance(drone.transform.position, dockPos) > 0.01f)
                 {
                     drone.transform.position = dockPos;

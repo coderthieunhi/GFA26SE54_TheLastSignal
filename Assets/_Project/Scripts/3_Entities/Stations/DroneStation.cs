@@ -136,6 +136,7 @@ namespace TheLastSignal.Entities.Stations
             {
                 GameObject dockGo = new GameObject("Prop_Drone_Dock_Station");
                 dockGo.transform.position = (Vector2)transform.position + dockPositionOffset;
+                dockGo.transform.localScale = new Vector3(0.75f, 0.75f, 1f); // Reduced by 1/4 (0.75x)
                 if (transform.parent != null) dockGo.transform.SetParent(transform.parent, true);
 
                 dockStation = dockGo.AddComponent<DroneDockStation>();
@@ -158,6 +159,7 @@ namespace TheLastSignal.Entities.Stations
 
                 GameObject droneGo = new GameObject("ReconDrone_Spectre");
                 droneGo.transform.position = initialSpawnPos;
+                droneGo.transform.localScale = new Vector3(0.75f, 0.75f, 1f); // Reduced by 1/4 (0.75x)
                 droneController = droneGo.AddComponent<DroneController>();
                 droneGo.AddComponent<DroneView>();
             }
@@ -176,6 +178,12 @@ namespace TheLastSignal.Entities.Stations
 #endif
                 if (canUse)
                 {
+                    if (droneController != null && droneController.IsReturningToDock)
+                    {
+                        Vector2 dockP = dockStation != null ? (Vector2)dockStation.transform.position : (Vector2)transform.position;
+                        float dist = Vector2.Distance(droneController.transform.position, dockP);
+                        return $"<color=#FFAA00>[E]</color> Pilot Recon Drone (Autopilot Homing: {dist:0.0}m)";
+                    }
                     return authorizedPrompt;
                 }
                 else
@@ -191,7 +199,16 @@ namespace TheLastSignal.Entities.Stations
             else
             {
 #if UNITY_EDITOR || DEBUG
-                if (bypassRoleCheckInEditor) return authorizedPrompt;
+                if (bypassRoleCheckInEditor)
+                {
+                    if (droneController != null && droneController.IsReturningToDock)
+                    {
+                        Vector2 dockP = dockStation != null ? (Vector2)dockStation.transform.position : (Vector2)transform.position;
+                        float dist = Vector2.Distance(droneController.transform.position, dockP);
+                        return $"<color=#FFAA00>[E]</color> Pilot Recon Drone (Autopilot Homing: {dist:0.0}m)";
+                    }
+                    return authorizedPrompt;
+                }
 #endif
             }
 
@@ -253,24 +270,20 @@ namespace TheLastSignal.Entities.Stations
                 // Authorized Drone Operator!
                 EnsureDroneController();
 
-                if (droneController.IsFlightActive)
+                if (droneController.CurrentOperator != null && droneController.CurrentOperator != player)
                 {
-                    // Check if the interacting player is the active operator
-                    if (droneController.CurrentOperator == player || droneController.CurrentOperator == null)
-                    {
-                        // Already in flight; disengage
-                        droneController.DisengageFlight("Recalled via Station Terminal");
-                    }
-                    else
-                    {
-                        // Console is currently occupied by another operator!
-                        PlayAccessDeniedFeedback(player);
-                        Debug.LogWarning($"<color=#FFAA00>[DroneStation]</color> Terminal busy: Operator {droneController.CurrentOperator.name} is currently in flight.");
-                    }
+                    // Console is currently occupied by another operator!
+                    PlayAccessDeniedFeedback(player);
+                    Debug.LogWarning($"<color=#FFAA00>[DroneStation]</color> Terminal busy: Operator {droneController.CurrentOperator.name} is currently in flight.");
+                }
+                else if (droneController.CurrentOperator == player)
+                {
+                    // Already in flight at this console; exit and command drone back to dock
+                    droneController.ExitFlightAndReturnToDock("Recalled via Station Terminal");
                 }
                 else
                 {
-                    // Activate persistent drone at its current map location & open Sci-Fi CRT Overlay
+                    // Activate persistent drone at its current map location (or take over from autopilot) & open Sci-Fi CRT Overlay
                     droneController.EngageFlight(player);
 
                     // Open Sci-Fi CRT overlay

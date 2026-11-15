@@ -16,7 +16,7 @@ namespace TheLastSignal.Entities.Stations
         [SerializeField] private BoxCollider2D dockCollider;
 
         [Header("Collision Settings")]
-        [SerializeField] private Vector2 colliderSize = new Vector2(1.5f, 1.5f);
+        [SerializeField] private Vector2 colliderSize = new Vector2(1.125f, 1.125f); // Reduced by 1/4 (0.75x)
 
         [Header("Lighting Settings")]
         [SerializeField] private Color activeChargeColor = new Color(0f, 0.95f, 1f, 1f);
@@ -32,6 +32,9 @@ namespace TheLastSignal.Entities.Stations
         {
             // Set to Layer 9 (Obstacles / Environment) to solidly block player movement
             gameObject.layer = 9;
+
+            // Reduce dock pad size by 1/4 (25% reduction -> 0.75x scale)
+            transform.localScale = new Vector3(0.75f, 0.75f, 1f);
 
             if (dockRenderer == null)
             {

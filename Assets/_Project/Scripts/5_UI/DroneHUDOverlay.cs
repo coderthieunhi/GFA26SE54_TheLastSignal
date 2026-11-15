@@ -54,6 +54,8 @@ namespace TheLastSignal.UI
         private float sweepAngle = 0f;
         private bool isOpen = false;
 
+        public bool IsOpen => isOpen;
+
         private void Awake()
         {
             Instance = this;
@@ -255,7 +257,7 @@ namespace TheLastSignal.UI
                 }
                 else
                 {
-                    controlsPromptText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[ESC / SPACE]</color></b>: Auto-Return to Dock";
+                    controlsPromptText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[ESC / SPACE]</color></b>: Exit & Auto-Return to Dock";
                 }
             }
 
@@ -667,7 +669,7 @@ namespace TheLastSignal.UI
             GameObject ctrlGo = new GameObject("ControlsText", typeof(RectTransform), typeof(TextMeshProUGUI));
             ctrlGo.transform.SetParent(bottomBar.transform, false);
             controlsPromptText = ctrlGo.GetComponent<TextMeshProUGUI>();
-            controlsPromptText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[ESC / SPACE]</color></b>: Auto-Return to Dock";
+            controlsPromptText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[ESC / SPACE]</color></b>: Exit & Auto-Return to Dock";
             controlsPromptText.fontSize = 13;
             controlsPromptText.alignment = TextAlignmentOptions.Right;
             controlsPromptText.color = Color.white;
