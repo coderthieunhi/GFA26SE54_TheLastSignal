@@ -99,9 +99,16 @@ namespace TheLastSignal.Entities.Stations
         {
             if (dockLight != null)
             {
-                // Soft breathing pulse on the recharge pad
-                float t = (Mathf.Sin(Time.time * pulseSpeed) + 1f) * 0.5f;
-                dockLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, t);
+                bool isDroneDocked = drone != null && Vector2.Distance(drone.transform.position, transform.position) < 0.8f;
+                bool isCharging = isDroneDocked && drone.CurrentBattery < 99.5f;
+
+                float currentPulseSpeed = isCharging ? 3.5f : pulseSpeed;
+                float currentMin = isCharging ? 0.5f : minIntensity;
+                float currentMax = isCharging ? 1.2f : maxIntensity;
+
+                // Soft rhythmic magnetic breathing pulse on the recharge pad
+                float t = (Mathf.Sin(Time.time * currentPulseSpeed) + 1f) * 0.5f;
+                dockLight.intensity = Mathf.Lerp(currentMin, currentMax, t);
             }
         }
 
@@ -116,7 +123,7 @@ namespace TheLastSignal.Entities.Stations
 
             if (inFlight)
             {
-                // Drone is deployed in mission
+                // Drone is deployed in mission - subtle dim standby
                 dockLight.color = idleStandbyColor;
                 dockLight.pointLightOuterRadius = 1.0f;
             }
@@ -125,7 +132,7 @@ namespace TheLastSignal.Entities.Stations
                 // Check if drone is physically resting on the pad
                 bool isDroneDocked = drone != null && Vector2.Distance(drone.transform.position, transform.position) < 0.8f;
                 dockLight.color = isDroneDocked ? activeChargeColor : idleStandbyColor;
-                dockLight.pointLightOuterRadius = isDroneDocked ? 1.4f : 1.0f;
+                dockLight.pointLightOuterRadius = isDroneDocked ? 1.6f : 1.0f;
             }
         }
 

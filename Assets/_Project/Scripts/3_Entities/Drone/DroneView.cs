@@ -33,7 +33,7 @@ namespace TheLastSignal.Entities.Drone
         [Header("Ground Shadow")]
         [SerializeField] private Transform shadowRoot;
         [SerializeField] private SpriteRenderer shadowRenderer;
-        [SerializeField] private Vector3 shadowOffset = new Vector3(0f, -0.40f, 0f);
+        [SerializeField] private Vector3 shadowOffset = new Vector3(0f, -0.32f, 0f);
 
         [Header("Animation Settings")]
         [SerializeField] private float hoverFrequency = 3.5f;
@@ -174,10 +174,10 @@ namespace TheLastSignal.Entities.Drone
             rotorProps = new Transform[4];
             Vector2[] rotorOffsets = new Vector2[]
             {
-                new Vector2(-0.30f, 0.27f),  // Top Left (aligned with nacelle centers)
-                new Vector2(0.30f, 0.27f),   // Top Right
-                new Vector2(-0.30f, -0.27f), // Bottom Left
-                new Vector2(0.30f, -0.27f)   // Bottom Right
+                new Vector2(-0.25f, 0.25f),  // Front Left (aligned with ducted fan shroud)
+                new Vector2(0.25f, 0.25f),   // Front Right (aligned with ducted fan shroud)
+                new Vector2(-0.25f, -0.22f), // Rear Left (aligned with ducted fan shroud)
+                new Vector2(0.25f, -0.22f)   // Rear Right (aligned with ducted fan shroud)
             };
 
             if (rotorBlurSprite == null)
