@@ -19,7 +19,8 @@ namespace TheLastSignal.Entities.Environment.Interactables
         Activating,
         Active,
         Brownout,
-        Deactivating
+        Deactivating,
+        Cooldown
     }
 
     /// <summary>
@@ -84,8 +85,14 @@ namespace TheLastSignal.Entities.Environment.Interactables
         [SerializeField] private SafeLightJunctionState initialState = SafeLightJunctionState.Inactive;
         [Tooltip("Active duration in seconds. Set to 0 or negative for permanent until manual failure.")]
         [SerializeField] private float activeDuration = 25.0f;
+        [Tooltip("Cooldown duration before the junction can be activated again.")]
+        [SerializeField] private float cooldownDuration = 0f;
         [Tooltip("Interaction radius for the player pressing [E].")]
         [SerializeField] private float interactionRange = 1.6f;
+        [Tooltip("Optional transform for where the player must stand to press [E] (e.g. West Console). If null, uses this GameObject's transform.")]
+        [SerializeField] private Transform interactionAnchor;
+
+        public Vector3 InteractionPosition => interactionAnchor != null ? interactionAnchor.position : transform.position;
 
         [Header("Safe Zone & Enemy Behavior (Gameplay Logic)")]
         [Tooltip("Radius of the safe zone protecting survivors against The Shade.")]
@@ -236,6 +243,11 @@ namespace TheLastSignal.Entities.Environment.Interactables
                 int sec = Mathf.CeilToInt(RemainingTime);
                 return $"WARNING: Power Failure in {sec}s!";
             }
+            else if (CurrentState == SafeLightJunctionState.Cooldown)
+            {
+                int sec = Mathf.CeilToInt(RemainingTime);
+                return $"Recharging Power... ({sec}s)";
+            }
             return "";
         }
 
@@ -245,7 +257,7 @@ namespace TheLastSignal.Entities.Environment.Interactables
             if (CurrentState != SafeLightJunctionState.Inactive) return false;
             if (player.IsMonster) return false; // Survivors activate safe light
 
-            float distSqr = ((Vector2)transform.position - (Vector2)player.transform.position).sqrMagnitude;
+            float distSqr = ((Vector2)InteractionPosition - (Vector2)player.transform.position).sqrMagnitude;
             float maxRange = interactionRange + 0.6f;
             return distSqr <= maxRange * maxRange;
         }
@@ -360,6 +372,20 @@ namespace TheLastSignal.Entities.Environment.Interactables
                     TickSafeZoneEffects();
                 }
             }
+            else if (CurrentState == SafeLightJunctionState.Cooldown)
+            {
+                float currentTimer = IsSpawned ? networkTimer.Value : localTimer;
+                currentTimer -= Time.deltaTime;
+
+                if (IsSpawned) networkTimer.Value = Mathf.Max(0f, currentTimer);
+                else localTimer = Mathf.Max(0f, currentTimer);
+
+                if (currentTimer <= 0f)
+                {
+                    if (IsSpawned && IsServer) networkState.Value = SafeLightJunctionState.Inactive;
+                    else if (!IsSpawned) SetLocalState(SafeLightJunctionState.Inactive);
+                }
+            }
         }
 
         #endregion
@@ -377,7 +403,7 @@ namespace TheLastSignal.Entities.Environment.Interactables
             {
                 if (client.PlayerObject != null)
                 {
-                    float distSqr = (transform.position - client.PlayerObject.transform.position).sqrMagnitude;
+                    float distSqr = (InteractionPosition - client.PlayerObject.transform.position).sqrMagnitude;
                     float maxAllowed = (interactionRange + 1.2f) * (interactionRange + 1.2f);
                     if (distSqr > maxAllowed) return;
                 }
@@ -420,14 +446,30 @@ namespace TheLastSignal.Entities.Environment.Interactables
 
         private void DeactivateDevice()
         {
-            if (IsSpawned && IsServer)
+            if (cooldownDuration > 0f)
             {
-                networkState.Value = SafeLightJunctionState.Inactive;
-                networkTimer.Value = 0f;
+                if (IsSpawned && IsServer)
+                {
+                    networkState.Value = SafeLightJunctionState.Cooldown;
+                    networkTimer.Value = cooldownDuration;
+                }
+                else if (!IsSpawned)
+                {
+                    localTimer = cooldownDuration;
+                    SetLocalState(SafeLightJunctionState.Cooldown);
+                }
             }
-            else if (!IsSpawned)
+            else
             {
-                SetLocalState(SafeLightJunctionState.Inactive);
+                if (IsSpawned && IsServer)
+                {
+                    networkState.Value = SafeLightJunctionState.Inactive;
+                    networkTimer.Value = 0f;
+                }
+                else if (!IsSpawned)
+                {
+                    SetLocalState(SafeLightJunctionState.Inactive);
+                }
             }
         }
 
@@ -460,6 +502,7 @@ namespace TheLastSignal.Entities.Environment.Interactables
             switch (state)
             {
                 case SafeLightJunctionState.Inactive:
+                case SafeLightJunctionState.Cooldown:
                     if (spriteRenderer != null && inactiveSprite != null) spriteRenderer.sprite = inactiveSprite;
                     ConfigureLights(active: false, warmGlow: false);
                     StopSteamPurge();
@@ -855,6 +898,7 @@ namespace TheLastSignal.Entities.Environment.Interactables
             }
             interactionTrigger.isTrigger = true;
             interactionTrigger.radius = interactionRange;
+            interactionTrigger.offset = (Vector2)(InteractionPosition - transform.position);
 
             if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -987,7 +1031,7 @@ namespace TheLastSignal.Entities.Environment.Interactables
         {
             // 1. Interaction radius (Yellow)
             Gizmos.color = new Color(1f, 0.9f, 0.2f, 0.4f);
-            Gizmos.DrawWireSphere(transform.position, interactionRange);
+            Gizmos.DrawWireSphere(InteractionPosition, interactionRange);
 
             // 2. Safe zone gameplay protection radius (Amber)
             Gizmos.color = new Color(1f, 0.75f, 0.2f, 0.5f);

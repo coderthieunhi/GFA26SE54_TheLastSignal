@@ -26,14 +26,27 @@ namespace TheLastSignal.Entities.Environment
     {
         [Header("State & Durations")]
         [SerializeField] private SubstationState state = SubstationState.Unpowered;
-        [SerializeField] private float powerDuration = 25f;
+        [SerializeField] private float powerDuration = 8f; // 8-second burst window for high tension
         [SerializeField] private float survivorChannelDuration = 3.0f;
         [SerializeField] private float monsterChannelDuration = 0.8f;
         [SerializeField] private float monsterSlowMultiplier = 0.8f; // -20% speed debuff in light
 
-        [Header("Lighting")]
+        [Header("Internal & Outward Lighting")]
         [SerializeField] private Light2D consoleLight;
-        [SerializeField] private List<Light2D> floodlights = new List<Light2D>();
+        [SerializeField] private Light2D coreLight;
+        [SerializeField] private Light2D chamberDeckLight;
+        [SerializeField] private List<Light2D> outwardBeams = new List<Light2D>();
+        [SerializeField] private ParticleSystem beamParticles;
+
+        [Header("Node A Network Environmental Lighting")]
+        [SerializeField] private List<Light2D> nodeAEnvironmentalLights = new List<Light2D>();
+
+        [Header("Calibrated Base Lighting Intensities")]
+        [SerializeField] private float baseCoreIntensity = 1.6f;
+        [SerializeField] private float baseDeckIntensity = 0.35f;
+        [SerializeField] private float baseConnectorIntensity = 0.5f;
+        [SerializeField] private float baseConsoleIntensity = 0.35f;
+        [SerializeField] private float baseEnvironmentalLightIntensity = 0.50f;
 
         [Header("Visual Sprites")]
         [SerializeField] private SpriteRenderer spriteRenderer;
@@ -93,20 +106,19 @@ namespace TheLastSignal.Entities.Environment
             if (unpoweredSprite == null)
             {
 #if UNITY_EDITOR
-                unpoweredSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Sprites/Environments/Junction/Props/Prop_NodeA_BioReactor_Unpowered.png");
+                unpoweredSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Sprites/Environments/Junction/Props/Prop_NodeA_Substation_Unpowered.png");
 #endif
             }
 
             if (poweredSprite == null)
             {
 #if UNITY_EDITOR
-                poweredSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Sprites/Environments/Junction/Props/Prop_NodeA_BioReactor_Powered.png");
+                poweredSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Sprites/Environments/Junction/Props/Prop_NodeA_Substation_Powered.png");
 #endif
             }
 
             CreateProceduralAudioClips();
             EnsureProgressBarUI();
-            InitializeFloodlights();
             UpdateVisualState();
         }
 
@@ -265,10 +277,11 @@ namespace TheLastSignal.Entities.Environment
             currentPowerTimer = powerDuration;
 
             UpdateVisualState();
+            StartCoroutine(StartupSpoolUpSequence());
             if (clankClip != null && audioSource != null) audioSource.PlayOneShot(clankClip);
             PlaySound(humClip, loop: true);
 
-            Debug.Log("<color=green>[ContestedPowerSubstation] POWER RESTORED! High-beam floodlights active for 25s.</color>");
+            Debug.Log("<color=green>[ContestedPowerSubstation] POWER RESTORED! 8s emergency floodlight burst active.</color>");
         }
 
         public void SmashBreaker()
@@ -276,6 +289,7 @@ namespace TheLastSignal.Entities.Environment
             state = SubstationState.Unpowered;
             currentPowerTimer = 0f;
 
+            StopAllCoroutines();
             UpdateVisualState();
             PlaySound(smashClip);
             StartCoroutine(PlayAlarmBurst());
@@ -291,7 +305,20 @@ namespace TheLastSignal.Entities.Environment
             if (state != SubstationState.Powered) return;
 
             currentPowerTimer -= Time.deltaTime;
-            if (currentPowerTimer <= 0f)
+
+            if (currentPowerTimer > 2.5f)
+            {
+                // Full power: subtle AC energy pulse (+/- 4%)
+                float pulse = 1.0f + Mathf.Sin(Time.time * 18f) * 0.04f;
+                ApplyDynamicPowerModulation(pulse, isBrownout: false);
+            }
+            else if (currentPowerTimer > 0f)
+            {
+                // Brownout warning (last 2.5s): rapid voltage fluctuation
+                float flicker = (Mathf.Sin(Time.time * 28f) > 0.05f) ? 0.85f : 0.35f;
+                ApplyDynamicPowerModulation(flicker, isBrownout: true);
+            }
+            else
             {
                 currentPowerTimer = 0f;
                 state = SubstationState.Unpowered;
@@ -300,8 +327,63 @@ namespace TheLastSignal.Entities.Environment
                 {
                     audioSource.Stop();
                 }
-                Debug.Log("[ContestedPowerSubstation] Power timer naturally expired. Returned to Unpowered.");
+                Debug.Log("[ContestedPowerSubstation] Power timer naturally expired (8s). Returned to Unpowered.");
             }
+        }
+
+        private void ApplyDynamicPowerModulation(float multiplier, bool isBrownout)
+        {
+            Color coreCol = isBrownout ? new Color(1.0f, 0.75f, 0.4f, 1f) : new Color(0.0f, 0.85f, 1.0f, 1f);
+            Color beamCol = isBrownout ? new Color(1.0f, 0.70f, 0.35f, 1f) : new Color(0.1f, 0.85f, 1.0f, 1f);
+
+            if (coreLight != null && coreLight.enabled)
+            {
+                coreLight.intensity = baseCoreIntensity * multiplier;
+                coreLight.color = coreCol;
+            }
+
+            if (chamberDeckLight != null && chamberDeckLight.enabled)
+            {
+                chamberDeckLight.intensity = baseDeckIntensity * multiplier;
+            }
+
+            foreach (var b in outwardBeams)
+            {
+                if (b != null && b.enabled)
+                {
+                    b.intensity = baseConnectorIntensity * multiplier;
+                    b.color = beamCol;
+                }
+            }
+
+            // Also modulate environmental corridor lights during brownout flicker
+            foreach (var envLight in nodeAEnvironmentalLights)
+            {
+                if (envLight != null && envLight.enabled)
+                {
+                    envLight.intensity = isBrownout ? (multiplier * 0.45f) : 0.85f;
+                }
+            }
+        }
+
+        private IEnumerator StartupSpoolUpSequence()
+        {
+            // Initial electrical ignition surge (0.08s) - controlled proportional surge without blowout
+            if (coreLight != null) coreLight.intensity = baseCoreIntensity * 1.35f;
+            foreach (var b in outwardBeams) { if (b != null) b.intensity = baseConnectorIntensity * 1.3f; }
+            yield return new WaitForSeconds(0.08f);
+
+            // Voltage dip
+            if (coreLight != null) coreLight.intensity = baseCoreIntensity * 0.5f;
+            foreach (var b in outwardBeams) { if (b != null) b.intensity = baseConnectorIntensity * 0.4f; }
+            yield return new WaitForSeconds(0.06f);
+
+            // Second surge & settle
+            if (coreLight != null) coreLight.intensity = baseCoreIntensity * 1.15f;
+            foreach (var b in outwardBeams) { if (b != null) b.intensity = baseConnectorIntensity * 1.1f; }
+            yield return new WaitForSeconds(0.10f);
+
+            UpdateVisualState();
         }
 
         private void HandleMonsterDebuffInLight()
@@ -343,11 +425,11 @@ namespace TheLastSignal.Entities.Environment
             }
         }
 
-        private void UpdateVisualState()
+        public void UpdateVisualState()
         {
             bool isPowered = (state == SubstationState.Powered);
 
-            // 0. Dynamic Biomechanical Reactor Sprite (Unpowered vs Supercharged Powered)
+            // 0. Dynamic Heavy Power Nexus Substation Sprite (Unpowered vs Supercharged Powered)
             if (spriteRenderer != null)
             {
                 if (isPowered && poweredSprite != null)
@@ -360,59 +442,97 @@ namespace TheLastSignal.Entities.Environment
                 }
             }
 
-            // 1. Console indicator light (Red standby when unpowered, vibrant green when powered)
+            // 1. South Diagnostic Display Status Light (Subtle screen glow)
             if (consoleLight != null)
             {
-                consoleLight.color = isPowered ? new Color(0.15f, 0.9f, 1f, 1f) : new Color(1f, 0.2f, 0.15f, 1f);
-                consoleLight.intensity = isPowered ? 2.0f : 0.5f;
-                consoleLight.pointLightOuterRadius = isPowered ? 4.5f : 1.6f;
+                consoleLight.color = isPowered ? new Color(0.1f, 0.85f, 1f, 1f) : new Color(1f, 0.2f, 0.1f, 1f);
+                consoleLight.intensity = isPowered ? baseConsoleIntensity : 0.15f;
+                consoleLight.pointLightOuterRadius = 1.0f;
+                consoleLight.pointLightInnerRadius = 0.2f;
                 consoleLight.enabled = true;
             }
 
-            // 2. 4 Floodlights at corridor entrances
-            foreach (var fl in floodlights)
+            // 2. Central Mechanically Enclosed Energy Core (Controlled cyan glow, not magical)
+            if (coreLight != null)
             {
-                if (fl != null)
+                coreLight.enabled = isPowered;
+                if (isPowered)
                 {
-                    fl.enabled = isPowered;
-                    fl.intensity = isPowered ? 1.4f : 0f;
+                    coreLight.color = new Color(0.0f, 0.85f, 1.0f, 1f);
+                    coreLight.intensity = baseCoreIntensity;
+                    coreLight.pointLightOuterRadius = 1.8f;
+                    coreLight.pointLightInnerRadius = 0.2f;
+                }
+            }
+
+            // 3. Subtle Localized Floor Reflection (Restrained local light spill around hub rim)
+            if (chamberDeckLight != null)
+            {
+                chamberDeckLight.enabled = isPowered;
+                if (isPowered)
+                {
+                    chamberDeckLight.color = new Color(0.0f, 0.65f, 0.95f, 1f);
+                    chamberDeckLight.intensity = baseDeckIntensity;
+                    chamberDeckLight.pointLightOuterRadius = 2.6f;
+                    chamberDeckLight.pointLightInnerRadius = 0.8f;
+                }
+            }
+
+            // 4. 4 Restrained Directional Connection Status Spotlights (Point outward into floor conduits, NO spill onto top deck)
+            for (int i = 0; i < outwardBeams.Count; i++)
+            {
+                var b = outwardBeams[i];
+                if (b != null)
+                {
+                    b.enabled = isPowered;
+                    b.intensity = isPowered ? baseConnectorIntensity : 0f;
+                    b.color = new Color(0.1f, 0.85f, 1.0f, 1f);
+                    b.pointLightInnerRadius = 0.15f;
+                    b.pointLightOuterRadius = 1.25f;
+                    b.pointLightInnerAngle = 35f;
+                    b.pointLightOuterAngle = 65f;
+                }
+            }
+
+            // 5. Node A Environmental Lighting Network (Restores actual room illumination across junction corridors)
+            foreach (var envLight in nodeAEnvironmentalLights)
+            {
+                if (envLight != null)
+                {
+                    envLight.enabled = isPowered;
+                    if (isPowered)
+                    {
+                        envLight.intensity = baseEnvironmentalLightIntensity;
+                    }
+                }
+            }
+
+            // 6. Volumetric Corridor Dust Motes / Beam Particles
+            if (beamParticles != null)
+            {
+                if (isPowered)
+                {
+                    if (!beamParticles.isPlaying) beamParticles.Play();
+                }
+                else
+                {
+                    if (beamParticles.isPlaying) beamParticles.Stop();
                 }
             }
         }
 
-        private void InitializeFloodlights()
+        [ContextMenu("Preview: Power ON")]
+        public void PreviewPowerOn()
         {
-            if (floodlights.Count == 4) return;
-            floodlights.Clear();
+            state = SubstationState.Powered;
+            UpdateVisualState();
+        }
 
-            // Check if existing floodlights in scene
-            string[] names = { "Floodlight_North", "Floodlight_South", "Floodlight_West", "Floodlight_East" };
-            Vector3[] positions = {
-                new Vector3(0.0f, 30.5f, 0f),
-                new Vector3(0.0f, 25.5f, 0f),
-                new Vector3(-3.0f, 28.0f, 0f),
-                new Vector3(3.0f, 28.0f, 0f)
-            };
-
-            for (int i = 0; i < 4; i++)
-            {
-                Transform existing = transform.Find(names[i]);
-                GameObject flGo = existing != null ? existing.gameObject : new GameObject(names[i]);
-                flGo.transform.SetParent(transform, false);
-                flGo.transform.position = positions[i];
-
-                Light2D l2d = flGo.GetComponent<Light2D>();
-                if (l2d == null) l2d = flGo.AddComponent<Light2D>();
-
-                l2d.lightType = Light2D.LightType.Point;
-                l2d.color = new Color(1.0f, 0.92f, 0.75f, 1f); // Warm high-beam industrial floodlight
-                l2d.intensity = 1.4f;
-                l2d.pointLightOuterRadius = 6.0f;
-                l2d.pointLightInnerRadius = 0.5f;
-                l2d.enabled = false;
-
-                floodlights.Add(l2d);
-            }
+        [ContextMenu("Preview: Power OFF")]
+        public void PreviewPowerOff()
+        {
+            state = SubstationState.Unpowered;
+            UpdateVisualState();
         }
 
         private void EnsureProgressBarUI()

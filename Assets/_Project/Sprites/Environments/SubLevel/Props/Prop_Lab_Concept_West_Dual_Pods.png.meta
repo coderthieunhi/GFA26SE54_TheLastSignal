@@ -1,0 +1,782 @@
+fileFormatVersion: 2
+guid: 39bdef1ef761e42c5993815b2955d58c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3309039334613019004
+    second: Prop_Lab_Concept_West_Dual_Pods_0
+  - first:
+      213: -6961373860492740310
+    second: Prop_Lab_Concept_West_Dual_Pods_1
+  - first:
+      213: 6744376870242813969
+    second: Prop_Lab_Concept_West_Dual_Pods_2
+  - first:
+      213: -9196123327535145960
+    second: Prop_Lab_Concept_West_Dual_Pods_3
+  - first:
+      213: -4818242252291935883
+    second: Prop_Lab_Concept_West_Dual_Pods_4
+  - first:
+      213: 7918682590964361851
+    second: Prop_Lab_Concept_West_Dual_Pods_5
+  - first:
+      213: 2398845502675243676
+    second: Prop_Lab_Concept_West_Dual_Pods_6
+  - first:
+      213: 2432046072031990758
+    second: Prop_Lab_Concept_West_Dual_Pods_7
+  - first:
+      213: 2367207112161402315
+    second: Prop_Lab_Concept_West_Dual_Pods_8
+  - first:
+      213: -7889131584725250591
+    second: Prop_Lab_Concept_West_Dual_Pods_9
+  - first:
+      213: -3157051200724361973
+    second: Prop_Lab_Concept_West_Dual_Pods_10
+  - first:
+      213: 7935454689257224998
+    second: Prop_Lab_Concept_West_Dual_Pods_11
+  - first:
+      213: 4224231007673887333
+    second: Prop_Lab_Concept_West_Dual_Pods_12
+  - first:
+      213: -7527045836745047109
+    second: Prop_Lab_Concept_West_Dual_Pods_13
+  - first:
+      213: -6535460548945180122
+    second: Prop_Lab_Concept_West_Dual_Pods_14
+  - first:
+      213: 8879875494727612466
+    second: Prop_Lab_Concept_West_Dual_Pods_15
+  - first:
+      213: 4348420448080131904
+    second: Prop_Lab_Concept_West_Dual_Pods_16
+  - first:
+      213: 4633468412595242602
+    second: Prop_Lab_Concept_West_Dual_Pods_17
+  - first:
+      213: -8765383904094540327
+    second: Prop_Lab_Concept_West_Dual_Pods_18
+  - first:
+      213: 8263662864607166118
+    second: Prop_Lab_Concept_West_Dual_Pods_19
+  - first:
+      213: -5437388400939634163
+    second: Prop_Lab_Concept_West_Dual_Pods_20
+  - first:
+      213: 8098282903597784669
+    second: Prop_Lab_Concept_West_Dual_Pods_21
+  - first:
+      213: -4768581642549333543
+    second: Prop_Lab_Concept_West_Dual_Pods_22
+  - first:
+      213: -1215057757695587714
+    second: Prop_Lab_Concept_West_Dual_Pods_23
+  - first:
+      213: 7153329456079482560
+    second: Prop_Lab_Concept_West_Dual_Pods_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 45
+        width: 26
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7967672eb11ced20800000000000000
+      internalID: 3309039334613019004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_1
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 220
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a29f3a85b5b346f90800000000000000
+      internalID: -6961373860492740310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_2
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 219
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1180f2eb707d89d50800000000000000
+      internalID: 6744376870242813969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_3
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 218
+        width: 43
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81c95978e8ec06080800000000000000
+      internalID: -9196123327535145960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_4
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 200
+        width: 69
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5717c5e133a222db0800000000000000
+      internalID: -4818242252291935883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_5
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 216
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7a208b8cdfc4ed60800000000000000
+      internalID: 7918682590964361851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_6
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 188
+        width: 10
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c92500a66496a4120800000000000000
+      internalID: 2398845502675243676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_7
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 35
+        width: 74
+        height: 183
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e3d9d8540d50c120800000000000000
+      internalID: 2432046072031990758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_8
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 30
+        width: 70
+        height: 157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcd982693520ad020800000000000000
+      internalID: 2367207112161402315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_9
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 186
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ed03224f9c248290800000000000000
+      internalID: -7889131584725250591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_10
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 185
+        width: 62
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0d9a13e8a6ef24d0800000000000000
+      internalID: -3157051200724361973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_11
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 80
+        width: 38
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62b726cfef5602e60800000000000000
+      internalID: 7935454689257224998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_12
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 154
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56aa79578bb7f9a30800000000000000
+      internalID: 4224231007673887333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_13
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 116
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb38ab401bf8a8790800000000000000
+      internalID: -7527045836745047109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_14
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 44
+        width: 29
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62a0b80d1416d45a0800000000000000
+      internalID: -6535460548945180122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_15
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 61
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2387fe007b7ab3b70800000000000000
+      internalID: 8879875494727612466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_16
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 58
+        width: 11
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0477cddcb51b85c30800000000000000
+      internalID: 4348420448080131904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_17
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 58
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a668bbad8f26d4040800000000000000
+      internalID: 4633468412595242602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_18
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 41
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dda48cb7c91b5680800000000000000
+      internalID: -8765383904094540327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_19
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 36
+        width: 33
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ae3f74b79d6ea270800000000000000
+      internalID: 8263662864607166118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_20
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 16
+        width: 12
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d02f920de048a84b0800000000000000
+      internalID: -5437388400939634163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_21
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 0
+        width: 66
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5e909fe461e26070800000000000000
+      internalID: 8098282903597784669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_22
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 18
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d1f569d24892ddb0800000000000000
+      internalID: -4768581642549333543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_23
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 0
+        width: 84
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7ac8f2386f332fe0800000000000000
+      internalID: -1215057757695587714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_West_Dual_Pods_24
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 0
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cea4f68d3bb54360800000000000000
+      internalID: 7153329456079482560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Prop_Lab_Concept_West_Dual_Pods_0: 3309039334613019004
+      Prop_Lab_Concept_West_Dual_Pods_1: -6961373860492740310
+      Prop_Lab_Concept_West_Dual_Pods_10: -3157051200724361973
+      Prop_Lab_Concept_West_Dual_Pods_11: 7935454689257224998
+      Prop_Lab_Concept_West_Dual_Pods_12: 4224231007673887333
+      Prop_Lab_Concept_West_Dual_Pods_13: -7527045836745047109
+      Prop_Lab_Concept_West_Dual_Pods_14: -6535460548945180122
+      Prop_Lab_Concept_West_Dual_Pods_15: 8879875494727612466
+      Prop_Lab_Concept_West_Dual_Pods_16: 4348420448080131904
+      Prop_Lab_Concept_West_Dual_Pods_17: 4633468412595242602
+      Prop_Lab_Concept_West_Dual_Pods_18: -8765383904094540327
+      Prop_Lab_Concept_West_Dual_Pods_19: 8263662864607166118
+      Prop_Lab_Concept_West_Dual_Pods_2: 6744376870242813969
+      Prop_Lab_Concept_West_Dual_Pods_20: -5437388400939634163
+      Prop_Lab_Concept_West_Dual_Pods_21: 8098282903597784669
+      Prop_Lab_Concept_West_Dual_Pods_22: -4768581642549333543
+      Prop_Lab_Concept_West_Dual_Pods_23: -1215057757695587714
+      Prop_Lab_Concept_West_Dual_Pods_24: 7153329456079482560
+      Prop_Lab_Concept_West_Dual_Pods_3: -9196123327535145960
+      Prop_Lab_Concept_West_Dual_Pods_4: -4818242252291935883
+      Prop_Lab_Concept_West_Dual_Pods_5: 7918682590964361851
+      Prop_Lab_Concept_West_Dual_Pods_6: 2398845502675243676
+      Prop_Lab_Concept_West_Dual_Pods_7: 2432046072031990758
+      Prop_Lab_Concept_West_Dual_Pods_8: 2367207112161402315
+      Prop_Lab_Concept_West_Dual_Pods_9: -7889131584725250591
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

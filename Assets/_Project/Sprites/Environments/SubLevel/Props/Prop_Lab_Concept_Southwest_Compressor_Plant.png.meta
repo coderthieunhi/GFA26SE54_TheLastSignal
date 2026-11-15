@@ -1,0 +1,808 @@
+fileFormatVersion: 2
+guid: 86cf9f2bc67b44736aef4cbbc760a51d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1405398140587563083
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_0
+  - first:
+      213: -6589571628467354957
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_1
+  - first:
+      213: 3641485230219303739
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_2
+  - first:
+      213: -272139103317240823
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_3
+  - first:
+      213: -9207216345720541470
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_4
+  - first:
+      213: -99432804035619778
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_5
+  - first:
+      213: -4981702640922154989
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_6
+  - first:
+      213: -1569887520998585521
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_7
+  - first:
+      213: 4673113896041732278
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_8
+  - first:
+      213: -8112850341141414476
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_9
+  - first:
+      213: -1940834651484963000
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_10
+  - first:
+      213: -4517644476629494050
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_11
+  - first:
+      213: -7958308679042393095
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_12
+  - first:
+      213: -3527651482858959517
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_13
+  - first:
+      213: 172985853369505345
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_14
+  - first:
+      213: -8356523783754358591
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_15
+  - first:
+      213: -15460401733120074
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_16
+  - first:
+      213: 3136098159070144604
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_17
+  - first:
+      213: 558948579567175013
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_18
+  - first:
+      213: 6995932916492463723
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_19
+  - first:
+      213: -3344250323669901759
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_20
+  - first:
+      213: 1141740595300793054
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_21
+  - first:
+      213: -259900336018290837
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_22
+  - first:
+      213: 3659743361231599882
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_23
+  - first:
+      213: 5399980112268406719
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_24
+  - first:
+      213: 1619939462882450536
+    second: Prop_Lab_Concept_Southwest_Compressor_Plant_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_0
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 112
+        width: 67
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4857b9a92af08310800000000000000
+      internalID: 1405398140587563083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_1
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 140
+        width: 7
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b2063754832d84a0800000000000000
+      internalID: -6589571628467354957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 104
+        width: 10
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3b9d020687298230800000000000000
+      internalID: 3641485230219303739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_3
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 105
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90458496dea293cf0800000000000000
+      internalID: -272139103317240823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_4
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 93
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ee2827f385693080800000000000000
+      internalID: -9207216345720541470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_5
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 63
+        width: 55
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e349f6c346ebe9ef0800000000000000
+      internalID: -99432804035619778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_6
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 70
+        width: 9
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 318a53f97df6ddab0800000000000000
+      internalID: -4981702640922154989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_7
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 76
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4b8f850e93a63ae0800000000000000
+      internalID: -1569887520998585521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_8
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 74
+        width: 62
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b85288445c3ad040800000000000000
+      internalID: 4673113896041732278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_9
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 68
+        width: 19
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bdfb54399d596f80800000000000000
+      internalID: -8112850341141414476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_10
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 14
+        width: 37
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84f387eda25c015e0800000000000000
+      internalID: -1940834651484963000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_11
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 26
+        width: 22
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed65ef4b84a1e41c0800000000000000
+      internalID: -4517644476629494050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_12
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 39
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fb15ccdb686e8190800000000000000
+      internalID: -7958308679042393095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_13
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 54
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36dcfc8aaa34b0fc0800000000000000
+      internalID: -3527651482858959517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 54
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 146d14597b1966200800000000000000
+      internalID: 172985853369505345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_15
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 32
+        width: 25
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c0e738b4e9a70c80800000000000000
+      internalID: -8356523783754358591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_16
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 54
+        width: 66
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bfcc96b8d219cff0800000000000000
+      internalID: -15460401733120074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_17
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 6
+        width: 30
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c58e120f8a8a58b20800000000000000
+      internalID: 3136098159070144604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_18
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 7
+        width: 15
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5658fcc85c8c1c700800000000000000
+      internalID: 558948579567175013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_19
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 30
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6eeef7ebeb861160800000000000000
+      internalID: 6995932916492463723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_20
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 16
+        width: 58
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14e9ba99c06d691d0800000000000000
+      internalID: -3344250323669901759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_21
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 3
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edafb80b50748df00800000000000000
+      internalID: 1141740595300793054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_22
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 4
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6700aa7506a46cf0800000000000000
+      internalID: -259900336018290837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_23
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 1
+        width: 16
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a09bd4762350ac230800000000000000
+      internalID: 3659743361231599882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_24
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 5
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbfaee14d4590fa40800000000000000
+      internalID: 5399980112268406719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southwest_Compressor_Plant_25
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 5
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86cdeb2db5e2b7610800000000000000
+      internalID: 1619939462882450536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Prop_Lab_Concept_Southwest_Compressor_Plant_0: 1405398140587563083
+      Prop_Lab_Concept_Southwest_Compressor_Plant_1: -6589571628467354957
+      Prop_Lab_Concept_Southwest_Compressor_Plant_10: -1940834651484963000
+      Prop_Lab_Concept_Southwest_Compressor_Plant_11: -4517644476629494050
+      Prop_Lab_Concept_Southwest_Compressor_Plant_12: -7958308679042393095
+      Prop_Lab_Concept_Southwest_Compressor_Plant_13: -3527651482858959517
+      Prop_Lab_Concept_Southwest_Compressor_Plant_14: 172985853369505345
+      Prop_Lab_Concept_Southwest_Compressor_Plant_15: -8356523783754358591
+      Prop_Lab_Concept_Southwest_Compressor_Plant_16: -15460401733120074
+      Prop_Lab_Concept_Southwest_Compressor_Plant_17: 3136098159070144604
+      Prop_Lab_Concept_Southwest_Compressor_Plant_18: 558948579567175013
+      Prop_Lab_Concept_Southwest_Compressor_Plant_19: 6995932916492463723
+      Prop_Lab_Concept_Southwest_Compressor_Plant_2: 3641485230219303739
+      Prop_Lab_Concept_Southwest_Compressor_Plant_20: -3344250323669901759
+      Prop_Lab_Concept_Southwest_Compressor_Plant_21: 1141740595300793054
+      Prop_Lab_Concept_Southwest_Compressor_Plant_22: -259900336018290837
+      Prop_Lab_Concept_Southwest_Compressor_Plant_23: 3659743361231599882
+      Prop_Lab_Concept_Southwest_Compressor_Plant_24: 5399980112268406719
+      Prop_Lab_Concept_Southwest_Compressor_Plant_25: 1619939462882450536
+      Prop_Lab_Concept_Southwest_Compressor_Plant_3: -272139103317240823
+      Prop_Lab_Concept_Southwest_Compressor_Plant_4: -9207216345720541470
+      Prop_Lab_Concept_Southwest_Compressor_Plant_5: -99432804035619778
+      Prop_Lab_Concept_Southwest_Compressor_Plant_6: -4981702640922154989
+      Prop_Lab_Concept_Southwest_Compressor_Plant_7: -1569887520998585521
+      Prop_Lab_Concept_Southwest_Compressor_Plant_8: 4673113896041732278
+      Prop_Lab_Concept_Southwest_Compressor_Plant_9: -8112850341141414476
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,1094 @@
+fileFormatVersion: 2
+guid: 0f21bd9530c194cacad7be416de78af1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5231278310338804969
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_0
+  - first:
+      213: -1609108910257313221
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_1
+  - first:
+      213: 4941813298447406961
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_2
+  - first:
+      213: -5302166403430669092
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_3
+  - first:
+      213: 1624156356901380822
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_4
+  - first:
+      213: 2725359343672705505
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_5
+  - first:
+      213: 6578310579014783843
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_6
+  - first:
+      213: 4457040948499901730
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_7
+  - first:
+      213: 5576756218688956404
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_8
+  - first:
+      213: -624506844591438699
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_9
+  - first:
+      213: -3901142308748522106
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_10
+  - first:
+      213: -3982114247653338005
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_11
+  - first:
+      213: 3420475190880165570
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_12
+  - first:
+      213: 6184465987956830301
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_13
+  - first:
+      213: 8299142460210967548
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_14
+  - first:
+      213: 5695630671485926999
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_15
+  - first:
+      213: 2307089851091132545
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_16
+  - first:
+      213: -977409620552853383
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_17
+  - first:
+      213: 2499339275561181644
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_18
+  - first:
+      213: 6256208711281102746
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_19
+  - first:
+      213: 4450368649926639009
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_20
+  - first:
+      213: 7594421210161260556
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_21
+  - first:
+      213: -1408118495262555165
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_22
+  - first:
+      213: -4569293539623964060
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_23
+  - first:
+      213: -4550226968697665027
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_24
+  - first:
+      213: -8014255485126867018
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_25
+  - first:
+      213: 3992392628587809637
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_26
+  - first:
+      213: -9165427875846221120
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_27
+  - first:
+      213: 4347028937265087258
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_28
+  - first:
+      213: -8954989858277729057
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_29
+  - first:
+      213: -1598442560349996000
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_30
+  - first:
+      213: 7062623623521853887
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_31
+  - first:
+      213: -2578827749020946879
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_32
+  - first:
+      213: 9180327777641851517
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_33
+  - first:
+      213: 3977506658125073048
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_34
+  - first:
+      213: -1840181681609033871
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_35
+  - first:
+      213: 3914730905452200211
+    second: Prop_Lab_Concept_Southeast_Archive_Bank_36
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_0
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 22
+        width: 73
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 713cc0fd714c667b0800000000000000
+      internalID: -5231278310338804969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_1
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 115
+        width: 61
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3a6237b8fb4ba9e0800000000000000
+      internalID: -1609108910257313221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_2
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 16
+        width: 59
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17752481309d49440800000000000000
+      internalID: 4941813298447406961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_3
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 33
+        width: 8
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd421878fbbea66b0800000000000000
+      internalID: -5302166403430669092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_4
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 75
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d2acc8f9992a8610800000000000000
+      internalID: 1624156356901380822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_5
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 81
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e147ec22eb62d520800000000000000
+      internalID: 2725359343672705505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_6
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 23
+        width: 23
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 363de544e9ada4b50800000000000000
+      internalID: 6578310579014783843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_7
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 41
+        width: 60
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22de4b4d0279add30800000000000000
+      internalID: 4457040948499901730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_8
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 60
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f7e7e5eb3e946d40800000000000000
+      internalID: 5576756218688956404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_9
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 51
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 594c358655e4557f0800000000000000
+      internalID: -624506844591438699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 22
+        width: 8
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68d0cc44dbb5cd9c0800000000000000
+      internalID: -3901142308748522106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_11
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 26
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b64d99d9030bcb8c0800000000000000
+      internalID: -3982114247653338005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_12
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 38
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ced27b4018f77f20800000000000000
+      internalID: 3420475190880165570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_13
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 24
+        width: 58
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d50f6a1ac03a3d550800000000000000
+      internalID: 6184465987956830301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_14
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 23
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf37c39c81a7c2370800000000000000
+      internalID: 8299142460210967548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_15
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 29
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75efcb14be1fa0f40800000000000000
+      internalID: 5695630671485926999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_16
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 25
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 180223ffefd640020800000000000000
+      internalID: 2307089851091132545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_17
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 15
+        width: 9
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 978d5eee02b8f62f0800000000000000
+      internalID: -977409620552853383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_18
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 16
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc1a10d34df6fa220800000000000000
+      internalID: 2499339275561181644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_19
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 5
+        width: 19
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9f4d941da482d650800000000000000
+      internalID: 6256208711281102746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_20
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 9
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ad796245b2e2cd30800000000000000
+      internalID: 4450368649926639009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_21
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 9
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c08aa5a8addc46960800000000000000
+      internalID: 7594421210161260556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_22
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 9
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e3c73860bb557ce0800000000000000
+      internalID: -1408118495262555165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_23
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 9
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 462f9302cbb9690c0800000000000000
+      internalID: -4569293539623964060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_24
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 9
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df98f5b1ea85ad0c0800000000000000
+      internalID: -4550226968697665027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_25
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 9
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b789cdf815a7c090800000000000000
+      internalID: -8014255485126867018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_26
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 9
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56b4dde61f3d76730800000000000000
+      internalID: 3992392628587809637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_27
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 9
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c219bd48ebddc080800000000000000
+      internalID: -9165427875846221120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_28
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 9
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a13870279cfb35c30800000000000000
+      internalID: 4347028937265087258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_29
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 9
+        width: 16
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdc51226b2c79b380800000000000000
+      internalID: -8954989858277729057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_30
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 8
+        width: 18
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02cf874d5f031d9e0800000000000000
+      internalID: -1598442560349996000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_31
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 9
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb16d4624ca730260800000000000000
+      internalID: 7062623623521853887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_32
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 9
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14eafa253d9263cd0800000000000000
+      internalID: -2578827749020946879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_33
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 9
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7a6efb6973176f70800000000000000
+      internalID: 9180327777641851517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_34
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 16
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89acb495b31f23730800000000000000
+      internalID: 3977506658125073048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_35
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 16
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1773381a28c5676e0800000000000000
+      internalID: -1840181681609033871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Southeast_Archive_Bank_36
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 0
+        width: 11
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 311c8b2740be35630800000000000000
+      internalID: 3914730905452200211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Prop_Lab_Concept_Southeast_Archive_Bank_0: -5231278310338804969
+      Prop_Lab_Concept_Southeast_Archive_Bank_1: -1609108910257313221
+      Prop_Lab_Concept_Southeast_Archive_Bank_10: -3901142308748522106
+      Prop_Lab_Concept_Southeast_Archive_Bank_11: -3982114247653338005
+      Prop_Lab_Concept_Southeast_Archive_Bank_12: 3420475190880165570
+      Prop_Lab_Concept_Southeast_Archive_Bank_13: 6184465987956830301
+      Prop_Lab_Concept_Southeast_Archive_Bank_14: 8299142460210967548
+      Prop_Lab_Concept_Southeast_Archive_Bank_15: 5695630671485926999
+      Prop_Lab_Concept_Southeast_Archive_Bank_16: 2307089851091132545
+      Prop_Lab_Concept_Southeast_Archive_Bank_17: -977409620552853383
+      Prop_Lab_Concept_Southeast_Archive_Bank_18: 2499339275561181644
+      Prop_Lab_Concept_Southeast_Archive_Bank_19: 6256208711281102746
+      Prop_Lab_Concept_Southeast_Archive_Bank_2: 4941813298447406961
+      Prop_Lab_Concept_Southeast_Archive_Bank_20: 4450368649926639009
+      Prop_Lab_Concept_Southeast_Archive_Bank_21: 7594421210161260556
+      Prop_Lab_Concept_Southeast_Archive_Bank_22: -1408118495262555165
+      Prop_Lab_Concept_Southeast_Archive_Bank_23: -4569293539623964060
+      Prop_Lab_Concept_Southeast_Archive_Bank_24: -4550226968697665027
+      Prop_Lab_Concept_Southeast_Archive_Bank_25: -8014255485126867018
+      Prop_Lab_Concept_Southeast_Archive_Bank_26: 3992392628587809637
+      Prop_Lab_Concept_Southeast_Archive_Bank_27: -9165427875846221120
+      Prop_Lab_Concept_Southeast_Archive_Bank_28: 4347028937265087258
+      Prop_Lab_Concept_Southeast_Archive_Bank_29: -8954989858277729057
+      Prop_Lab_Concept_Southeast_Archive_Bank_3: -5302166403430669092
+      Prop_Lab_Concept_Southeast_Archive_Bank_30: -1598442560349996000
+      Prop_Lab_Concept_Southeast_Archive_Bank_31: 7062623623521853887
+      Prop_Lab_Concept_Southeast_Archive_Bank_32: -2578827749020946879
+      Prop_Lab_Concept_Southeast_Archive_Bank_33: 9180327777641851517
+      Prop_Lab_Concept_Southeast_Archive_Bank_34: 3977506658125073048
+      Prop_Lab_Concept_Southeast_Archive_Bank_35: -1840181681609033871
+      Prop_Lab_Concept_Southeast_Archive_Bank_36: 3914730905452200211
+      Prop_Lab_Concept_Southeast_Archive_Bank_4: 1624156356901380822
+      Prop_Lab_Concept_Southeast_Archive_Bank_5: 2725359343672705505
+      Prop_Lab_Concept_Southeast_Archive_Bank_6: 6578310579014783843
+      Prop_Lab_Concept_Southeast_Archive_Bank_7: 4457040948499901730
+      Prop_Lab_Concept_Southeast_Archive_Bank_8: 5576756218688956404
+      Prop_Lab_Concept_Southeast_Archive_Bank_9: -624506844591438699
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

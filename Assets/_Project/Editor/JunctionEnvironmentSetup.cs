@@ -234,15 +234,16 @@ namespace TheLastSignal.EditorTools
 
             // ========================================================
             // 1. CLEAR EXISTING PROTOTYPE TILES IN JUNCTION REGION
-            // X in [-10..10], Y in [18..37]
+            // X in [-10..9], Y in [18..37]
             // Note: Keep existing room doors and threshold boundaries intact!
+            // Console Alpha West wall & doorway are at X = 10, do not wipe!
             // ========================================================
-            for (int x = -10; x <= 10; x++)
+            for (int x = -10; x <= 9; x++)
             {
                 for (int y = 18; y <= 37; y++)
                 {
                     // Do not clear MedBay room interior (X <= -11)
-                    // Do not clear ConsoleAlpha room interior (X >= 11)
+                    // Do not clear ConsoleAlpha West wall or room (X >= 10)
                     // Do not clear CrewQuarters room interior (Y >= 38)
                     // Do not clear Airlock room interior (Y <= 17)
                     var p = new Vector3Int(x, y, 0);
@@ -533,8 +534,9 @@ namespace TheLastSignal.EditorTools
 
         private static void CreateCenterConsole(GameObject parent, Material mat)
         {
-            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{PropsSourceDir}/Prop_NodeA_Power_Console.png");
-            if (sprite == null) return;
+            Sprite unpowered = AssetDatabase.LoadAssetAtPath<Sprite>($"{PropsSourceDir}/Prop_NodeA_Substation_Unpowered.png");
+            Sprite powered = AssetDatabase.LoadAssetAtPath<Sprite>($"{PropsSourceDir}/Prop_NodeA_Substation_Powered.png");
+            if (unpowered == null) return;
 
             GameObject consoleGo = new GameObject("Prop_NodeA_Power_Console");
             consoleGo.transform.SetParent(parent.transform, false);
@@ -543,46 +545,180 @@ namespace TheLastSignal.EditorTools
             consoleGo.layer = interactableLayer != -1 ? interactableLayer : 10;
 
             SpriteRenderer sr = consoleGo.AddComponent<SpriteRenderer>();
-            sr.sprite = sprite;
+            sr.sprite = unpowered;
             sr.sortingLayerName = "Obstacles";
             sr.sortingOrder = 3;
             if (mat != null) sr.sharedMaterial = mat;
 
             BoxCollider2D col = consoleGo.AddComponent<BoxCollider2D>();
-            col.size = new Vector2(1.6f, 1.4f);
+            col.size = new Vector2(2.2f, 2.0f);
             col.offset = new Vector2(0f, 0f);
 
             CircleCollider2D triggerCol = consoleGo.AddComponent<CircleCollider2D>();
-            triggerCol.radius = 1.8f;
+            triggerCol.radius = 2.4f;
             triggerCol.isTrigger = true;
 
-            // Point Light 2D on Console
-            GameObject lightGo = new GameObject("Light_Console_NodeA");
-            lightGo.transform.SetParent(consoleGo.transform, false);
-            lightGo.transform.localPosition = new Vector3(0f, 0f, 0f);
+            // 1. South Diagnostic Display Status Light (Subtle screen glow)
+            GameObject consoleLightGo = new GameObject("Light_Console_NodeA");
+            consoleLightGo.transform.SetParent(consoleGo.transform, false);
+            consoleLightGo.transform.localPosition = new Vector3(0f, -0.22f, 0f);
 
-            Light2D light = lightGo.AddComponent<Light2D>();
-            light.lightType = Light2D.LightType.Point;
-            light.color = new Color(0.1f, 0.95f, 0.85f, 1f); // Cyan phosphor glow
-            light.intensity = 1.2f;
-            light.pointLightOuterRadius = 3.5f;
-            light.pointLightInnerRadius = 0.3f;
+            Light2D consoleLight = consoleLightGo.AddComponent<Light2D>();
+            consoleLight.lightType = Light2D.LightType.Point;
+            consoleLight.color = new Color(1f, 0.2f, 0.1f, 1f); // Standby red fault
+            consoleLight.intensity = 0.2f;
+            consoleLight.pointLightOuterRadius = 1.2f;
+            consoleLight.pointLightInnerRadius = 0.2f;
+
+            // 2. Central Mechanically Enclosed Energy Core (Controlled cyan glow, not magical)
+            GameObject coreLightGo = new GameObject("Light_Core_InternalPlasma");
+            coreLightGo.transform.SetParent(consoleGo.transform, false);
+            coreLightGo.transform.localPosition = new Vector3(0f, 0.40f, 0f);
+
+            Light2D coreLight = coreLightGo.AddComponent<Light2D>();
+            coreLight.lightType = Light2D.LightType.Point;
+            coreLight.color = new Color(0.0f, 0.85f, 1.0f, 1f);
+            coreLight.intensity = 0f;
+            coreLight.pointLightOuterRadius = 2.2f;
+            coreLight.pointLightInnerRadius = 0.2f;
+            coreLight.enabled = false;
+
+            // 3. Subtle Localized Floor Reflection (Restrained local light spill)
+            GameObject deckLightGo = new GameObject("Light_Chamber_RadialWash");
+            deckLightGo.transform.SetParent(consoleGo.transform, false);
+            deckLightGo.transform.localPosition = new Vector3(0f, 0.35f, 0f);
+
+            Light2D deckLight = deckLightGo.AddComponent<Light2D>();
+            deckLight.lightType = Light2D.LightType.Point;
+            deckLight.color = new Color(0.0f, 0.65f, 0.95f, 1f);
+            deckLight.intensity = 0f;
+            deckLight.pointLightOuterRadius = 3.8f;
+            deckLight.pointLightInnerRadius = 1.2f;
+            deckLight.enabled = false;
+
+            // 4. 4 Restrained Directional Connection Status Spotlights (Point outward into floor conduits, NO spill onto top deck)
+            var outwardBeams = new System.Collections.Generic.List<Light2D>();
+            string[] beamNames = { "Indicator_North", "Indicator_South", "Indicator_West", "Indicator_East" };
+            Vector3[] beamOffsets = {
+                new Vector3(0f, 1.15f, 0f),
+                new Vector3(0f, -0.85f, 0f),
+                new Vector3(-1.10f, 0.40f, 0f),
+                new Vector3(1.10f, 0.40f, 0f)
+            };
+            Quaternion[] beamRotations = {
+                Quaternion.Euler(0f, 0f, 0f),    // North (+Y)
+                Quaternion.Euler(0f, 0f, 180f),  // South (-Y)
+                Quaternion.Euler(0f, 0f, 90f),   // West (-X)
+                Quaternion.Euler(0f, 0f, -90f)   // East (+X)
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                GameObject beamGo = new GameObject(beamNames[i]);
+                beamGo.transform.SetParent(consoleGo.transform, false);
+                beamGo.transform.localPosition = beamOffsets[i];
+                beamGo.transform.localRotation = beamRotations[i];
+
+                Light2D beamLight = beamGo.AddComponent<Light2D>();
+                beamLight.lightType = Light2D.LightType.Point;
+                beamLight.color = new Color(0.1f, 0.85f, 1.0f, 1f);
+                beamLight.pointLightInnerRadius = 0.15f;
+                beamLight.pointLightOuterRadius = 1.25f; // Localized conduit feed glow
+                beamLight.pointLightInnerAngle = 35f;
+                beamLight.pointLightOuterAngle = 65f;
+                beamLight.intensity = 0f;
+                beamLight.enabled = false;
+                outwardBeams.Add(beamLight);
+            }
+
+            // 5. Node A Corridor Environmental Lighting Network (Restores lighting through the corridors when powered)
+            GameObject envLightsRoot = GameObject.Find("Junction_Environmental_Lighting");
+            if (envLightsRoot != null) Undo.DestroyObjectImmediate(envLightsRoot);
+            envLightsRoot = new GameObject("Junction_Environmental_Lighting");
+            Undo.RegisterCreatedObjectUndo(envLightsRoot, "Create Junction Environmental Lighting");
+
+            var envLights = new System.Collections.Generic.List<Light2D>();
+            string[] envLightNames = { "Light_Corridor_North", "Light_Corridor_South", "Light_Corridor_West", "Light_Corridor_East" };
+            Vector3[] envLightPositions = {
+                new Vector3(0f, 31.5f, 0f),
+                new Vector3(0f, 24.5f, 0f),
+                new Vector3(-3.5f, 28.0f, 0f),
+                new Vector3(3.5f, 28.0f, 0f)
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                GameObject elGo = new GameObject(envLightNames[i]);
+                elGo.transform.SetParent(envLightsRoot.transform, false);
+                elGo.transform.position = envLightPositions[i];
+
+                Light2D el = elGo.AddComponent<Light2D>();
+                el.lightType = Light2D.LightType.Point;
+                el.color = new Color(0.85f, 0.94f, 1.0f, 1f); // Balanced corridor restoration light
+                el.pointLightInnerRadius = 0.5f;
+                el.pointLightOuterRadius = 3.2f;
+                el.intensity = 0f;
+                el.enabled = false;
+                envLights.Add(el);
+            }
+
+            // 6. Volumetric Corridor Dust Mote Particles
+            GameObject psGo = new GameObject("Corridor_Beam_Particles");
+            psGo.transform.SetParent(consoleGo.transform, false);
+            psGo.transform.localPosition = new Vector3(0f, 0.35f, 0f);
+            ParticleSystem beamPS = psGo.AddComponent<ParticleSystem>();
+            var psMain = beamPS.main;
+            psMain.playOnAwake = false;
+            psMain.loop = true;
+            psMain.startLifetime = 2.5f;
+            psMain.startSpeed = 0.25f;
+            psMain.startSize = 0.05f;
+            psMain.startColor = new Color(0.5f, 0.92f, 1.0f, 0.35f);
+            psMain.simulationSpace = ParticleSystemSimulationSpace.World;
+            psMain.maxParticles = 50;
+            var psEmission = beamPS.emission;
+            psEmission.rateOverTime = 12f;
+            var psShape = beamPS.shape;
+            psShape.shapeType = ParticleSystemShapeType.Circle;
+            psShape.radius = 4.0f;
 
             AudioSource audioSrc = consoleGo.GetComponent<AudioSource>();
             if (audioSrc == null) audioSrc = consoleGo.AddComponent<AudioSource>();
             audioSrc.playOnAwake = false;
             audioSrc.spatialBlend = 0.5f;
 
-            // Add ContestedPowerSubstation for 3v1 gameplay
+            // Wire into ContestedPowerSubstation
             var substationComp = consoleGo.AddComponent<TheLastSignal.Entities.Environment.ContestedPowerSubstation>();
-            var unpowered = AssetDatabase.LoadAssetAtPath<Sprite>($"{PropsSourceDir}/Prop_NodeA_BioReactor_Unpowered.png") ?? sprite;
-            var powered = AssetDatabase.LoadAssetAtPath<Sprite>($"{PropsSourceDir}/Prop_NodeA_BioReactor_Powered.png");
-
             var soSub = new SerializedObject(substationComp);
             soSub.FindProperty("spriteRenderer").objectReferenceValue = sr;
             soSub.FindProperty("unpoweredSprite").objectReferenceValue = unpowered;
             soSub.FindProperty("poweredSprite").objectReferenceValue = powered;
+            soSub.FindProperty("consoleLight").objectReferenceValue = consoleLight;
+            soSub.FindProperty("coreLight").objectReferenceValue = coreLight;
+            soSub.FindProperty("chamberDeckLight").objectReferenceValue = deckLight;
+            soSub.FindProperty("beamParticles").objectReferenceValue = beamPS;
+
+            var outwardBeamsProp = soSub.FindProperty("outwardBeams");
+            outwardBeamsProp.ClearArray();
+            for (int i = 0; i < outwardBeams.Count; i++)
+            {
+                outwardBeamsProp.InsertArrayElementAtIndex(i);
+                outwardBeamsProp.GetArrayElementAtIndex(i).objectReferenceValue = outwardBeams[i];
+            }
+
+            var envLightsProp = soSub.FindProperty("nodeAEnvironmentalLights");
+            if (envLightsProp != null)
+            {
+                envLightsProp.ClearArray();
+                for (int i = 0; i < envLights.Count; i++)
+                {
+                    envLightsProp.InsertArrayElementAtIndex(i);
+                    envLightsProp.GetArrayElementAtIndex(i).objectReferenceValue = envLights[i];
+                }
+            }
+
             soSub.ApplyModifiedProperties();
+            substationComp.UpdateVisualState();
 
             // Clean up any deprecated surveillance objects
             GameObject oldCam = GameObject.Find("Surveillance_Camera_NodeA");

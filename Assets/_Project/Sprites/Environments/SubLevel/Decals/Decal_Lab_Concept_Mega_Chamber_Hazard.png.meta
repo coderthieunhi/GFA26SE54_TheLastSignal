@@ -1,0 +1,1146 @@
+fileFormatVersion: 2
+guid: c7e899ae4b2134256973152f3c2c0f5c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3372640702655504175
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_0
+  - first:
+      213: 2624507133679409208
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_1
+  - first:
+      213: -6848374984784318988
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_2
+  - first:
+      213: 7138083234510242157
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_3
+  - first:
+      213: 7930376771048102773
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_4
+  - first:
+      213: 813889862999734528
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_5
+  - first:
+      213: -5718421227279476920
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_6
+  - first:
+      213: 3627253220839007223
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_7
+  - first:
+      213: -6497038199528487558
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_8
+  - first:
+      213: -9078692358335486220
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_9
+  - first:
+      213: -1356024928326781445
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_10
+  - first:
+      213: 2478457924953851574
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_11
+  - first:
+      213: 1906288511864621135
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_12
+  - first:
+      213: 1220053247518099466
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_13
+  - first:
+      213: -7784755984666212387
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_14
+  - first:
+      213: -5235617724860013242
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_15
+  - first:
+      213: 7710884189701306882
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_16
+  - first:
+      213: -5303922010053496939
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_17
+  - first:
+      213: 1784360051409195024
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_18
+  - first:
+      213: 8853492158179981855
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_19
+  - first:
+      213: 2658501621361889407
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_20
+  - first:
+      213: 3195436274172459648
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_21
+  - first:
+      213: -3507913903550716284
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_22
+  - first:
+      213: 4377428767268444559
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_23
+  - first:
+      213: 2657221472675114478
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_24
+  - first:
+      213: -3913744641461780710
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_25
+  - first:
+      213: -5286455799711415627
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_26
+  - first:
+      213: 4392467565739530920
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_27
+  - first:
+      213: -3443054576763418609
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_28
+  - first:
+      213: 9007882615074672221
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_29
+  - first:
+      213: -7005545447387248421
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_30
+  - first:
+      213: 3963727397809338907
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_31
+  - first:
+      213: -2115240944478866376
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_32
+  - first:
+      213: -1616768545226345342
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_33
+  - first:
+      213: -3822693109285549954
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_34
+  - first:
+      213: -5575683684540044267
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_35
+  - first:
+      213: -5674219538812860804
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_36
+  - first:
+      213: 9052120224747701185
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_37
+  - first:
+      213: 5929324145807291807
+    second: Decal_Lab_Concept_Mega_Chamber_Hazard_38
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 202
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2f1ecc99d60ece20800000000000000
+      internalID: 3372640702655504175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_1
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 34
+        width: 311
+        height: 192
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8389075355f1c6420800000000000000
+      internalID: 2624507133679409208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_2
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 207
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fd624f4c3fa5f0a0800000000000000
+      internalID: -6848374984784318988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d618722f1e09f0360800000000000000
+      internalID: 7138083234510242157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_4
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 53
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57bd45508ab5e0e60800000000000000
+      internalID: 7930376771048102773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_5
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 34
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 009f36aa4848b4b00800000000000000
+      internalID: 813889862999734528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_6
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 34
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84714f7f03614a0b0800000000000000
+      internalID: -5718421227279476920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_7
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 34
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f3208a1697965230800000000000000
+      internalID: 3627253220839007223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_8
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 34
+        width: 34
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7506f82e22e5d5a0800000000000000
+      internalID: -6497038199528487558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_9
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 34
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f62c5ca661020280800000000000000
+      internalID: -9078692358335486220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_10
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 34
+        width: 19
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf5f180238e6e2de0800000000000000
+      internalID: -1356024928326781445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_11
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 34
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b640afe950456220800000000000000
+      internalID: 2478457924953851574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_12
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 34
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4849153d4f747a10800000000000000
+      internalID: 1906288511864621135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_13
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 33
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a08c069e6ff7ee010800000000000000
+      internalID: 1220053247518099466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_14
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 34
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd7cfd66dadf6f390800000000000000
+      internalID: -7784755984666212387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_15
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 34
+        width: 26
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 645eaf13b695757b0800000000000000
+      internalID: -5235617724860013242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_16
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 34
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20a72570150920b60800000000000000
+      internalID: 7710884189701306882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_17
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 34
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59fa262880fa466b0800000000000000
+      internalID: -5303922010053496939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_18
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 34
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01094a7430253c810800000000000000
+      internalID: 1784360051409195024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_19
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 34
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1a3606c53cedda70800000000000000
+      internalID: 8853492158179981855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_20
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 19
+        width: 13
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f705318a325e4e420800000000000000
+      internalID: 2658501621361889407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_21
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 19
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08a72787c58785c20800000000000000
+      internalID: 3195436274172459648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_22
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 19
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 486a434f3e2615fc0800000000000000
+      internalID: -3507913903550716284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_23
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 19
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f899c9e6540cfbc30800000000000000
+      internalID: 4377428767268444559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_24
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 19
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eed2750d9d850e420800000000000000
+      internalID: 2657221472675114478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_25
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 19
+        width: 20
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1ff4180cf59fa9c0800000000000000
+      internalID: -3913744641461780710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_26
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 18
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b2c561857cb2a6b0800000000000000
+      internalID: -5286455799711415627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_27
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 18
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8aa545f8afd25fc30800000000000000
+      internalID: 4392467565739530920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_28
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 19
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f08cbb1ca10d730d0800000000000000
+      internalID: -3443054576763418609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_29
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 19
+        width: 27
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5e41f9338d620d70800000000000000
+      internalID: 9007882615074672221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_30
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 19
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd8c0a6588d47ce90800000000000000
+      internalID: -7005545447387248421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_31
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 19
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1ab8ec411df10730800000000000000
+      internalID: 3963727397809338907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_32
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 19
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 834b9f9619725a2e0800000000000000
+      internalID: -2115240944478866376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_33
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 19
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28432c9f2951099e0800000000000000
+      internalID: -1616768545226345342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_34
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 19
+        width: 41
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7883bfded013fac0800000000000000
+      internalID: -3822693109285549954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_35
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 19
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51cac0bea313f92b0800000000000000
+      internalID: -5575683684540044267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_36
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 19
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c768a7b846f1141b0800000000000000
+      internalID: -5674219538812860804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_37
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 19
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c3473c52679f9d70800000000000000
+      internalID: 9052120224747701185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Mega_Chamber_Hazard_38
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 19
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f957dfc45e0394250800000000000000
+      internalID: 5929324145807291807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Decal_Lab_Concept_Mega_Chamber_Hazard_0: 3372640702655504175
+      Decal_Lab_Concept_Mega_Chamber_Hazard_1: 2624507133679409208
+      Decal_Lab_Concept_Mega_Chamber_Hazard_10: -1356024928326781445
+      Decal_Lab_Concept_Mega_Chamber_Hazard_11: 2478457924953851574
+      Decal_Lab_Concept_Mega_Chamber_Hazard_12: 1906288511864621135
+      Decal_Lab_Concept_Mega_Chamber_Hazard_13: 1220053247518099466
+      Decal_Lab_Concept_Mega_Chamber_Hazard_14: -7784755984666212387
+      Decal_Lab_Concept_Mega_Chamber_Hazard_15: -5235617724860013242
+      Decal_Lab_Concept_Mega_Chamber_Hazard_16: 7710884189701306882
+      Decal_Lab_Concept_Mega_Chamber_Hazard_17: -5303922010053496939
+      Decal_Lab_Concept_Mega_Chamber_Hazard_18: 1784360051409195024
+      Decal_Lab_Concept_Mega_Chamber_Hazard_19: 8853492158179981855
+      Decal_Lab_Concept_Mega_Chamber_Hazard_2: -6848374984784318988
+      Decal_Lab_Concept_Mega_Chamber_Hazard_20: 2658501621361889407
+      Decal_Lab_Concept_Mega_Chamber_Hazard_21: 3195436274172459648
+      Decal_Lab_Concept_Mega_Chamber_Hazard_22: -3507913903550716284
+      Decal_Lab_Concept_Mega_Chamber_Hazard_23: 4377428767268444559
+      Decal_Lab_Concept_Mega_Chamber_Hazard_24: 2657221472675114478
+      Decal_Lab_Concept_Mega_Chamber_Hazard_25: -3913744641461780710
+      Decal_Lab_Concept_Mega_Chamber_Hazard_26: -5286455799711415627
+      Decal_Lab_Concept_Mega_Chamber_Hazard_27: 4392467565739530920
+      Decal_Lab_Concept_Mega_Chamber_Hazard_28: -3443054576763418609
+      Decal_Lab_Concept_Mega_Chamber_Hazard_29: 9007882615074672221
+      Decal_Lab_Concept_Mega_Chamber_Hazard_3: 7138083234510242157
+      Decal_Lab_Concept_Mega_Chamber_Hazard_30: -7005545447387248421
+      Decal_Lab_Concept_Mega_Chamber_Hazard_31: 3963727397809338907
+      Decal_Lab_Concept_Mega_Chamber_Hazard_32: -2115240944478866376
+      Decal_Lab_Concept_Mega_Chamber_Hazard_33: -1616768545226345342
+      Decal_Lab_Concept_Mega_Chamber_Hazard_34: -3822693109285549954
+      Decal_Lab_Concept_Mega_Chamber_Hazard_35: -5575683684540044267
+      Decal_Lab_Concept_Mega_Chamber_Hazard_36: -5674219538812860804
+      Decal_Lab_Concept_Mega_Chamber_Hazard_37: 9052120224747701185
+      Decal_Lab_Concept_Mega_Chamber_Hazard_38: 5929324145807291807
+      Decal_Lab_Concept_Mega_Chamber_Hazard_4: 7930376771048102773
+      Decal_Lab_Concept_Mega_Chamber_Hazard_5: 813889862999734528
+      Decal_Lab_Concept_Mega_Chamber_Hazard_6: -5718421227279476920
+      Decal_Lab_Concept_Mega_Chamber_Hazard_7: 3627253220839007223
+      Decal_Lab_Concept_Mega_Chamber_Hazard_8: -6497038199528487558
+      Decal_Lab_Concept_Mega_Chamber_Hazard_9: -9078692358335486220
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

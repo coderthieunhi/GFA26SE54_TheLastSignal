@@ -222,6 +222,35 @@ namespace TheLastSignal.EditorTools
             Tile wJambBot = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Door_Jamb_Bottom.asset") != null ? AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Door_Jamb_Bottom.asset") : wWallV;
             Tile wFan = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Exhaust_Fan.asset") != null ? AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Exhaust_Fan.asset") : wVent;
 
+            // Xenobiology Research Laboratory Custom Tiles
+            Tile fLabEpoxy = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Epoxy.asset") ?? fTread;
+            Tile fLabEpoxyVar = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Epoxy_Variant.asset") ?? fLabEpoxy;
+            Tile fDeckSplitV = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Deck_Split_V.asset") ?? fLabEpoxy;
+            Tile fDeckSplitH = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Deck_Split_H.asset") ?? fLabEpoxy;
+            Tile fCryoPanel = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Cryo_Panel.asset") ?? fLabEpoxy;
+            Tile fXenoGrate = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Xeno_DeconGrate.asset") ?? fLabEpoxy;
+            Tile fLabZone = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Zone_Stripe.asset") ?? fLabEpoxy;
+            Tile fXenoClean = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Xeno_Cleanroom.asset") ?? fLabEpoxy;
+            Tile fXenoHaz = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Xeno_BioHazard.asset") ?? fTransStripe;
+            Tile fLabSticky = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Sticky_Mat.asset") ?? fLabZone;
+            Tile fLabMetric = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Metric_Grid.asset") ?? fLabEpoxy;
+            Tile fLabHatch = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Floor_Lab_Utility_Hatch.asset") ?? fLabEpoxy;
+            Tile wXenoH = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Bulkhead_H.asset") ?? wWallH;
+            Tile wXenoV = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Bulkhead_V.asset") ?? wWallV;
+            Tile wXenoEast = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_East_Bulkhead.asset") ?? wXenoV;
+            Tile wXenoSouth = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_South_Bulkhead.asset") ?? wXenoH;
+            Tile wXenoGelPipe = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_GelPipe.asset") ?? wXenoH;
+            Tile wXenoWinL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Observation_Window_L.asset") ?? wXenoH;
+            Tile wXenoWinM = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Observation_Window_M.asset") ?? wXenoH;
+            Tile wXenoWinR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Observation_Window_R.asset") ?? wXenoH;
+            Tile wXenoHepa = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_HEPA_Vent.asset") ?? wXenoH;
+            Tile wXenoBay = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Recessed_Bay.asset") ?? wXenoH;
+            Tile wXenoHvac = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Vent_HVAC.asset") ?? wXenoHepa;
+            Tile wXenoTL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Corner_TL.asset") ?? wCornerTL;
+            Tile wXenoTR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Corner_TR.asset") ?? wCornerTR;
+            Tile wXenoBL = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Corner_BL.asset") ?? wCornerBL;
+            Tile wXenoBR = AssetDatabase.LoadAssetAtPath<Tile>($"{TileAssetsDir}/SubLevel_Wall_Xeno_Corner_BR.asset") ?? wCornerBR;
+
             // ========================================================
             // 1. CORRIDOR: CARGO HOLD -> NODE C (X: [-1, 0], Y: [-30..-25])
             // ========================================================
@@ -234,83 +263,10 @@ namespace TheLastSignal.EditorTools
             }
 
             // ========================================================
-            // 2. NODE C: THE ABYSSAL CATWALK NEXUS (X: [-4..3], Y: [-38..-31])
-            // Catwalk grid floor over void chasm, reinforced perimeter walls
-            // Openings: North (X in [-1, 0]), South (X in [-1, 0]), East (Y in [-35, -34])
+            // 2. NODE C: THE ABYSSAL CATWALK NEXUS (21-TILE MEGA SPINE: Y in [-45..-25])
+            // Delegated to NodeCOverhaulApplier to guarantee the authoritative 21-tile continuous catwalk spine
             // ========================================================
-            // Clear old prototype tiles in Node C area
-            for (int x = -5; x <= 4; x++)
-            {
-                for (int y = -39; y <= -30; y++)
-                {
-                    wallTm.SetTile(new Vector3Int(x, y, 0), null);
-                    floorTm.SetTile(new Vector3Int(x, y, 0), null);
-                }
-            }
-
-            // Floor: Catwalk Grate interior with continuous directional hazard borders & clean doorway caps
-            for (int x = -4; x <= 3; x++)
-            {
-                for (int y = -38; y <= -31; y++)
-                {
-                    Tile t = fGrate;
-                    if (x == -4 && y == -31) t = fCornNW;
-                    else if (x == 3 && y == -31) t = fCornNE;
-                    else if (x == -4 && y == -38) t = fCornSW;
-                    else if (x == 3 && y == -38) t = fCornSE;
-                    else if (y == -31)
-                    {
-                        if (x == -2) t = fCapNW;
-                        else if (x == 1) t = fCapNE;
-                        else if (x == -1 || x == 0) t = fGrate; // Open passage at doorway
-                        else t = fEdgeN;
-                    }
-                    else if (y == -38)
-                    {
-                        if (x == -2) t = fCapSW;
-                        else if (x == 1) t = fCapSE;
-                        else if (x == -1 || x == 0) t = fGrate; // Open passage at doorway
-                        else t = fEdgeS;
-                    }
-                    else if (x == -4) t = fEdgeW;
-                    else if (x == 3) t = (y == -34 || y == -35) ? fGrate : fEdgeE; // Open passage to East corridor
-                    floorTm.SetTile(new Vector3Int(x, y, 0), t);
-                }
-            }
-
-            // North Walls (Opening at X in [-1, 0], Y = -30)
-            for (int x = -4; x <= -2; x++) wallTm.SetTile(new Vector3Int(x, -30, 0), wWallH);
-            for (int x = 1; x <= 3; x++) wallTm.SetTile(new Vector3Int(x, -30, 0), wWallH);
-            floorTm.SetTile(new Vector3Int(-1, -30, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(0, -30, 0), fThreshold);
-
-            // South Walls (Opening at X in [-1, 0], Y = -39)
-            for (int x = -4; x <= -2; x++) wallTm.SetTile(new Vector3Int(x, -39, 0), wWallH);
-            for (int x = 1; x <= 3; x++) wallTm.SetTile(new Vector3Int(x, -39, 0), wWallH);
-            floorTm.SetTile(new Vector3Int(-1, -39, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(0, -39, 0), fThreshold);
-
-            // West Walls (Continuous solid blast wall at X = -5, Y in [-38..-31] with structural columns)
-            for (int y = -38; y <= -31; y++)
-            {
-                Tile wt = wWallV;
-                if (y == -34 || y == -35) wt = wVent;
-                else if (y == -33 || y == -36) wt = wColumn;
-                wallTm.SetTile(new Vector3Int(-5, y, 0), wt);
-            }
-
-            // East Walls (Opening at Y in [-35, -34] for Loop East bend)
-            for (int y = -38; y <= -36; y++) wallTm.SetTile(new Vector3Int(4, y, 0), wWallV);
-            for (int y = -33; y <= -31; y++) wallTm.SetTile(new Vector3Int(4, y, 0), wWallV);
-            // East opening floor (Threshold plate transition)
-            floorTm.SetTile(new Vector3Int(4, -34, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(4, -35, 0), fThreshold);
-
-            // 4 Corner bulkheads
-            wallTm.SetTile(new Vector3Int(-5, -30, 0), wCornerTL);
-            wallTm.SetTile(new Vector3Int(4, -30, 0), wCornerTR);
-            wallTm.SetTile(new Vector3Int(-5, -39, 0), wCornerBL);
-            wallTm.SetTile(new Vector3Int(4, -39, 0), wCornerBR);
+            NodeCOverhaulApplier.ApplyOverhaul();
 
             // ========================================================
             // 3. CORRIDOR C STEM (X: [-1, 0], Y: [-45..-40])
@@ -354,8 +310,10 @@ namespace TheLastSignal.EditorTools
             wallTm.SetTile(new Vector3Int(0, -48, 0), wDirectoryR);
 
             // ========================================================
-            // 5. DEEP STORAGE ROOM (X: [-18..-9], Y: [-52..-43]) - 10x10
-            // Classified Vault with Heavy Crane Rails, Staging Bays & End Buffers
+            // 5. DEEP STORAGE: CRYOGENIC COLD STORAGE VAULT (-185°C)
+            // (X: [-18..-9], Y: [-52..-43]) - 10x10
+            // Complete Sub-Zero Freezer: Insulated floor panels, heavy permafrost ice rime,
+            // liquid nitrogen drainage grating trenches, insulated bulkhead walls with icicles.
             // Openings:
             // - East: Door_DeepStorage at X = -8, Y in [-47, -46]
             // - West: Loop West bend connection at X = -19, Y in [-47, -46]
@@ -370,71 +328,149 @@ namespace TheLastSignal.EditorTools
                 }
             }
 
-            // Interior Floor (X in [-18..-9], Y in [-52..-43])
+            // ========================================================
+            // 5. DEEP STORAGE: XENOBIOLOGY RESEARCH LABORATORY (X: [-18..-9], Y: [-52..-43]) - 10x10
+            // Non-Repetitive Modular Spacecraft Deck Plates with Natural Engineering & Layered Bulkheads
+            // ========================================================
+            // 1. Base Layer: Large Monolithic Steel Deck Plates (visually calm, spacious)
             for (int x = -18; x <= -9; x++)
             {
                 for (int y = -52; y <= -43; y++)
                 {
-                    // Crane tracks run down rows X = -14 and X = -13
-                    if (x == -14 || x == -13)
-                    {
-                        if (y == -43) floorTm.SetTile(new Vector3Int(x, y, 0), fCraneBufN);
-                        else if (y == -52) floorTm.SetTile(new Vector3Int(x, y, 0), fCraneBufS);
-                        else floorTm.SetTile(new Vector3Int(x, y, 0), fTrack);
-                    }
-                    else
-                    {
-                        floorTm.SetTile(new Vector3Int(x, y, 0), fTread);
-                    }
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fLabEpoxy);
                 }
             }
 
-            // Painted Cargo Staging Bays (West & East wings)
-            floorTm.SetTile(new Vector3Int(-18, -49, 0), fCargoTL);
-            floorTm.SetTile(new Vector3Int(-16, -49, 0), fCargoTR);
-            floorTm.SetTile(new Vector3Int(-18, -51, 0), fCargoBL);
-            floorTm.SetTile(new Vector3Int(-16, -51, 0), fCargoBR);
+            // 2. Controlled Panel Variation (Breaks up rectangular repetition with believable interlocking plates)
+            // Vertical split runner plates (X-varying structural joins)
+            floorTm.SetTile(new Vector3Int(-18, -43, 0), fDeckSplitV);
+            floorTm.SetTile(new Vector3Int(-10, -43, 0), fDeckSplitV);
+            floorTm.SetTile(new Vector3Int(-14, -44, 0), fDeckSplitV);
+            floorTm.SetTile(new Vector3Int(-16, -48, 0), fDeckSplitV);
+            floorTm.SetTile(new Vector3Int(-18, -51, 0), fDeckSplitV);
+            floorTm.SetTile(new Vector3Int(-11, -52, 0), fDeckSplitV);
 
-            floorTm.SetTile(new Vector3Int(-11, -49, 0), fCargoTL);
-            floorTm.SetTile(new Vector3Int(-9, -49, 0), fCargoTR);
-            floorTm.SetTile(new Vector3Int(-11, -51, 0), fCargoBL);
-            floorTm.SetTile(new Vector3Int(-9, -51, 0), fCargoBR);
+            // Horizontal split plates (Y-varying reinforcement joins)
+            floorTm.SetTile(new Vector3Int(-15, -43, 0), fDeckSplitH);
+            floorTm.SetTile(new Vector3Int(-9, -44, 0), fDeckSplitH);
+            floorTm.SetTile(new Vector3Int(-12, -45, 0), fDeckSplitH);
+            floorTm.SetTile(new Vector3Int(-13, -49, 0), fDeckSplitH);
+            floorTm.SetTile(new Vector3Int(-11, -51, 0), fDeckSplitH);
+            floorTm.SetTile(new Vector3Int(-17, -52, 0), fDeckSplitH);
 
-            // North Wall (Y = -42, X in [-18..-9]) with Crane Gantry Anchors
+            // Worn / Patina plates (high-traffic footpaths and machine perimeters)
+            floorTm.SetTile(new Vector3Int(-12, -43, 0), fLabEpoxyVar);
+            floorTm.SetTile(new Vector3Int(-16, -44, 0), fLabEpoxyVar);
+            floorTm.SetTile(new Vector3Int(-14, -45, 0), fLabEpoxyVar);
+            floorTm.SetTile(new Vector3Int(-15, -49, 0), fLabEpoxyVar);
+            floorTm.SetTile(new Vector3Int(-12, -50, 0), fLabEpoxyVar);
+            floorTm.SetTile(new Vector3Int(-14, -52, 0), fLabEpoxyVar);
+
+            // Maintenance Access Hatches
+            floorTm.SetTile(new Vector3Int(-11, -44, 0), fLabHatch);
+            floorTm.SetTile(new Vector3Int(-16, -51, 0), fLabHatch);
+
+            // 3. Functional Zone: Workstation Area (X in [-15..-12], Y in [-48..-46])
+            // Reinforced subfloor plates with precision metric coordinate grid & heavy anchor bolts
+            for (int x = -15; x <= -12; x++)
+            {
+                for (int y = -48; y <= -46; y++)
+                {
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fLabMetric);
+                }
+            }
+
+            // 4. Functional Zone: West Specimen Containment Area (X in [-18..-17], Y in [-50..-44] excluding doorway)
+            // Cryogenic insulated deck slabs with thermal expansion rubber gaskets
+            for (int x = -18; x <= -17; x++)
+            {
+                for (int y = -50; y <= -44; y++)
+                {
+                    if (y == -46 || y == -47) continue; // Doorway transit lane remains clear
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fCryoPanel);
+                }
+            }
+
+            // 5. Functional Zone: East Mega Containment Area (X in [-10..-9], Y in [-51..-48])
+            // Cryo apron bounded by restrained dark amber hazard demarcation line
+            for (int x = -10; x <= -9; x++)
+            {
+                for (int y = -51; y <= -48; y++)
+                {
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fCryoPanel);
+                }
+            }
+            floorTm.SetTile(new Vector3Int(-11, -50, 0), fXenoHaz);
+            floorTm.SetTile(new Vector3Int(-11, -49, 0), fXenoHaz);
+
+            // 6. Functional Zone: Machinery & Decontamination Drainage
+            floorTm.SetTile(new Vector3Int(-14, -51, 0), fXenoGrate);
+            floorTm.SetTile(new Vector3Int(-13, -51, 0), fXenoGrate);
+
+            // 7. North Wall Bulkheads (Y = -42, X in [-18..-9]) - Upper Wall Architecture:
+            // Large reinforced armor panels with upper utility tray & recessed equipment alcoves
             for (int x = -18; x <= -9; x++)
             {
-                Tile wt = wWallH;
-                if (x == -14 || x == -13) wt = wCraneAnchor;
+                Tile wt = wXenoH;
+                if (x == -17 || x == -16) wt = wXenoBay;
+                else if (x == -15 || x == -14 || x == -13) wt = wXenoH;
+                else if (x == -12) wt = wXenoHvac;
+                else if (x == -11) wt = wXenoH;
+                else if (x == -10 || x == -9) wt = wXenoBay;
                 wallTm.SetTile(new Vector3Int(x, -42, 0), wt);
             }
 
-            // South Wall (Y = -53, X in [-18..-9]) with Crane Gantry Anchors
+            // 8. South Wall Bulkheads (Y = -53, X in [-18..-9]) - Lower Wall Architecture:
+            // Heavy base structures with integrated mechanical service panels
             for (int x = -18; x <= -9; x++)
             {
-                Tile wt = wWallH;
-                if (x == -14 || x == -13) wt = wCraneAnchor;
+                Tile wt = wXenoSouth;
+                if (x == -15) wt = wXenoHvac;
+                else if (x == -14 || x == -13) wt = wXenoBay;
+                else if (x == -11) wt = wXenoHvac;
                 wallTm.SetTile(new Vector3Int(x, -53, 0), wt);
             }
 
-            // West Wall (X = -19, Opening at Y in [-47, -46] for West Loop with Door Jambs)
-            for (int y = -52; y <= -48; y++) wallTm.SetTile(new Vector3Int(-19, y, 0), (y == -48) ? wJambBot : wWallV);
-            for (int y = -45; y <= -43; y++) wallTm.SetTile(new Vector3Int(-19, y, 0), (y == -45) ? wJambTop : wWallV);
-            floorTm.SetTile(new Vector3Int(-19, -46, 0), fTransStripe);
-            floorTm.SetTile(new Vector3Int(-19, -47, 0), fTransStripe);
+            // 9. West Wall Bulkheads (X = -19, Opening at Y in [-47, -46] with Sticky Decon Mat) - Left Wall Architecture:
+            // Stronger vertical structural columns & power infeed conduit runs
+            for (int y = -52; y <= -43; y++)
+            {
+                if (y == -46 || y == -47)
+                {
+                    wallTm.SetTile(new Vector3Int(-19, y, 0), null);
+                    floorTm.SetTile(new Vector3Int(-19, y, 0), fLabSticky);
+                }
+                else
+                {
+                    wallTm.SetTile(new Vector3Int(-19, y, 0), wXenoV);
+                }
+            }
 
-            // East Wall (X = -8, Opening at Y in [-47, -46] for Door_DeepStorage)
-            for (int y = -52; y <= -48; y++) wallTm.SetTile(new Vector3Int(-8, y, 0), wWallV);
-            for (int y = -45; y <= -43; y++) wallTm.SetTile(new Vector3Int(-8, y, 0), wWallV);
-            floorTm.SetTile(new Vector3Int(-8, -46, 0), fTransStripe);
-            floorTm.SetTile(new Vector3Int(-8, -47, 0), fTransStripe);
-            floorTm.SetTile(new Vector3Int(-7, -46, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(-7, -47, 0), fThreshold);
+            // 10. East Wall Bulkheads (X = -8, Opening at Y in [-47, -46] with Sticky Decon Mat) - Right Wall Architecture:
+            // Deep reinforced bulkhead construction backing Mega Containment Chamber
+            for (int y = -52; y <= -43; y++)
+            {
+                if (y == -46 || y == -47)
+                {
+                    wallTm.SetTile(new Vector3Int(-8, y, 0), null);
+                    floorTm.SetTile(new Vector3Int(-8, y, 0), fLabSticky);
+                }
+                else
+                {
+                    wallTm.SetTile(new Vector3Int(-8, y, 0), wXenoEast);
+                }
+            }
+            // Seamless insulated wall transition at X = -7
+            wallTm.SetTile(new Vector3Int(-7, -45, 0), wXenoH);
+            wallTm.SetTile(new Vector3Int(-7, -48, 0), wXenoH);
+            floorTm.SetTile(new Vector3Int(-7, -46, 0), fLabSticky);
+            floorTm.SetTile(new Vector3Int(-7, -47, 0), fLabSticky);
 
-            // Corners
-            wallTm.SetTile(new Vector3Int(-19, -42, 0), wCornerTL);
-            wallTm.SetTile(new Vector3Int(-8, -42, 0), wCornerTR);
-            wallTm.SetTile(new Vector3Int(-19, -53, 0), wCornerBL);
-            wallTm.SetTile(new Vector3Int(-8, -53, 0), wCornerBR);
+            // Bio-Containment Vault Corners
+            wallTm.SetTile(new Vector3Int(-19, -42, 0), wXenoTL);
+            wallTm.SetTile(new Vector3Int(-8, -42, 0), wXenoTR);
+            wallTm.SetTile(new Vector3Int(-19, -53, 0), wXenoBL);
+            wallTm.SetTile(new Vector3Int(-8, -53, 0), wXenoBR);
 
             // ========================================================
             // 6. POWER RELAY BAY ROOM (X: [8..17], Y: [-52..-43]) - 10x10
@@ -634,14 +670,15 @@ namespace TheLastSignal.EditorTools
             GameObject propsRoot = new GameObject("Props");
             propsRoot.transform.SetParent(envRoot.transform);
 
-            Material litMat = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat");
+            Material litMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Materials/M_Sprite_Lit_PixelSmooth.mat")
+                ?? AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat");
             if (litMat == null)
             {
                 Shader s = Shader.Find("Universal Render Pipeline/2D/Sprite-Lit-Default");
                 if (s != null) litMat = new Material(s);
             }
 
-            GameObject SpawnProp(string name, Vector3 pos, string spritePath, bool addCol = true, Vector2 colSize = default, string sortingLayer = "Obstacles", int order = 5)
+            GameObject SpawnProp(string name, Vector3 pos, string spritePath, bool addCol = true, Vector2 colSize = default, string sortingLayer = "Obstacles", int order = 5, Vector2 colOffset = default)
             {
                 var sp = AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);
                 if (sp == null) return null;
@@ -658,6 +695,7 @@ namespace TheLastSignal.EditorTools
                 {
                     var col = go.AddComponent<BoxCollider2D>();
                     col.size = colSize == default ? sp.rect.size / 128f : colSize;
+                    if (colOffset != default) col.offset = colOffset;
                 }
                 return go;
             }
@@ -694,11 +732,46 @@ namespace TheLastSignal.EditorTools
                 return go;
             }
 
+            GameObject SpawnWallDropShadowV(string name, Vector3 pos, bool flipX = false)
+            {
+                var sp = AssetDatabase.LoadAssetAtPath<Sprite>($"{TilesSourceDir}/SubLevel_Wall_DropShadow_V.png");
+                if (sp == null) return null;
+                var go = new GameObject(name);
+                go.transform.SetParent(propsRoot.transform);
+                go.transform.position = pos;
+                var sr = go.AddComponent<SpriteRenderer>();
+                sr.sprite = sp;
+                sr.flipX = flipX;
+                sr.sortingLayerName = "Floor";
+                sr.sortingOrder = 1;
+                sr.color = new Color(1f, 1f, 1f, 0.75f);
+                if (litMat != null) sr.sharedMaterial = litMat;
+                return go;
+            }
+
             // ==================== NORTH WALL DROP SHADOWS ====================
             // Shadows are 0.5 units high (span Y in [WallBottom - 0.5, WallBottom]).
             // Bottom of wall is at integer Y; center of shadow must be at Y = WallBottom - 0.25f to sit 100% flush!
             // Deep Storage North Wall (X: [-18..-9], wall bottom = -42.0f -> Y = -42.25f)
             for (int x = -18; x <= -9; x++) SpawnWallDropShadow($"Shadow_Wall_DeepStorage_{x}", new Vector3(x + 0.5f, -42.25f, 0f));
+            // Deep Storage South Wall (X: [-18..-9], wall top = -53.0f -> Y = -52.75f)
+            for (int x = -18; x <= -9; x++)
+            {
+                var s = SpawnWallDropShadow($"Shadow_Wall_DeepStorage_S_{x}", new Vector3(x + 0.5f, -52.75f, 0f));
+                if (s != null) s.GetComponent<SpriteRenderer>().flipY = true;
+            }
+            // Deep Storage West Wall (X = -18.75f, Y in [-52..-43] excluding doorway at -47, -46)
+            for (int y = -52; y <= -43; y++)
+            {
+                if (y == -46 || y == -47) continue;
+                SpawnWallDropShadowV($"Shadow_Wall_DeepStorage_W_{y}", new Vector3(-18.75f, y + 0.5f, 0f));
+            }
+            // Deep Storage East Wall (X = -8.25f, Y in [-52..-43] excluding doorway at -47, -46)
+            for (int y = -52; y <= -43; y++)
+            {
+                if (y == -46 || y == -47) continue;
+                SpawnWallDropShadowV($"Shadow_Wall_DeepStorage_E_{y}", new Vector3(-8.25f, y + 0.5f, 0f), flipX: true);
+            }
             // Power Relay Bay North Wall (X: [8..17], wall bottom = -42.0f -> Y = -42.25f)
             for (int x = 8; x <= 17; x++) SpawnWallDropShadow($"Shadow_Wall_PowerRelay_{x}", new Vector3(x + 0.5f, -42.25f, 0f));
             // Reactor Core North Wall (X: [7..11] & [14..18], wall bottom = -59.0f -> Y = -59.25f)
@@ -712,84 +785,150 @@ namespace TheLastSignal.EditorTools
             for (int x = 1; x <= 7; x++) SpawnWallDropShadow($"Shadow_Wall_TJunction_{x}", new Vector3(x + 0.5f, -45.25f, 0f));
 
             // ==================== NODE C PROPS & SHADOWS ====================
-            // 4 Massive Abyssal Struts supporting the central catwalk
-            SpawnProp("Prop_NodeC_Abyssal_Strut_NW", new Vector3(-3.5f, -32.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", true, new Vector2(0.8f, 1.8f));
-            SpawnProp("Prop_NodeC_Abyssal_Strut_NE", new Vector3(2.5f, -32.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", true, new Vector2(0.8f, 1.8f));
-            SpawnProp("Prop_NodeC_Abyssal_Strut_SW", new Vector3(-3.5f, -36.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", true, new Vector2(0.8f, 1.8f));
-            SpawnProp("Prop_NodeC_Abyssal_Strut_SE", new Vector3(2.5f, -36.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", true, new Vector2(0.8f, 1.8f));
+            // 4 Massive Abyssal Support Girders anchored directly under the crossroads junction
+            var sNW = SpawnProp("Prop_NodeC_Abyssal_Strut_NW", new Vector3(-1.2f, -32.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", false, default, "Floor", 1);
+            var sNE = SpawnProp("Prop_NodeC_Abyssal_Strut_NE", new Vector3(1.2f, -32.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", false, default, "Floor", 1);
+            var sSW = SpawnProp("Prop_NodeC_Abyssal_Strut_SW", new Vector3(-1.2f, -35.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", false, default, "Floor", 1);
+            var sSE = SpawnProp("Prop_NodeC_Abyssal_Strut_SE", new Vector3(1.2f, -35.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Abyssal_Strut.png", false, default, "Floor", 1);
+            Color strutTint = new Color(0.40f, 0.48f, 0.58f, 0.90f);
+            if (sNW != null) { sNW.GetComponent<SpriteRenderer>().color = strutTint; sNW.transform.localScale = new Vector3(1.15f, 1.35f, 1.0f); }
+            if (sNE != null) { sNE.GetComponent<SpriteRenderer>().color = strutTint; sNE.transform.localScale = new Vector3(1.15f, 1.35f, 1.0f); }
+            if (sSW != null) { sSW.GetComponent<SpriteRenderer>().color = strutTint; sSW.transform.localScale = new Vector3(1.15f, 1.35f, 1.0f); }
+            if (sSE != null) { sSE.GetComponent<SpriteRenderer>().color = strutTint; sSE.transform.localScale = new Vector3(1.15f, 1.35f, 1.0f); }
 
-            // Industrial Safety Guardrails along Catwalk perimeter
-            // West Edge (X = -4.3, Y in [-38..-31] except manifold area at [-35, -34])
-            for (int y = -38; y <= -31; y++)
+            // Industrial Safety Guardrails strictly at Catwalk perimeters bordering the Abyss
+            // North Spur: Left rail at X = -1.0, Right rail at X = 1.0
+            for (int y = -33; y <= -31; y++)
             {
-                if (y == -34 || y == -35) continue;
-                SpawnProp($"Prop_NodeC_Guardrail_W_{y}", new Vector3(-4.3f, y + 0.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f), "Obstacles", 6);
+                SpawnProp($"Prop_NodeC_Guardrail_North_W_{y}", new Vector3(-1.0f, y + 0.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f));
+                SpawnProp($"Prop_NodeC_Guardrail_North_E_{y}", new Vector3(1.0f, y + 0.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f));
             }
-            // East Edge (X = 3.3, Y in [-38..-31] except East passage at [-35, -34])
-            for (int y = -38; y <= -31; y++)
+            // South Spur: Left rail at X = -1.0, Right rail at X = 1.0
+            for (int y = -38; y <= -36; y++)
             {
-                if (y == -34 || y == -35) continue;
-                SpawnProp($"Prop_NodeC_Guardrail_E_{y}", new Vector3(3.3f, y + 0.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f), "Obstacles", 6);
+                SpawnProp($"Prop_NodeC_Guardrail_South_W_{y}", new Vector3(-1.0f, y + 0.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f));
+                SpawnProp($"Prop_NodeC_Guardrail_South_E_{y}", new Vector3(1.0f, y + 0.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f));
             }
-            // North Edge (Y = -30.7, X in [-4..-2] & [1..3])
-            for (int x = -4; x <= -2; x++) SpawnProp($"Prop_NodeC_Guardrail_N_{x}", new Vector3(x + 0.5f, -30.7f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f), "Obstacles", 6);
-            for (int x = 1; x <= 3; x++) SpawnProp($"Prop_NodeC_Guardrail_N_{x}", new Vector3(x + 0.5f, -30.7f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f), "Obstacles", 6);
-            // South Edge (Y = -38.3, X in [-4..-2] & [1..3])
-            for (int x = -4; x <= -2; x++) SpawnProp($"Prop_NodeC_Guardrail_S_{x}", new Vector3(x + 0.5f, -38.3f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f), "Obstacles", 6);
-            for (int x = 1; x <= 3; x++) SpawnProp($"Prop_NodeC_Guardrail_S_{x}", new Vector3(x + 0.5f, -38.3f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f), "Obstacles", 6);
+            // West Dead-End Console Spur: North rail at Y = -33.0, South rail at Y = -35.0, End cap at X = -3.0
+            for (int x = -3; x <= -2; x++)
+            {
+                SpawnProp($"Prop_NodeC_Guardrail_West_N_{x}", new Vector3(x + 0.5f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f));
+                SpawnProp($"Prop_NodeC_Guardrail_West_S_{x}", new Vector3(x + 0.5f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f));
+            }
+            SpawnProp("Prop_NodeC_Guardrail_West_Cap", new Vector3(-3.0f, -34.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f));
+            SpawnProp("Prop_NodeC_Guardrail_West_Cap_2", new Vector3(-3.0f, -34.8f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_V.png", true, new Vector2(0.2f, 1.0f));
 
-            // Steam Manifold on West Wall
-            SpawnProp("Prop_NodeC_Steam_Manifold", new Vector3(-4.4f, -34.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_HighPressure_Manifold.png", true, new Vector2(1.0f, 0.8f));
+            // East Spur: North rail at Y = -33.0, South rail at Y = -35.0
+            for (int x = 1; x <= 3; x++)
+            {
+                SpawnProp($"Prop_NodeC_Guardrail_East_N_{x}", new Vector3(x + 0.5f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f));
+                SpawnProp($"Prop_NodeC_Guardrail_East_S_{x}", new Vector3(x + 0.5f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Guardrail_H.png", true, new Vector2(1.0f, 0.2f));
+            }
 
-            // Warning Bollards flanking the catwalk edges (clearing center walkway) + contact shadows
-            SpawnProp("Prop_NodeC_Bollard_L", new Vector3(-3.2f, -34.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Warning_Bollard.png", true, new Vector2(0.4f, 0.8f));
-            SpawnShadow("Shadow_NodeC_Bollard_L", new Vector3(-3.2f, -34.85f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Small.png", 0.50f);
-            SpawnProp("Prop_NodeC_Bollard_R", new Vector3(2.2f, -34.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Warning_Bollard.png", true, new Vector2(0.4f, 0.8f));
-            SpawnShadow("Shadow_NodeC_Bollard_R", new Vector3(2.2f, -34.85f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Small.png", 0.50f);
+            // Stanchion Posts at the 8 key geometric vertices
+            SpawnProp("Prop_NodeC_Stanchion_0", new Vector3(-1.0f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnProp("Prop_NodeC_Stanchion_1", new Vector3(1.0f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnProp("Prop_NodeC_Stanchion_2", new Vector3(-1.0f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnProp("Prop_NodeC_Stanchion_3", new Vector3(1.0f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnProp("Prop_NodeC_Stanchion_4", new Vector3(-3.0f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnProp("Prop_NodeC_Stanchion_5", new Vector3(-3.0f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnProp("Prop_NodeC_Stanchion_6", new Vector3(3.9f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnProp("Prop_NodeC_Stanchion_7", new Vector3(3.9f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
 
-            // Node C Sign
-            SpawnProp("Sign_NodeC", new Vector3(-0.5f, -30.6f, 0f), $"{SignageSourceDir}/Sign_SubLevel_NodeC.png", false, default, "Obstacles", 4);
+            // Steam Manifold on West Railing
+            SpawnProp("Prop_NodeC_Steam_Manifold", new Vector3(-2.65f, -33.45f, 0f), $"{PropsSourceDir}/Prop_NodeC_HighPressure_Manifold.png", true, new Vector2(1.0f, 0.8f));
 
-            // ==================== DEEP STORAGE PROPS & SHADOWS ====================
-            // Isotope Vault Chests (Placed in painted staging bays) + shadows
-            SpawnProp("Prop_DeepStorage_Vault_Chest_1", new Vector3(-17.0f, -50.0f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_Lead_Vault_Chest.png", true, new Vector2(1.0f, 0.9f));
-            SpawnShadow("Shadow_DeepStorage_Vault_Chest_1", new Vector3(-17.0f, -50.35f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.55f);
-            SpawnProp("Prop_DeepStorage_Vault_Chest_2", new Vector3(-10.0f, -50.0f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_Lead_Vault_Chest.png", true, new Vector2(1.0f, 0.9f));
-            SpawnShadow("Shadow_DeepStorage_Vault_Chest_2", new Vector3(-10.0f, -50.35f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.55f);
+            // Note: Node C props, guardrails, and floodlights are managed authority-wide by NodeCOverhaulApplier.
 
-            // Rad-Suit Lockers at North Wall staging area + shadow
-            SpawnProp("Prop_DeepStorage_RadSuit_Locker", new Vector3(-16.5f, -44.5f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_RadSuit_Locker.png", true, new Vector2(0.9f, 0.9f));
-            SpawnShadow("Shadow_DeepStorage_RadSuit_Locker", new Vector3(-16.5f, -44.85f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Small.png", 0.55f);
+            // ==================== DEEP STORAGE: OFFICIAL CONCEPT RECONSTRUCTION ====================
+            // --- 1. NORTH WALL: SKIRTING, CRYO-VAULT, OBSERVATION WINDOW, AIR-SCRUBBER, CRYO-DECON ---
+            // Continuous Heavy Steel Skirting & Perforated Cable Conduit Trays along North Wall
+            SpawnProp("Decal_Lab_Concept_Wall_Cable_Ducts_North", new Vector3(-13.5f, -42.45f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Wall_Cable_Ducts_North.png", false, default, "Floor", 3);
 
-            // Stacks of Military Crates at North Wall + shadows
-            SpawnProp("Prop_DeepStorage_Crate_Stack_1", new Vector3(-10.5f, -44.5f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_Military_Crate_Stack.png", true, new Vector2(1.0f, 0.8f));
-            SpawnShadow("Shadow_DeepStorage_Crate_Stack_1", new Vector3(-10.5f, -44.80f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.50f);
-            SpawnProp("Prop_DeepStorage_Crate_Stack_2", new Vector3(-13.5f, -51.5f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_Military_Crate_Stack.png", true, new Vector2(1.0f, 0.8f));
-            SpawnShadow("Shadow_DeepStorage_Crate_Stack_2", new Vector3(-13.5f, -51.80f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.50f);
+            // North-West: CRYO-VAULT Station (Standing on floor flush against North Wall, top at -42.0)
+            SpawnProp("Prop_Lab_Concept_Cryo_Vault_Station", new Vector3(-16.5f, -42.95f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Cryo_Vault_Station.png", true, new Vector2(1.5f, 0.7f), "Obstacles", 5, new Vector2(0f, 0.1f));
+            SpawnShadow("Shadow_Lab_Concept_Cryo_Vault", new Vector3(-16.5f, -43.75f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.55f);
 
-            // Motorized Crane Hoist Trolley (Wide 2-tile bridge spanning across both rail tracks) + shadow
-            SpawnProp("Prop_DeepStorage_Crane_Trolley", new Vector3(-13.5f, -46.5f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_Crane_Trolley.png", true, new Vector2(2.0f, 0.8f));
-            SpawnShadow("Shadow_DeepStorage_Crane_Trolley", new Vector3(-13.5f, -46.90f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Large.png", 0.55f);
+            // North-Center: Observation Window Frame (Mounted seamlessly inside North Wall row Y = -42)
+            SpawnProp("Prop_Lab_Concept_Observation_Window", new Vector3(-13.5f, -41.5f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Observation_Window.png", false, default, "Obstacles", 4);
 
-            // Isotope Fuel Rod Storage Rack + shadow
-            SpawnProp("Prop_DeepStorage_Fuel_Rack", new Vector3(-10.5f, -48.0f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_Fuel_Rack.png", true, new Vector2(0.9f, 0.9f));
-            SpawnShadow("Shadow_DeepStorage_Fuel_Rack", new Vector3(-10.5f, -48.40f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.55f);
+            // North Wall Technical Markings & Hazard Chevrons (Bulkhead Decal)
+            SpawnProp("Decal_Lab_Concept_Wall_Stencils_North", new Vector3(-14.5f, -41.90f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Wall_Stencils.png", false, default, "Obstacles", 6);
 
-            // Heavy Pallet Stack + shadow
-            SpawnProp("Prop_DeepStorage_Pallet_Stack", new Vector3(-17.5f, -48.0f, 0f), $"{PropsSourceDir}/Prop_DeepStorage_Pallet_Stack.png", true, new Vector2(0.9f, 0.9f));
-            SpawnShadow("Shadow_DeepStorage_Pallet_Stack", new Vector3(-17.5f, -48.40f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.50f);
+            // North Air-Scrubber / Inset HEPA Louver (Flush-mounted between Window and Decon Station)
+            SpawnProp("Prop_Lab_Concept_Wall_Air_Scrubber", new Vector3(-11.10f, -42.15f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Wall_Air_Scrubber.png", false, default, "Obstacles", 5);
 
-            // Industrial Floor Cables decal
-            SpawnProp("Decal_DeepStorage_Cables", new Vector3(-13.5f, -44.5f, 0f), $"{DecalsSourceDir}/Decal_SubLevel_Floor_Cables.png", false, default, "Floor", 2);
+            // North-East: CRYO-DECON Station (Standing on floor flush against North Wall, top at -42.0)
+            SpawnProp("Prop_Lab_Concept_Cryo_Decon_Station", new Vector3(-9.5f, -42.95f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Cryo_Decon_Station.png", true, new Vector2(1.0f, 0.7f), "Obstacles", 5, new Vector2(0f, 0.1f));
+            SpawnShadow("Shadow_Lab_Concept_Cryo_Decon", new Vector3(-9.5f, -43.75f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Small.png", 0.55f);
 
-            // Large Radiation Decals
-            SpawnProp("Decal_DeepStorage_Radiation", new Vector3(-13.5f, -49.0f, 0f), $"{DecalsSourceDir}/Decal_SubLevel_Radiation_Large.png", false, default, "Floor", 2);
+            // --- 2. WEST BAY: SKIRTING, BREAKER SWITCHBOARD, AIRLOCK PIPES & DUAL STASIS PODS ---
+            // Continuous Heavy Steel Skirting & Vertical Cable Ducts along West Wall
+            SpawnProp("Decal_Lab_Concept_Wall_Cable_Ducts_West", new Vector3(-18.45f, -47.50f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Wall_Cable_Ducts_West.png", false, default, "Floor", 3);
 
-            // Heavy Transition Bulkhead Arch at entrance from West Corridor (Perfect center of corridor opening at Y = -46.0)
-            SpawnProp("Prop_Transition_Bulkhead_Arch", new Vector3(-19.0f, -46.0f, 0f), $"{PropsSourceDir}/Prop_Transition_Bulkhead_Arch.png", false, default, "Obstacles", 6);
+            // High-Voltage Emergency Breaker Switchboard (Replacing disconnected boxes, flush on West Wall above doorway)
+            SpawnProp("Prop_Lab_Concept_Wall_Breaker_Board", new Vector3(-18.30f, -45.60f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Wall_Breaker_Board.png", false, default, "Obstacles", 5);
+            SpawnShadow("Shadow_Lab_Concept_Wall_Breaker", new Vector3(-18.30f, -46.25f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Small.png", 0.45f);
 
-            // Sign
-            SpawnProp("Sign_DeepStorage", new Vector3(-8.8f, -44.5f, 0f), $"{SignageSourceDir}/Sign_SubLevel_DeepStorage.png", false, default, "Obstacles", 4);
+            // West Airlock Hydraulic Orange Pipes connecting Dual Pods to Southwest Compressor Plant (Clean on Floor)
+            SpawnProp("Prop_Lab_Concept_West_Airlock_Pipes", new Vector3(-17.6f, -50.25f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_West_Airlock_Pipes.png", false, default, "Floor", 2);
+
+            // West Dual Stasis Pods (Cyan & Teal Stasis Cylinders flush against West Wall at X = -18.0)
+            SpawnProp("Prop_Lab_Concept_West_Dual_Pods", new Vector3(-16.75f, -48.5f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_West_Dual_Pods.png", true, new Vector2(2.0f, 1.0f), "Obstacles", 5, new Vector2(0f, -0.7f));
+            SpawnShadow("Shadow_Lab_Concept_West_Dual_Pods", new Vector3(-16.75f, -49.5f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Large.png", 0.60f);
+
+            // Southwest Refrigeration & Compressor Plant (Standing on floor flush against South Wall at Y = -52.0)
+            SpawnProp("Prop_Lab_Concept_Southwest_Compressor_Plant", new Vector3(-16.8f, -51.1f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Southwest_Compressor_Plant.png", true, new Vector2(1.6f, 0.8f), "Obstacles", 5, new Vector2(0f, -0.1f));
+            SpawnShadow("Shadow_Lab_Concept_SW_Compressor", new Vector3(-16.8f, -51.85f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.55f);
+
+            // --- 3. EAST WALL: SKIRTING, NORTHEAST CHEMICAL STATION & MEGA-CONTAINMENT CHAMBER ---
+            // Continuous Heavy Steel Skirting & Vertical Cable Ducts along East Wall
+            SpawnProp("Decal_Lab_Concept_Wall_Cable_Ducts_East", new Vector3(-8.55f, -47.50f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Wall_Cable_Ducts_East.png", false, default, "Floor", 3);
+
+            // Northeast Wall Emergency Bio-Neutralizer & First Aid Station (Lấp vùng chết góc Đông Bắc)
+            SpawnProp("Prop_Lab_Concept_Wall_Chemical_Cabinet", new Vector3(-8.75f, -43.60f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Wall_Chemical_Cabinet.png", false, default, "Obstacles", 5);
+            SpawnShadow("Shadow_Lab_Concept_Chemical_Cabinet", new Vector3(-8.75f, -44.25f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Small.png", 0.45f);
+
+            // High-Risk Alien Containment Chamber (Welded directly into East Wall at X = -9.15, Y = -49.0, clearing Doorway buffer)
+            SpawnProp("Prop_Lab_Concept_Mega_Containment_Chamber", new Vector3(-9.15f, -49.0f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Mega_Containment_Chamber.png", true, new Vector2(1.8f, 1.1f), "Obstacles", 5, new Vector2(0f, -0.9f));
+            SpawnShadow("Shadow_Lab_Concept_Mega_Chamber", new Vector3(-9.15f, -50.2f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Large.png", 0.65f);
+
+            // Southeast Sub-Zero Archive Bank (Standing on floor flush against South Wall at Y = -52.0)
+            SpawnProp("Prop_Lab_Concept_Southeast_Archive_Bank", new Vector3(-10.2f, -51.2f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Southeast_Archive_Bank.png", true, new Vector2(1.8f, 0.7f), "Obstacles", 5, new Vector2(0f, -0.15f));
+            SpawnShadow("Shadow_Lab_Concept_SE_Archive", new Vector3(-10.2f, -51.85f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.55f);
+
+            // --- 4. SOUTH WALL: SKIRTING, BULKHEAD MONITORING & EYEWASH ---
+            // Continuous Heavy Steel Skirting & Coolant Lines along South Wall
+            SpawnProp("Decal_Lab_Concept_Wall_Cable_Ducts_South", new Vector3(-13.5f, -52.45f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Wall_Cable_Ducts_South.png", false, default, "Floor", 3);
+
+            // Eyewash Safety Station (Standing on floor flush against South Wall at Y = -52.0)
+            SpawnProp("Prop_Lab_Concept_South_Monitor_Eyewash", new Vector3(-13.5f, -51.45f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_South_Monitor_Eyewash.png", true, new Vector2(1.8f, 0.55f));
+
+            // --- 5. CENTRAL WORKBENCH & ENVIRONMENTAL STORYTELLING ---
+            // Diamond-Plate Sub-Floor Platform under Workbench (Seamless beveled isolator deck)
+            SpawnProp("Decal_Lab_Concept_Workbench_Border", new Vector3(-13.50f, -47.65f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Workbench_Border.png", false, default, "Floor", 2);
+
+            // Integrated wet-lab workstation with biological microscope, specimen tray, secondary CRT, and grounded operator seating
+            SpawnProp("Prop_Lab_Concept_Central_Workbench", new Vector3(-13.5f, -47.5f, 0f), $"{PropsSourceDir}/Prop_Lab_Concept_Central_Workbench.png", true, new Vector2(2.2f, 1.0f), "Obstacles", 5, new Vector2(0f, 0.2f));
+            SpawnShadow("Shadow_Lab_Concept_Workbench", new Vector3(-13.5f, -48.35f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Large.png", 0.60f);
+
+            // Heavy Cast-Iron Recessed Floor Drainage Trench Network (Centered at X = -13.5, Y = -50.6)
+            SpawnProp("Decal_Lab_Concept_Floor_Drain_Grate", new Vector3(-13.5f, -50.6f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Floor_Drain_Grate.png", false, default, "Floor", 2);
+
+            // Mega Containment Chamber Biohazard Level 5 Demarcation Zone
+            SpawnProp("Decal_Lab_Concept_Mega_Chamber_Hazard", new Vector3(-9.15f, -49.60f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Mega_Chamber_Hazard.png", false, default, "Floor", 2);
+
+            // High-voltage biological conduit connection from wall into Mega Chamber hood
+            SpawnProp("Decal_Lab_Apex_BioCables", new Vector3(-9.15f, -47.70f, 0f), $"{DecalsSourceDir}/Decal_Lab_Apex_BioCables.png", false, default, "Floor", 3);
+
+            // Biological residue / corrosive seepage at base drainage lip beneath Mega Chamber
+            SpawnProp("Decal_Xeno_Acid_Burn_Spatter", new Vector3(-9.20f, -50.20f, 0f), $"{DecalsSourceDir}/Decal_Xeno_Acid_Burn_Spatter.png", false, default, "Floor", 2);
+
+            // Emergency Egress Walkway Guide & Scattered Research Documents
+            SpawnProp("Decal_Lab_Concept_Walkway_Guide", new Vector3(-10.80f, -46.50f, 0f), $"{DecalsSourceDir}/Decal_Lab_Concept_Walkway_Guide.png", false, default, "Floor", 2);
+
+            // Illuminated Biohazard Level 5 Cryo-Vault Warning Sign above entrance doorway threshold
+            SpawnProp("Sign_DeepStorage", new Vector3(-7.4f, -45.2f, 0f), $"{SignageSourceDir}/Sign_SubLevel_XenoContainment.png", false, default, "Obstacles", 7);
 
             // ==================== POWER RELAY BAY PROPS & SHADOWS ====================
             // 2 Rotary Dynamos + shadows
@@ -913,11 +1052,18 @@ namespace TheLastSignal.EditorTools
                         col.size = new Vector2(1.0f, 1.0f);
                         EditorUtility.SetDirty(col);
                     }
+                    var sr = go.GetComponent<SpriteRenderer>();
+                    if (sr != null)
+                    {
+                        Undo.RecordObject(sr, "Hide " + locName + " debug marker");
+                        sr.enabled = false;
+                        EditorUtility.SetDirty(sr);
+                    }
                     EditorUtility.SetDirty(go);
                 }
             }
 
-            ConfigureTaskLoc("TaskLoc_DeepStorage", new Vector3(-16.5f, -44.5f, 0f));
+            ConfigureTaskLoc("TaskLoc_DeepStorage", new Vector3(-13.5f, -48.2f, 0f));
             ConfigureTaskLoc("TaskLoc_PowerRelayBay", new Vector3(12.5f, -44.2f, 0f));
             ConfigureTaskLoc("TaskLoc_ReactorCore", new Vector3(12.5f, -67.5f, 0f));
 
@@ -980,8 +1126,26 @@ namespace TheLastSignal.EditorTools
                 }
             }
 
-            // Door_DeepStorage: Vertical 1x2 at X = -7.5, Y = -46.0 (opening between Y = -46 and -47)
+            // Door_DeepStorage: Vertical 1x2 at X = -7.5, Y = -46.0 (Pneumatic Cryo-Vault Door)
             ConfigureDoor("Door_DeepStorage", new Vector3(-7.5f, -46.0f, 0f), false);
+            var dDeep = GameObject.Find("Door_DeepStorage");
+            if (dDeep != null)
+            {
+                var cryoClosed = AssetDatabase.LoadAssetAtPath<Sprite>($"{DoorsSourceDir}/Door_Cryo_Vault_Vertical_Closed.png");
+                var cryoOpen = AssetDatabase.LoadAssetAtPath<Sprite>($"{DoorsSourceDir}/Door_Cryo_Vault_Vertical_Open.png");
+                var dc = dDeep.GetComponent<DoorController>();
+                if (dc != null && cryoClosed != null && cryoOpen != null)
+                {
+                    dc.SetSprites(cryoClosed, cryoOpen);
+                    EditorUtility.SetDirty(dc);
+                }
+                var sr = dDeep.GetComponent<SpriteRenderer>();
+                if (sr != null && cryoClosed != null)
+                {
+                    sr.sprite = cryoClosed;
+                    EditorUtility.SetDirty(sr);
+                }
+            }
 
             // Door_PowerRelayBay: Vertical 1x2 at X = 7.5, Y = -46.0 (opening between Y = -46 and -47)
             ConfigureDoor("Door_PowerRelayBay", new Vector3(7.5f, -46.0f, 0f), false);
@@ -1002,7 +1166,7 @@ namespace TheLastSignal.EditorTools
             var updateMeshMethod = light2DType.GetMethod("UpdateMesh", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             var updateBoundsMethod = light2DType.GetMethod("UpdateBoundingSphere", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-            Light2D AddLight(string name, Vector3 pos, Color color, float intensity, float outerRadius, float innerRadius = 0.1f)
+            Light2D AddLight(string name, Vector3 pos, Color color, float intensity, float outerRadius, float innerRadius = 0.1f, float falloff = 0.65f)
             {
                 var go = new GameObject(name);
                 go.transform.SetParent(lightingRoot.transform);
@@ -1013,6 +1177,7 @@ namespace TheLastSignal.EditorTools
                 l.intensity = intensity;
                 l.pointLightOuterRadius = outerRadius;
                 l.pointLightInnerRadius = innerRadius;
+                l.falloffIntensity = falloff;
                 l.shadowsEnabled = false;
 
                 updateMeshMethod?.Invoke(l, new object[] { true });
@@ -1021,18 +1186,92 @@ namespace TheLastSignal.EditorTools
                 return l;
             }
 
-            // ==================== NODE C LIGHTING (Amber Warning & Catwalk Grazing) ====================
-            AddLight("Light_NodeC_Ambient", new Vector3(-0.5f, -34.5f, 0f), new Color(0.20f, 0.22f, 0.26f, 1f), 0.45f, 12.0f);
-            var bL = AddLight("Light_NodeC_Bollard_L", new Vector3(-3.2f, -34.3f, 0f), new Color(1.0f, 0.70f, 0.20f, 1f), 0.75f, 2.8f);
-            var bR = AddLight("Light_NodeC_Bollard_R", new Vector3(2.2f, -34.3f, 0f), new Color(1.0f, 0.70f, 0.20f, 1f), 0.75f, 2.8f);
-            AddLight("Light_NodeC_Manifold", new Vector3(-4.4f, -34.5f, 0f), new Color(1.0f, 0.55f, 0.20f, 1f), 0.50f, 2.2f);
+            // ==================== NODE C LIGHTING (Abyssal Uplight & Amber Warning) ====================
+            AddLight("Light_NodeC_Ambient", new Vector3(0.0f, -34.5f, 0f), new Color(0.18f, 0.20f, 0.24f, 1f), 0.35f, 12.0f);
+            var abyssL = AddLight("Light_NodeC_Abyss_Uplight", new Vector3(0.0f, -34.5f, 0f), new Color(0.06f, 0.52f, 0.72f, 1f), 0.70f, 9.5f, 3.0f);
+            AddLight("Light_NodeC_Nexus_Overhead", new Vector3(0.0f, -34.5f, 0f), new Color(1.0f, 0.85f, 0.60f, 1f), 0.50f, 4.8f, 1.2f);
+            AddLight("Light_NodeC_Bollard_L", new Vector3(-1.4f, -30.3f, 0f), new Color(1.0f, 0.65f, 0.20f, 1f), 0.75f, 2.5f);
+            AddLight("Light_NodeC_Bollard_R", new Vector3(1.4f, -38.3f, 0f), new Color(1.0f, 0.65f, 0.20f, 1f), 0.75f, 2.5f);
+            AddLight("Light_NodeC_Manifold", new Vector3(-4.4f, -34.5f, 0f), new Color(1.0f, 0.50f, 0.20f, 1f), 0.60f, 2.2f);
 
-            // ==================== DEEP STORAGE LIGHTING (Low-key Cyan & Emergency Lamp) ====================
-            AddLight("Light_DeepStorage_Ambient", new Vector3(-13.5f, -47.5f, 0f), new Color(0.18f, 0.25f, 0.32f, 1f), 0.55f, 14.0f);
-            AddLight("Light_DeepStorage_Vault_1", new Vector3(-17.0f, -50.0f, 0f), new Color(0.20f, 0.85f, 0.95f, 1f), 0.75f, 3.5f);
-            AddLight("Light_DeepStorage_Vault_2", new Vector3(-10.0f, -50.0f, 0f), new Color(0.20f, 0.85f, 0.95f, 1f), 0.75f, 3.5f);
-            AddLight("Light_DeepStorage_RadSuit", new Vector3(-16.5f, -44.5f, 0f), new Color(1.0f, 0.80f, 0.25f, 1f), 0.65f, 3.0f);
-            AddLight("Light_DeepStorage_Pallet_Area", new Vector3(-16.5f, -48.0f, 0f), new Color(1.0f, 0.85f, 0.45f, 1f), 0.65f, 3.2f);
+            // ==================== XENOBIOLOGY RESEARCH LAB LIGHTING (FINAL POLISHED AMBIENT & HORROR CHIAROSCURO) ====================
+            // --- 1. PRIORITY ONE: UPPER AND LOWER AMBIENT ILLUMINATION (Subtle Dark Blue-Gray Field) ---
+            // North Ambient Node: Subtly illuminates floor panels above workstation (Y = -44.5 to -43.0), upper wall panels & ventilation
+            AddLight("Light_DeepStorage_Ambient_North", new Vector3(-13.50f, -43.80f, 0f), new Color(0.13f, 0.19f, 0.28f, 1f), 0.30f, 9.2f, 2.2f, 0.58f);
+            // South Ambient Node: Subtly illuminates lower floor near eyewash (Y = -50.5 to -52.0), lower walls & kickplate transitions
+            AddLight("Light_DeepStorage_Ambient_South", new Vector3(-13.50f, -50.50f, 0f), new Color(0.13f, 0.19f, 0.28f, 1f), 0.30f, 9.2f, 2.2f, 0.58f);
+            // Central Chase Floor Fill: Calibrated fill for 4-player silhouette separation without a dominant bright spot
+            AddLight("Light_DeepStorage_Central_Floor_Fill", new Vector3(-13.50f, -47.25f, 0f), new Color(0.10f, 0.15f, 0.22f, 1f), 0.15f, 5.8f, 1.2f, 0.65f);
+            // Overhead Failing Cathode Tube: Clinical flicker over upper corridor
+            var cathodeLight = AddLight("Light_DeepStorage_Cathode_Ceiling", new Vector3(-13.50f, -45.50f, 0f), new Color(0.35f, 0.48f, 0.65f, 1f), 0.24f, 4.2f, 0.4f, 0.65f);
+            cathodeLight.gameObject.AddComponent<TheLastSignal.Juice.FlickeringLight>();
+
+            // --- 2. PRIORITY THREE: CENTRAL WORKSTATION LIGHT SPILL (Integrated Non-Circular Envelope) ---
+            // --- 2. BIOLOGICAL RESEARCH WORKSTATION LIGHTING (Focused Task Illumination) ---
+            // Microscope Substage Illuminator (Subtle pale-cyan optical beam focused on stage specimen)
+            AddLight("Light_Lab_Workbench_Microscope_Spot", new Vector3(-13.90f, -47.35f, 0f), new Color(0.25f, 0.88f, 0.95f, 1f), 0.40f, 1.4f, 0.15f, 0.70f);
+            // Desk Surface Task Light (Refined & focused directly on examination surface, preserving dark surrounding deck)
+            AddLight("Light_Lab_Workbench_Spot", new Vector3(-13.50f, -47.35f, 0f), new Color(0.85f, 0.92f, 0.98f, 1f), 0.75f, 1.8f, 0.3f, 0.68f);
+            // Secondary Telemetry Screen Bloom (Supporting cyan glow on right diagnostic CRT)
+            AddLight("Light_Lab_Workbench_Monitor_Cyan", new Vector3(-12.95f, -47.35f, 0f), new Color(0.20f, 0.75f, 0.90f, 1f), 0.45f, 1.6f, 0.2f, 0.65f);
+            // Subfloor Bracket & Operator Stool Illumination (Gentle grounded definition without large circular pool)
+            AddLight("Light_Lab_Workbench_Subfloor_Spill", new Vector3(-13.50f, -47.85f, 0f), new Color(0.12f, 0.22f, 0.32f, 1f), 0.20f, 2.2f, 0.3f, 0.70f);
+            AddLight("Light_Lab_Workbench_Front_Spill", new Vector3(-13.50f, -46.65f, 0f), new Color(0.10f, 0.20f, 0.30f, 1f), 0.18f, 2.0f, 0.3f, 0.70f);
+
+            // --- 3. CYAN & GREEN REFLECTIONS BEHIND STABLE SPECIMEN TANKS ---
+            // Internal Stasis Fluid Glow (Vibrant core inside cylinders)
+            AddLight("Light_Lab_West_Pods_Teal", new Vector3(-17.00f, -48.20f, 0f), new Color(0.12f, 0.82f, 0.78f, 1f), 1.05f, 2.6f, 0.4f, 0.60f);
+            // Metal Wall Panels Immediately Behind the Two Tanks (Localized cyan specular back-reflection)
+            AddLight("Light_Lab_West_Pods_Wall_Reflection", new Vector3(-18.00f, -48.50f, 0f), new Color(0.08f, 0.52f, 0.60f, 1f), 0.36f, 2.0f, 0.2f, 0.65f);
+            // Metallic Support Bases Beneath the Tanks & Hydraulic Pipe Mounts
+            AddLight("Light_Lab_West_Pods_Base_Reflection", new Vector3(-16.90f, -49.30f, 0f), new Color(0.08f, 0.48f, 0.55f, 1f), 0.32f, 1.8f, 0.2f, 0.68f);
+            // Natural Cyan Reflection Gradient on Floor in Front of Tanks (Gradually blends to ambient without flooding west side)
+            AddLight("Light_Lab_West_Pods_Floor_Spill", new Vector3(-15.70f, -48.30f, 0f), new Color(0.06f, 0.38f, 0.48f, 1f), 0.28f, 2.8f, 0.3f, 0.72f);
+            // Mutating Pod Fault Indicator (Amber alert, unchanged)
+            AddLight("Light_Lab_West_Pod_Fault_Amber", new Vector3(-16.80f, -49.20f, 0f), new Color(0.95f, 0.55f, 0.10f, 1f), 0.30f, 1.2f, 0.1f, 0.60f);
+
+            // --- 4. CONTROLLED PURPLE CONTAINMENT LIGHTING (CONTAINED WITHIN MEGA-CHAMBER) ---
+            // Internal Biological Core Glow (Apex landmark energy inside chamber)
+            AddLight("Light_Lab_Mega_Chamber_Violet", new Vector3(-9.15f, -49.20f, 0f), new Color(0.65f, 0.18f, 0.88f, 1f), 1.25f, 2.4f, 0.5f, 0.60f);
+            // Contained Purple Reflection on Base Rim & Immediate Apron (Tightened falloff to prevent room flood)
+            AddLight("Light_Lab_Mega_Chamber_Apron_Spill", new Vector3(-9.50f, -49.20f, 0f), new Color(0.35f, 0.12f, 0.52f, 1f), 0.26f, 2.2f, 0.3f, 0.72f);
+            // Subtle Plum-Navy Transition Blend
+            AddLight("Light_Lab_Mega_Chamber_Transition_Blend", new Vector3(-10.10f, -49.00f, 0f), new Color(0.14f, 0.08f, 0.22f, 1f), 0.14f, 2.6f, 0.2f, 0.75f);
+            // Diagnostic Strobe Beacon
+            var megaBeacon = AddLight("Light_Lab_Mega_Beacon_Red", new Vector3(-9.15f, -47.10f, 0f), new Color(0.85f, 0.12f, 0.12f, 1f), 0.65f, 2.2f, 0.3f, 0.65f);
+            megaBeacon.gameObject.AddComponent<TheLastSignal.Juice.PulsingLight2D>();
+
+            // --- 5. SECONDARY PERIMETER UTILITY STATIONS (Preserved with Refined Soft Falloff) ---
+            AddLight("Light_Lab_Cryo_Vault_Cyan", new Vector3(-16.50f, -42.85f, 0f), new Color(0.12f, 0.68f, 0.84f, 1f), 0.45f, 2.2f, 0.2f, 0.70f);
+            AddLight("Light_Lab_Observation_Window_Void", new Vector3(-13.50f, -41.60f, 0f), new Color(0.10f, 0.30f, 0.68f, 1f), 0.42f, 2.8f, 0.2f, 0.70f);
+            AddLight("Light_Lab_Cryo_Decon_Cyan", new Vector3(-9.50f, -42.85f, 0f), new Color(0.14f, 0.72f, 0.86f, 1f), 0.45f, 2.2f, 0.2f, 0.70f);
+            AddLight("Light_Lab_Eyewash_Amber", new Vector3(-13.50f, -51.20f, 0f), new Color(0.88f, 0.60f, 0.12f, 1f), 0.38f, 2.0f, 0.2f, 0.70f);
+            AddLight("Light_Lab_SE_Archive_Glow", new Vector3(-10.20f, -51.20f, 0f), new Color(0.48f, 0.20f, 0.78f, 1f), 0.38f, 2.0f, 0.2f, 0.70f);
+            AddLight("Light_Lab_SW_Compressor_Cyan", new Vector3(-16.80f, -51.10f, 0f), new Color(0.12f, 0.50f, 0.82f, 1f), 0.38f, 2.0f, 0.2f, 0.70f);
+
+            // --- 6. DOORWAY THRESHOLDS & PINPOINT ACCENTS ---
+            AddLight("Light_DeepStorage_Door_East", new Vector3(-7.50f, -46.50f, 0f), new Color(0.45f, 0.65f, 0.82f, 1f), 0.36f, 2.2f, 0.3f, 0.70f);
+            var wCorridorLight = GameObject.Find("Light_CorridorW_SouthEast_Run");
+            if (wCorridorLight != null)
+            {
+                var l2d = wCorridorLight.GetComponent<Light2D>();
+                if (l2d != null)
+                {
+                    wCorridorLight.transform.position = new Vector3(-19.8f, -46.5f, 0f);
+                    l2d.color = new Color(0.50f, 0.75f, 0.95f, 1f);
+                    l2d.intensity = 0.50f;
+                    l2d.pointLightOuterRadius = 3.5f;
+                    l2d.pointLightInnerRadius = 0.4f;
+                    l2d.falloffIntensity = 0.70f;
+                    updateMeshMethod?.Invoke(l2d, new object[] { true });
+                    updateBoundsMethod?.Invoke(l2d, null);
+                    EditorUtility.SetDirty(l2d);
+                }
+            }
+
+            AddLight("Light_Lab_Air_Scrubber_Green", new Vector3(-11.10f, -42.15f, 0f), new Color(0.10f, 0.85f, 0.35f, 1f), 0.10f, 0.8f, 0.05f, 0.70f);
+            AddLight("Light_Lab_Chemical_Cabinet_Amber", new Vector3(-8.75f, -43.60f, 0f), new Color(0.95f, 0.70f, 0.12f, 1f), 0.10f, 0.6f, 0.05f, 0.70f);
+            AddLight("Light_Lab_Breaker_Board_Amber", new Vector3(-18.30f, -45.60f, 0f), new Color(0.95f, 0.50f, 0.10f, 1f), 0.08f, 0.5f, 0.05f, 0.70f);
 
             // ==================== POWER RELAY LIGHTING (Flickering Arc & Warm Orange) ====================
             AddLight("Light_PowerRelay_Ambient", new Vector3(12.5f, -47.5f, 0f), new Color(0.22f, 0.20f, 0.18f, 1f), 0.35f, 14.0f);
@@ -1071,8 +1310,11 @@ namespace TheLastSignal.EditorTools
             var vfxRoot = new GameObject("VFX");
             vfxRoot.transform.SetParent(envRoot.transform);
 
-            Material steamMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Materials/M_Steam_Particle.mat");
-            Material sparksMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Materials/M_Spark_Particle.mat");
+            Material steamMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Environment/Interactables/SafeLightJunction/Mat_VFX_Steam.mat")
+                ?? AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Materials/M_Steam_Particle.mat");
+            Material sparksMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Environment/Interactables/SafeLightJunction/Mat_VFX_Sparks.mat")
+                ?? AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Materials/M_Spark_Particle.mat");
+            Material dustMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Environment/Interactables/SafeLightJunction/Mat_VFX_CargoHold_Dust.mat");
 
             // 1. Steam Purge on Node C Manifold
             if (steamMat != null)
@@ -1127,6 +1369,161 @@ namespace TheLastSignal.EditorTools
                 emission.SetBursts(new ParticleSystem.Burst[] {
                     new ParticleSystem.Burst(0.4f, 2, 5, 1, 2.5f)
                 });
+            }
+
+            // 3. Deep Storage Cryogenic Vapor & Ground Mist (Option A: Cold Breach Horror)
+            if (steamMat != null)
+            {
+                // A. Heavy Cryogenic Vapor plume erupting continuously from Ruptured Vault Chest
+                var breachCryoGo = new GameObject("VFX_DeepStorage_Breach_Vapor");
+                breachCryoGo.transform.SetParent(vfxRoot.transform);
+                breachCryoGo.transform.position = new Vector3(-10.0f, -50.1f, 0f);
+                var psBreach = breachCryoGo.AddComponent<ParticleSystem>();
+                var rendBreach = breachCryoGo.GetComponent<ParticleSystemRenderer>();
+                rendBreach.sharedMaterial = steamMat;
+                rendBreach.sortingLayerName = "Floor";
+                rendBreach.sortingOrder = 5;
+
+                var mainBreach = psBreach.main;
+                mainBreach.maxParticles = 8;
+                mainBreach.startLifetime = 2.0f;
+                mainBreach.startSpeed = 0.20f;
+                mainBreach.startSize = 0.40f;
+                mainBreach.startColor = new Color(0.45f, 0.90f, 1.0f, 0.22f); // Restrained breach vapor
+
+                var emBreach = psBreach.emission;
+                emBreach.rateOverTime = 3.0f;
+
+                var shapeBreach = psBreach.shape;
+                shapeBreach.shapeType = ParticleSystemShapeType.Cone;
+                shapeBreach.angle = 35f;
+                shapeBreach.radius = 0.40f;
+
+                // B. Sparing cold seal condensation from Intact Stasis Pod 1
+                var sealedCryoGo = new GameObject("VFX_DeepStorage_Sealed_Vapor");
+                sealedCryoGo.transform.SetParent(vfxRoot.transform);
+                sealedCryoGo.transform.position = new Vector3(-17.0f, -50.3f, 0f);
+                var psSealed = sealedCryoGo.AddComponent<ParticleSystem>();
+                var rendSealed = sealedCryoGo.GetComponent<ParticleSystemRenderer>();
+                rendSealed.sharedMaterial = steamMat;
+                rendSealed.sortingLayerName = "Floor";
+                rendSealed.sortingOrder = 4;
+
+                var mainSealed = psSealed.main;
+                mainSealed.maxParticles = 8;
+                mainSealed.startLifetime = 2.0f;
+                mainSealed.startSpeed = 0.15f;
+                mainSealed.startSize = 0.35f;
+                mainSealed.startColor = new Color(0.35f, 0.75f, 0.95f, 0.16f);
+
+                var emSealed = psSealed.emission;
+                emSealed.rateOverTime = 2.0f;
+
+                var shapeSealed = psSealed.shape;
+                shapeSealed.shapeType = ParticleSystemShapeType.Circle;
+                shapeSealed.radius = 0.30f;
+
+                // C. High-Pressure Liquid Nitrogen Jet from Specimen Preservation Units
+                var dewarVfxGo = new GameObject("VFX_DeepStorage_Dewar_Vent");
+                dewarVfxGo.transform.SetParent(vfxRoot.transform);
+                dewarVfxGo.transform.position = new Vector3(-17.8f, -44.0f, 0f);
+                var psDewar = dewarVfxGo.AddComponent<ParticleSystem>();
+                var rendDewar = dewarVfxGo.GetComponent<ParticleSystemRenderer>();
+                rendDewar.sharedMaterial = steamMat;
+                rendDewar.sortingLayerName = "Obstacles";
+                rendDewar.sortingOrder = 6;
+
+                var mainDewar = psDewar.main;
+                mainDewar.maxParticles = 16;
+                mainDewar.startLifetime = 1.2f;
+                mainDewar.startSpeed = 0.85f;
+                mainDewar.startSize = 0.28f;
+                mainDewar.startColor = new Color(0.80f, 0.94f, 1.0f, 0.35f);
+
+                var emDewar = psDewar.emission;
+                emDewar.rateOverTime = 6.0f;
+
+                var shapeDewar = psDewar.shape;
+                shapeDewar.shapeType = ParticleSystemShapeType.Cone;
+                shapeDewar.angle = 15f;
+                shapeDewar.radius = 0.12f;
+
+                // D. Cold vapor rolling out of open Cryo-Morgue Drawer (downward cascade along floor)
+                var morgueVfxGo = new GameObject("VFX_DeepStorage_Morgue_Cold");
+                morgueVfxGo.transform.SetParent(vfxRoot.transform);
+                morgueVfxGo.transform.position = new Vector3(-13.5f, -51.8f, 0f);
+                var psMorgue = morgueVfxGo.AddComponent<ParticleSystem>();
+                var rendMorgue = morgueVfxGo.GetComponent<ParticleSystemRenderer>();
+                rendMorgue.sharedMaterial = steamMat;
+                rendMorgue.sortingLayerName = "Floor";
+                rendMorgue.sortingOrder = 4;
+
+                var mainMorgue = psMorgue.main;
+                mainMorgue.maxParticles = 18;
+                mainMorgue.startLifetime = 3.0f;
+                mainMorgue.startSpeed = 0.15f;
+                mainMorgue.startSize = 0.65f;
+                mainMorgue.gravityModifier = 0.04f;
+                mainMorgue.startColor = new Color(0.40f, 0.80f, 1.0f, 0.25f);
+
+                var emMorgue = psMorgue.emission;
+                emMorgue.rateOverTime = 5.5f;
+
+                var shapeMorgue = psMorgue.shape;
+                shapeMorgue.shapeType = ParticleSystemShapeType.Box;
+                shapeMorgue.scale = new Vector3(1.4f, 0.3f, 0.1f);
+                shapeMorgue.scale = new Vector3(1.2f, 0.3f, 0.1f);
+
+                // E. Creeping Low-Lying Ground Cryo-Fog across the entire floor
+                var groundFogGo = new GameObject("VFX_DeepStorage_Ground_Fog");
+                groundFogGo.transform.SetParent(vfxRoot.transform);
+                groundFogGo.transform.position = new Vector3(-13.5f, -47.5f, 0f);
+                var psFog = groundFogGo.AddComponent<ParticleSystem>();
+                var rendFog = groundFogGo.GetComponent<ParticleSystemRenderer>();
+                rendFog.sharedMaterial = steamMat;
+                rendFog.sortingLayerName = "Floor";
+                rendFog.sortingOrder = 4;
+
+                var mainFog = psFog.main;
+                mainFog.maxParticles = 40;
+                mainFog.startLifetime = 4.5f;
+                mainFog.startSpeed = 0.06f;
+                mainFog.startSize = 1.10f;
+                mainFog.startColor = new Color(0.35f, 0.70f, 0.90f, 0.15f); // Soft eerie blanket of floor mist
+
+                var emFog = psFog.emission;
+                emFog.rateOverTime = 8.5f;
+
+                var shapeFog = psFog.shape;
+                shapeFog.shapeType = ParticleSystemShapeType.Box;
+                shapeFog.scale = new Vector3(8.5f, 7.0f, 0.1f);
+            }
+
+            // 4. Deep Storage Ambient Vault Dust Motes
+            if (dustMat != null)
+            {
+                var dustGo = new GameObject("VFX_DeepStorage_Atmosphere_Dust");
+                dustGo.transform.SetParent(vfxRoot.transform);
+                dustGo.transform.position = new Vector3(-13.5f, -47.5f, 0f);
+                var ps = dustGo.AddComponent<ParticleSystem>();
+                var rend = dustGo.GetComponent<ParticleSystemRenderer>();
+                rend.sharedMaterial = dustMat;
+                rend.sortingLayerName = "Obstacles";
+                rend.sortingOrder = 7;
+
+                var main = ps.main;
+                main.maxParticles = 25;
+                main.startLifetime = 4.5f;
+                main.startSpeed = 0.05f;
+                main.startSize = 0.06f;
+                main.startColor = new Color(0.60f, 0.70f, 0.80f, 0.16f);
+
+                var emission = ps.emission;
+                emission.rateOverTime = 5f;
+
+                var shape = ps.shape;
+                shape.shapeType = ParticleSystemShapeType.Box;
+                shape.scale = new Vector3(8.5f, 7.0f, 0.1f);
             }
         }
     }

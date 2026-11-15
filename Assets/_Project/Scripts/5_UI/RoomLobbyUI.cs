@@ -94,6 +94,14 @@ namespace TheLastSignal.UI
                 canvas = FindAnyObjectByType<Canvas>(FindObjectsInactive.Include);
             }
 
+            // Ensure an EventSystem exists in the scene so UI buttons can receive mouse clicks and input
+            if (FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>(FindObjectsInactive.Include) == null)
+            {
+                GameObject esGo = new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem));
+                var inputModule = esGo.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+                inputModule.AssignDefaultActions();
+            }
+
             GameObject uiGo = new GameObject("RoomLobbyUI", typeof(RectTransform));
             if (canvas != null)
             {

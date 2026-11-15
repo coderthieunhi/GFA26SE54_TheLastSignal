@@ -1,0 +1,834 @@
+fileFormatVersion: 2
+guid: f975f390d7f0f43029f9535d9eaa40a9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 79275850967615841
+    second: Decal_Lab_Concept_Walkway_Guide_0
+  - first:
+      213: 7640357366853737582
+    second: Decal_Lab_Concept_Walkway_Guide_1
+  - first:
+      213: -1464227872345515845
+    second: Decal_Lab_Concept_Walkway_Guide_2
+  - first:
+      213: -250715042545260016
+    second: Decal_Lab_Concept_Walkway_Guide_3
+  - first:
+      213: 9165272044752395693
+    second: Decal_Lab_Concept_Walkway_Guide_4
+  - first:
+      213: 8718648863162193147
+    second: Decal_Lab_Concept_Walkway_Guide_5
+  - first:
+      213: 4117363891259317118
+    second: Decal_Lab_Concept_Walkway_Guide_6
+  - first:
+      213: 943874493677610853
+    second: Decal_Lab_Concept_Walkway_Guide_7
+  - first:
+      213: -6734192523247053014
+    second: Decal_Lab_Concept_Walkway_Guide_8
+  - first:
+      213: 8057382695030420856
+    second: Decal_Lab_Concept_Walkway_Guide_9
+  - first:
+      213: 7884068729171329954
+    second: Decal_Lab_Concept_Walkway_Guide_10
+  - first:
+      213: 7930651271827922632
+    second: Decal_Lab_Concept_Walkway_Guide_11
+  - first:
+      213: 5354325118688423210
+    second: Decal_Lab_Concept_Walkway_Guide_12
+  - first:
+      213: -1143193418933215679
+    second: Decal_Lab_Concept_Walkway_Guide_13
+  - first:
+      213: -6098465322161133422
+    second: Decal_Lab_Concept_Walkway_Guide_14
+  - first:
+      213: 2102885269599225279
+    second: Decal_Lab_Concept_Walkway_Guide_15
+  - first:
+      213: 5321071122724258808
+    second: Decal_Lab_Concept_Walkway_Guide_16
+  - first:
+      213: 7545389970835319170
+    second: Decal_Lab_Concept_Walkway_Guide_17
+  - first:
+      213: 2971989296734622893
+    second: Decal_Lab_Concept_Walkway_Guide_18
+  - first:
+      213: 4792614831262221405
+    second: Decal_Lab_Concept_Walkway_Guide_19
+  - first:
+      213: -945294731371291495
+    second: Decal_Lab_Concept_Walkway_Guide_20
+  - first:
+      213: -110555942446005151
+    second: Decal_Lab_Concept_Walkway_Guide_21
+  - first:
+      213: -1726500907230562703
+    second: Decal_Lab_Concept_Walkway_Guide_22
+  - first:
+      213: -6268812204371995997
+    second: Decal_Lab_Concept_Walkway_Guide_23
+  - first:
+      213: -8242423018266708932
+    second: Decal_Lab_Concept_Walkway_Guide_24
+  - first:
+      213: -6960426767573429502
+    second: Decal_Lab_Concept_Walkway_Guide_25
+  - first:
+      213: -7653352638812115097
+    second: Decal_Lab_Concept_Walkway_Guide_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_0
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 109
+        width: 29
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 169013867f4a91100800000000000000
+      internalID: 79275850967615841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_1
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 124
+        width: 33
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6c1b587b80080a60800000000000000
+      internalID: 7640357366853737582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_2
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 110
+        width: 25
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb89e9602840eabe0800000000000000
+      internalID: -1464227872345515845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_3
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 109
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01a2e354ff7458cf0800000000000000
+      internalID: -250715042545260016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_4
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 109
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dadd8417d56913f70800000000000000
+      internalID: 9165272044752395693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_5
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 109
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf4552a92fcdef870800000000000000
+      internalID: 8718648863162193147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_6
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 109
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7b1885f4a0d32930800000000000000
+      internalID: 4117363891259317118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_7
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 106
+        width: 38
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 567a434e9d0591d00800000000000000
+      internalID: 943874493677610853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_8
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 109
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2794c254975b82a0800000000000000
+      internalID: -6734192523247053014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_9
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 109
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 875faac0fd291df60800000000000000
+      internalID: 8057382695030420856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_10
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 109
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a3c503dcb6d96d60800000000000000
+      internalID: 7884068729171329954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_11
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 78
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ce9dc630555f0e60800000000000000
+      internalID: 7930651271827922632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_12
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 78
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2def57b3526e4a40800000000000000
+      internalID: 5354325118688423210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_13
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 99
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14edbe274af8220f0800000000000000
+      internalID: -1143193418933215679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_14
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 94
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2982c8db916ed5ba0800000000000000
+      internalID: -6098465322161133422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_15
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 78
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb50dd9d203fe2d10800000000000000
+      internalID: 2102885269599225279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_16
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 78
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f3819e6efd38d940800000000000000
+      internalID: 5321071122724258808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_17
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 96
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2892f67833c96b860800000000000000
+      internalID: 7545389970835319170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_18
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 78
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da45124e480ae3920800000000000000
+      internalID: 2971989296734622893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_19
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 78
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5447a2fbc9c28240800000000000000
+      internalID: 4792614831262221405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_20
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 89
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99cd0904373a1e2f0800000000000000
+      internalID: -945294731371291495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_21
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 82
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16482b2c4f9377ef0800000000000000
+      internalID: -110555942446005151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_22
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 51
+        width: 29
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 176f120829c3a08e0800000000000000
+      internalID: -1726500907230562703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_23
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 58
+        width: 29
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a216c28384b009a0800000000000000
+      internalID: -6268812204371995997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_24
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 35
+        width: 55
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c34b5b36fe70d9d80800000000000000
+      internalID: -8242423018266708932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_25
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 44
+        width: 33
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2035aa99bb8976f90800000000000000
+      internalID: -6960426767573429502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Decal_Lab_Concept_Walkway_Guide_26
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 10
+        width: 25
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76f2ecef254d9c590800000000000000
+      internalID: -7653352638812115097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Decal_Lab_Concept_Walkway_Guide_0: 79275850967615841
+      Decal_Lab_Concept_Walkway_Guide_1: 7640357366853737582
+      Decal_Lab_Concept_Walkway_Guide_10: 7884068729171329954
+      Decal_Lab_Concept_Walkway_Guide_11: 7930651271827922632
+      Decal_Lab_Concept_Walkway_Guide_12: 5354325118688423210
+      Decal_Lab_Concept_Walkway_Guide_13: -1143193418933215679
+      Decal_Lab_Concept_Walkway_Guide_14: -6098465322161133422
+      Decal_Lab_Concept_Walkway_Guide_15: 2102885269599225279
+      Decal_Lab_Concept_Walkway_Guide_16: 5321071122724258808
+      Decal_Lab_Concept_Walkway_Guide_17: 7545389970835319170
+      Decal_Lab_Concept_Walkway_Guide_18: 2971989296734622893
+      Decal_Lab_Concept_Walkway_Guide_19: 4792614831262221405
+      Decal_Lab_Concept_Walkway_Guide_2: -1464227872345515845
+      Decal_Lab_Concept_Walkway_Guide_20: -945294731371291495
+      Decal_Lab_Concept_Walkway_Guide_21: -110555942446005151
+      Decal_Lab_Concept_Walkway_Guide_22: -1726500907230562703
+      Decal_Lab_Concept_Walkway_Guide_23: -6268812204371995997
+      Decal_Lab_Concept_Walkway_Guide_24: -8242423018266708932
+      Decal_Lab_Concept_Walkway_Guide_25: -6960426767573429502
+      Decal_Lab_Concept_Walkway_Guide_26: -7653352638812115097
+      Decal_Lab_Concept_Walkway_Guide_3: -250715042545260016
+      Decal_Lab_Concept_Walkway_Guide_4: 9165272044752395693
+      Decal_Lab_Concept_Walkway_Guide_5: 8718648863162193147
+      Decal_Lab_Concept_Walkway_Guide_6: 4117363891259317118
+      Decal_Lab_Concept_Walkway_Guide_7: 943874493677610853
+      Decal_Lab_Concept_Walkway_Guide_8: -6734192523247053014
+      Decal_Lab_Concept_Walkway_Guide_9: 8057382695030420856
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

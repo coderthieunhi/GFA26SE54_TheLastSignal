@@ -438,7 +438,7 @@ namespace TheLastSignal.EditorTools
                         d.transform.rotation = Quaternion.identity;
                         if (box != null) { box.size = new Vector2(1.0f, 2.0f); box.offset = Vector2.zero; }
                         d.SetSprites(doorVClosed, doorVOpen);
-                        CreateIndicatorLight(propsRoot, d, new Vector3(-5.0f, 11.25f, 0f), lightRed, lightGreen, litMat);
+                        CreateIndicatorLight(propsRoot, d, new Vector3(-4.5f, 14.25f, 0f), lightRed, lightGreen, litMat);
                     }
 
                     if (dsr != null)

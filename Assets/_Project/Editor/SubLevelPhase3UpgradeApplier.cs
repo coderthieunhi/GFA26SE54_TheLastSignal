@@ -250,15 +250,16 @@ namespace TheLastSignal.EditorTools
                 return go;
             }
 
+            int interactableLayer = LayerMask.NameToLayer("Interactable");
+
             // ========================================================
             // 1. NODE C PROPS & INTERACTIVITY
             // ========================================================
-            // Bridge Nexus Control Terminal
-            var bridgeConsole = SpawnPropObj("Prop_NodeC_Bridge_Console", new Vector3(-2.8f, -32.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Bridge_Console.png", true, new Vector2(0.8f, 0.8f));
-            SpawnShadowObj("Shadow_NodeC_Bridge_Console", new Vector3(-2.8f, -32.85f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.50f);
+            // Bridge Nexus Control Terminal (At far tip of 2-tile dead-end)
+            var bridgeConsole = SpawnPropObj("Prop_NodeC_Bridge_Console", new Vector3(-2.45f, -34.5f, 0f), $"{PropsSourceDir}/Prop_NodeC_Bridge_Console.png", true, new Vector2(0.8f, 0.8f));
+            SpawnShadowObj("Shadow_NodeC_Bridge_Console", new Vector3(-2.45f, -34.85f, 0f), $"{PropsSourceDir}/Shadow_SubLevel_Medium.png", 0.50f);
             if (bridgeConsole != null)
             {
-                int interactableLayer = LayerMask.NameToLayer("Interactable");
                 if (interactableLayer != -1) bridgeConsole.layer = interactableLayer;
                 var task = bridgeConsole.AddComponent<TaskLocation>();
                 var so = new SerializedObject(task);
@@ -268,61 +269,163 @@ namespace TheLastSignal.EditorTools
                 so.ApplyModifiedProperties();
             }
 
-            // Guardrail Corner Stanchion Posts
-            SpawnPropObj("Prop_NodeC_Stanchion_NW", new Vector3(-4.3f, -30.7f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
-            SpawnPropObj("Prop_NodeC_Stanchion_NE", new Vector3(3.3f, -30.7f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
-            SpawnPropObj("Prop_NodeC_Stanchion_SW", new Vector3(-4.3f, -38.3f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
-            SpawnPropObj("Prop_NodeC_Stanchion_SE", new Vector3(3.3f, -38.3f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            // Guardrail Corner Stanchion Posts at Key Catwalk Junctions
+            SpawnPropObj("Prop_NodeC_Stanchion_NW", new Vector3(-1.0f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnPropObj("Prop_NodeC_Stanchion_NE", new Vector3(1.0f, -33.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnPropObj("Prop_NodeC_Stanchion_SW", new Vector3(-1.0f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
+            SpawnPropObj("Prop_NodeC_Stanchion_SE", new Vector3(1.0f, -35.0f, 0f), $"{PropsSourceDir}/Prop_NodeC_Stanchion_Post.png", true, new Vector2(0.4f, 0.4f), "Obstacles", 7);
 
             // ========================================================
             // 2. DEEP STORAGE PROPS & INTERACTIVITY
             // ========================================================
-            // Update Vault Chest Sprites & Make Interactable
-            var c1 = GameObject.Find("Prop_DeepStorage_Vault_Chest_1");
-            if (c1 != null)
+            // Configure interactable task stations on Specimen Incubation Tanks
+            interactableLayer = LayerMask.NameToLayer("Interactable");
+
+            // Configure Mega Containment Chamber (East Wall Centerpiece)
+            var megaGo = GameObject.Find("Prop_Lab_Concept_Mega_Containment_Chamber") ?? GameObject.Find("Prop_Lab_Apex_Specimen_Zero_Tank");
+            if (megaGo != null)
             {
-                var sr = c1.GetComponent<SpriteRenderer>();
-                if (sr != null) sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{PropsSourceDir}/Prop_DeepStorage_Lead_Vault_Chest.png");
-                int interactableLayer = LayerMask.NameToLayer("Interactable");
-                if (interactableLayer != -1) c1.layer = interactableLayer;
-                var task = c1.GetComponent<TaskLocation>() ?? c1.AddComponent<TaskLocation>();
+                if (interactableLayer != -1) megaGo.layer = interactableLayer;
+                var task = megaGo.GetComponent<TaskLocation>() ?? megaGo.AddComponent<TaskLocation>();
                 var so = new SerializedObject(task);
-                so.FindProperty("stationId").stringValue = "TASK_DEEPSTORAGE_ISOTOPE_1";
-                so.FindProperty("stationDisplayName").stringValue = "Isotope Vault Chest Alpha";
+                so.FindProperty("stationId").stringValue = "TASK_LAB_MEGA_CONTAINMENT";
+                so.FindProperty("stationDisplayName").stringValue = "High-Risk Alien Mega-Containment Chamber // Level-5 Stasis Core";
+                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.Computer;
+                so.ApplyModifiedProperties();
+            }
+
+            // Configure West Dual Stasis Pods
+            var westPodsGo = GameObject.Find("Prop_Lab_Concept_West_Dual_Pods") ?? GameObject.Find("Prop_Lab_Specimen_Pod_Battery_West");
+            if (westPodsGo != null)
+            {
+                if (interactableLayer != -1) westPodsGo.layer = interactableLayer;
+                var task = westPodsGo.GetComponent<TaskLocation>() ?? westPodsGo.AddComponent<TaskLocation>();
+                var so = new SerializedObject(task);
+                so.FindProperty("stationId").stringValue = "TASK_LAB_STASIS_PRESERVATION";
+                so.FindProperty("stationDisplayName").stringValue = "Specimen Preservation Dual-Pods // Shared Coolant Manifold";
+                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.Computer;
+                so.ApplyModifiedProperties();
+            }
+
+            // Configure CRYO-VAULT Station (North-West Wall)
+            var vaultGo = GameObject.Find("Prop_Lab_Concept_Cryo_Vault_Station");
+            if (vaultGo != null)
+            {
+                if (interactableLayer != -1) vaultGo.layer = interactableLayer;
+                var task = vaultGo.GetComponent<TaskLocation>() ?? vaultGo.AddComponent<TaskLocation>();
+                var so = new SerializedObject(task);
+                so.FindProperty("stationId").stringValue = "TASK_LAB_CRYO_VAULT";
+                so.FindProperty("stationDisplayName").stringValue = "CRYO-VAULT 01 // Sample Vials Matrix & Telemetry Terminal";
+                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.Computer;
+                so.ApplyModifiedProperties();
+            }
+
+            // Configure CRYO-DECON Station (North-East Wall)
+            var deconStationGo = GameObject.Find("Prop_Lab_Concept_Cryo_Decon_Station");
+            if (deconStationGo != null)
+            {
+                if (interactableLayer != -1) deconStationGo.layer = interactableLayer;
+                var task = deconStationGo.GetComponent<TaskLocation>() ?? deconStationGo.AddComponent<TaskLocation>();
+                var so = new SerializedObject(task);
+                so.FindProperty("stationId").stringValue = "TASK_LAB_CRYO_DECON";
+                so.FindProperty("stationDisplayName").stringValue = "CRYO-DECON // High-Pressure Biohazard Decontamination Autoclave";
+                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.ControlPanel;
+                so.ApplyModifiedProperties();
+            }
+
+            // Configure Central Wet-Lab Island Workbench (DNA Helix & Microscope)
+            var benchGo = GameObject.Find("Prop_Lab_Concept_Central_Workbench") ?? GameObject.Find("Prop_Lab_Central_Island_Workbench");
+            if (benchGo != null)
+            {
+                if (interactableLayer != -1) benchGo.layer = interactableLayer;
+                var task = benchGo.GetComponent<TaskLocation>() ?? benchGo.AddComponent<TaskLocation>();
+                var so = new SerializedObject(task);
+                so.FindProperty("stationId").stringValue = "TASK_LAB_CENTRAL_WORKBENCH";
+                so.FindProperty("stationDisplayName").stringValue = "Xenobiology Central Research Station (DNA Helix Sequencer & Electron Microscope)";
+                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.Computer;
+                so.ApplyModifiedProperties();
+            }
+
+            // Configure Southeast Sub-Zero Archive Bank
+            var seArchiveGo = GameObject.Find("Prop_Lab_Concept_Southeast_Archive_Bank");
+            if (seArchiveGo != null)
+            {
+                if (interactableLayer != -1) seArchiveGo.layer = interactableLayer;
+                var task = seArchiveGo.GetComponent<TaskLocation>() ?? seArchiveGo.AddComponent<TaskLocation>();
+                var so = new SerializedObject(task);
+                so.FindProperty("stationId").stringValue = "TASK_LAB_SUBO_ARCHIVE";
+                so.FindProperty("stationDisplayName").stringValue = "Sub-Zero Biological Archive Bank // Deep-Cold Slide Rack & Mini-Pods";
+                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.Computer;
+                so.ApplyModifiedProperties();
+            }
+
+            // Configure interactable task station on Cryogenic Decontamination Column (East Wall)
+            var deconGo = GameObject.Find("Prop_Cryo_Frozen_Corpse");
+            if (deconGo != null)
+            {
+                if (interactableLayer != -1) deconGo.layer = interactableLayer;
+                var task = deconGo.GetComponent<TaskLocation>() ?? deconGo.AddComponent<TaskLocation>();
+                var so = new SerializedObject(task);
+                so.FindProperty("stationId").stringValue = "TASK_LAB_CRYO_DECON_COLUMN";
+                so.FindProperty("stationDisplayName").stringValue = "Specimen Cryo-Decontamination & Rapid Freezing Autoclave";
                 so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.Mechanical;
                 so.ApplyModifiedProperties();
             }
 
-            var c2 = GameObject.Find("Prop_DeepStorage_Vault_Chest_2");
-            if (c2 != null)
+            // Ensure prototype orange debug marker on TaskLoc_DeepStorage is hidden
+            var taskLocGo = GameObject.Find("TaskLoc_DeepStorage");
+            if (taskLocGo != null)
             {
-                var sr = c2.GetComponent<SpriteRenderer>();
-                if (sr != null) sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{PropsSourceDir}/Prop_DeepStorage_Lead_Vault_Chest.png");
-                int interactableLayer = LayerMask.NameToLayer("Interactable");
-                if (interactableLayer != -1) c2.layer = interactableLayer;
-                var task = c2.GetComponent<TaskLocation>() ?? c2.AddComponent<TaskLocation>();
+                var sr = taskLocGo.GetComponent<SpriteRenderer>();
+                if (sr != null) sr.enabled = false;
+            }
+
+            // Clean up old individual props superseded by unified stations
+            string[] obsoleteProps = new string[] {
+                "Prop_Cryo_Dewar_Storage_Rack", "Shadow_Cryo_Dewar_Storage_Rack",
+                "Prop_Cryo_Compressor_Unit", "Shadow_Cryo_Compressor_Unit",
+                "Prop_Lab_Specimen_Tank_Humanoid", "Shadow_Lab_Specimen_Tank_Humanoid",
+                "Prop_Lab_Specimen_Tank_Tentacle", "Shadow_Lab_Specimen_Tank_Tentacle",
+                "Prop_Cryo_Frozen_Corpse"
+            };
+            foreach (var propName in obsoleteProps)
+            {
+                var ob = GameObject.Find(propName);
+                if (ob != null) Undo.DestroyObjectImmediate(ob);
+            }
+
+            // Clean up any obsolete crane or clutter props
+            var oldCrane = GameObject.Find("Prop_DeepStorage_Crane_Trolley");
+            if (oldCrane != null) Undo.DestroyObjectImmediate(oldCrane);
+            var oldCraneShadow = GameObject.Find("Shadow_DeepStorage_Crane_Trolley");
+            if (oldCraneShadow != null) Undo.DestroyObjectImmediate(oldCraneShadow);
+            var oldFuelRack = GameObject.Find("Prop_DeepStorage_Fuel_Rack");
+            if (oldFuelRack != null) Undo.DestroyObjectImmediate(oldFuelRack);
+            var oldFuelShadow = GameObject.Find("Shadow_DeepStorage_Fuel_Rack");
+            if (oldFuelShadow != null) Undo.DestroyObjectImmediate(oldFuelShadow);
+
+            // Clean up obsolete generic equipment if still in scene
+            var oldFE = GameObject.Find("Prop_DeepStorage_Fire_Extinguisher");
+            if (oldFE != null) Undo.DestroyObjectImmediate(oldFE);
+            var oldFEShadow = GameObject.Find("Shadow_DeepStorage_Fire_Extinguisher");
+            if (oldFEShadow != null) Undo.DestroyObjectImmediate(oldFEShadow);
+            var oldFA = GameObject.Find("Prop_DeepStorage_FirstAid");
+            if (oldFA != null) Undo.DestroyObjectImmediate(oldFA);
+            var oldFAShadow = GameObject.Find("Shadow_DeepStorage_FirstAid");
+            if (oldFAShadow != null) Undo.DestroyObjectImmediate(oldFAShadow);
+
+            // Configure interactable task station on Biohazard Decontamination Purge Station
+            var purgeGo = GameObject.Find("Prop_Cryo_Thermal_Rescue_Kit");
+            if (purgeGo != null)
+            {
+                if (interactableLayer != -1) purgeGo.layer = interactableLayer;
+                var task = purgeGo.GetComponent<TaskLocation>() ?? purgeGo.AddComponent<TaskLocation>();
                 var so = new SerializedObject(task);
-                so.FindProperty("stationId").stringValue = "TASK_DEEPSTORAGE_ISOTOPE_2";
-                so.FindProperty("stationDisplayName").stringValue = "Isotope Vault Chest Beta";
-                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.Mechanical;
+                so.FindProperty("stationId").stringValue = "TASK_XENO_DECON_PURGE";
+                so.FindProperty("stationDisplayName").stringValue = "Biohazard Decontamination Purge Station";
+                so.FindProperty("stationType").enumValueIndex = (int)TaskStationType.ControlPanel;
                 so.ApplyModifiedProperties();
             }
-
-            // Optimize Crane Trolley Collider for Smooth Passage
-            var crane = GameObject.Find("Prop_DeepStorage_Crane_Trolley");
-            if (crane != null)
-            {
-                var col = crane.GetComponent<BoxCollider2D>();
-                if (col != null) col.size = new Vector2(1.2f, 0.4f);
-            }
-
-            // Crane Track Wear Decals
-            SpawnDecalObj("Decal_DeepStorage_Track_Wear_1", new Vector3(-14.0f, -47.5f, 0f), $"{DecalsSourceDir}/Decal_SubLevel_Track_Scratches.png");
-            SpawnDecalObj("Decal_DeepStorage_Track_Wear_2", new Vector3(-13.0f, -47.5f, 0f), $"{DecalsSourceDir}/Decal_SubLevel_Track_Scratches.png");
-
-            // South Wall Equipment
-            SpawnPropObj("Prop_DeepStorage_Fire_Extinguisher", new Vector3(-15.5f, -52.6f, 0f), $"{PropsSourceDir}/Prop_SubLevel_Fire_Extinguisher.png", true, new Vector2(0.4f, 0.8f));
-            SpawnPropObj("Prop_DeepStorage_FirstAid", new Vector3(-11.5f, -52.6f, 0f), $"{PropsSourceDir}/Prop_SubLevel_FirstAid_Locker.png", true, new Vector2(0.4f, 0.8f));
 
             // ========================================================
             // 3. POWER RELAY PROPS & INTERACTIVITY
@@ -331,7 +434,6 @@ namespace TheLastSignal.EditorTools
             var breaker = GameObject.Find("Prop_PowerRelay_Breaker_Cabinet");
             if (breaker != null)
             {
-                int interactableLayer = LayerMask.NameToLayer("Interactable");
                 if (interactableLayer != -1) breaker.layer = interactableLayer;
                 var task = breaker.GetComponent<TaskLocation>() ?? breaker.AddComponent<TaskLocation>();
                 var so = new SerializedObject(task);
@@ -426,7 +528,7 @@ namespace TheLastSignal.EditorTools
             }
 
             // Node C Bridge Console Amber Point Light
-            AddPointLight("Light_NodeC_Bridge_Console", new Vector3(-2.8f, -32.3f, 0f), new Color(1.0f, 0.70f, 0.20f, 1f), 0.75f, 2.8f);
+            AddPointLight("Light_NodeC_Bridge_Console", new Vector3(-2.6f, -34.0f, 0f), new Color(1.0f, 0.75f, 0.30f, 1f), 0.85f, 2.8f);
 
             // Power Relay Warning Strobe Red Lamp
             AddPointLight("Light_PowerRelay_Strobe", new Vector3(7.2f, -45.5f, 0f), new Color(1.0f, 0.25f, 0.15f, 1f), 0.85f, 3.2f);

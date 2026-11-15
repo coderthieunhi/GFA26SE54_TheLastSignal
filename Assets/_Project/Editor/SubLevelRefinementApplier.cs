@@ -39,8 +39,8 @@ namespace TheLastSignal.EditorTools
             // 3. Paint upgraded tiles to active scene
             PaintUpgrades();
 
-            // 4. Reposition Node C Bollards to clear walkway
-            RepositionNodeCBollards();
+            // 4. Ensure Node C authoritative 21-tile Catwalk Spine is applied
+            NodeCOverhaulApplier.ApplyOverhaul();
 
             // 5. Reposition Deep Storage Vault Chests into painted staging bays
             RepositionDeepStorageCargo();
@@ -211,81 +211,154 @@ namespace TheLastSignal.EditorTools
 
             // ========================================================
             // 1. NODE C REFINEMENTS
+            // Node C 21-tile catwalk spine is handled authority-wide by NodeCOverhaulApplier.
             // ========================================================
-            // North Doorway Hazard Caps (Y = -31):
-            floorTm.SetTile(new Vector3Int(-2, -31, 0), fCapNW);
-            floorTm.SetTile(new Vector3Int(1, -31, 0), fCapNE);
-            floorTm.SetTile(new Vector3Int(-1, -30, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(0, -30, 0), fThreshold);
 
-            // South Doorway Hazard Caps (Y = -38):
-            floorTm.SetTile(new Vector3Int(-2, -38, 0), fCapSW);
-            floorTm.SetTile(new Vector3Int(1, -38, 0), fCapSE);
-            floorTm.SetTile(new Vector3Int(-1, -39, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(0, -39, 0), fThreshold);
+            // ========================================================
+            // 2. DEEP STORAGE REFINEMENTS (Xenobiology Research Lab)
+            // ========================================================
+            Tile fLabEpoxyRef = LoadTile("SubLevel_Floor_Lab_Epoxy") ?? fTread;
+            Tile fLabEpoxyVarRef = LoadTile("SubLevel_Floor_Lab_Epoxy_Variant") ?? fLabEpoxyRef;
+            Tile fDeckSplitVRef = LoadTile("SubLevel_Floor_Lab_Deck_Split_V") ?? fLabEpoxyRef;
+            Tile fDeckSplitHRef = LoadTile("SubLevel_Floor_Lab_Deck_Split_H") ?? fLabEpoxyRef;
+            Tile fCryoPanelRef = LoadTile("SubLevel_Floor_Cryo_Panel") ?? fLabEpoxyRef;
+            Tile fLabZoneRef = LoadTile("SubLevel_Floor_Lab_Zone_Stripe") ?? fLabEpoxyRef;
+            Tile fLabStickyRef = LoadTile("SubLevel_Floor_Lab_Sticky_Mat") ?? fLabZoneRef;
+            Tile fLabMetricRef = LoadTile("SubLevel_Floor_Lab_Metric_Grid") ?? fLabEpoxyRef;
+            Tile fLabHatchRef = LoadTile("SubLevel_Floor_Lab_Utility_Hatch") ?? fLabEpoxyRef;
+            Tile fXenoHazRef = LoadTile("SubLevel_Floor_Xeno_BioHazard") ?? fTransStripe;
+            Tile fXenoGrateRef = LoadTile("SubLevel_Floor_Xeno_DeconGrate") ?? fLabEpoxyRef;
+            Tile wXenoHepaRef = LoadTile("SubLevel_Wall_Xeno_HEPA_Vent") ?? wWallH;
+            Tile wXenoHRef = LoadTile("SubLevel_Wall_Xeno_Bulkhead_H") ?? wWallH;
+            Tile wXenoBayRef = LoadTile("SubLevel_Wall_Xeno_Recessed_Bay") ?? wXenoHRef;
+            Tile wXenoHvacRef = LoadTile("SubLevel_Wall_Xeno_Vent_HVAC") ?? wXenoHepaRef;
+            Tile wXenoWinLRef = LoadTile("SubLevel_Wall_Xeno_Observation_Window_L") ?? wWallH;
+            Tile wXenoWinMRef = LoadTile("SubLevel_Wall_Xeno_Observation_Window_M") ?? wWallH;
+            Tile wXenoWinRRef = LoadTile("SubLevel_Wall_Xeno_Observation_Window_R") ?? wWallH;
+            Tile wXenoVRef = LoadTile("SubLevel_Wall_Xeno_Bulkhead_V") ?? wWallV;
+            Tile wXenoEastRef = LoadTile("SubLevel_Wall_East_Bulkhead") ?? wXenoVRef;
+            Tile wXenoSouthRef = LoadTile("SubLevel_Wall_South_Bulkhead") ?? wXenoHRef;
 
-            // East Threshold (X = 4, Y in [-35, -34]): Threshold plate transition
-            floorTm.SetTile(new Vector3Int(4, -34, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(4, -35, 0), fThreshold);
-
-            // West Wall Structural Columns (X = -5)
-            wallTm.SetTile(new Vector3Int(-5, -33, 0), wColumn);
-            wallTm.SetTile(new Vector3Int(-5, -36, 0), wColumn);
-
-            // Refresh catwalk center with updated abyss-depth grates
-            for (int x = -3; x <= 2; x++)
+            // Non-Repetitive Modular Spacecraft Deck Plates with Natural Engineering & Layered Bulkheads
+            // 1. Base Layer: Large Monolithic Steel Deck Plates (visually calm, spacious)
+            for (int x = -18; x <= -9; x++)
             {
-                for (int y = -37; y <= -32; y++)
+                for (int y = -52; y <= -43; y++)
                 {
-                    floorTm.SetTile(new Vector3Int(x, y, 0), fGrate);
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fLabEpoxyRef);
                 }
             }
 
-            // ========================================================
-            // 2. DEEP STORAGE REFINEMENTS
-            // ========================================================
-            // Crane Track Hydraulic End Buffers
-            floorTm.SetTile(new Vector3Int(-14, -43, 0), fCraneBufN);
-            floorTm.SetTile(new Vector3Int(-13, -43, 0), fCraneBufN);
-            floorTm.SetTile(new Vector3Int(-14, -52, 0), fCraneBufS);
-            floorTm.SetTile(new Vector3Int(-13, -52, 0), fCraneBufS);
+            // 2. Controlled Panel Variation (Breaks up rectangular repetition with believable interlocking plates)
+            floorTm.SetTile(new Vector3Int(-18, -43, 0), fDeckSplitVRef);
+            floorTm.SetTile(new Vector3Int(-10, -43, 0), fDeckSplitVRef);
+            floorTm.SetTile(new Vector3Int(-14, -44, 0), fDeckSplitVRef);
+            floorTm.SetTile(new Vector3Int(-16, -48, 0), fDeckSplitVRef);
+            floorTm.SetTile(new Vector3Int(-18, -51, 0), fDeckSplitVRef);
+            floorTm.SetTile(new Vector3Int(-11, -52, 0), fDeckSplitVRef);
 
-            // Crane Gantry Wall Anchors
-            wallTm.SetTile(new Vector3Int(-14, -42, 0), wCraneAnchor);
-            wallTm.SetTile(new Vector3Int(-13, -42, 0), wCraneAnchor);
-            wallTm.SetTile(new Vector3Int(-14, -53, 0), wCraneAnchor);
-            wallTm.SetTile(new Vector3Int(-13, -53, 0), wCraneAnchor);
+            floorTm.SetTile(new Vector3Int(-15, -43, 0), fDeckSplitHRef);
+            floorTm.SetTile(new Vector3Int(-9, -44, 0), fDeckSplitHRef);
+            floorTm.SetTile(new Vector3Int(-12, -45, 0), fDeckSplitHRef);
+            floorTm.SetTile(new Vector3Int(-13, -49, 0), fDeckSplitHRef);
+            floorTm.SetTile(new Vector3Int(-11, -51, 0), fDeckSplitHRef);
+            floorTm.SetTile(new Vector3Int(-17, -52, 0), fDeckSplitHRef);
 
-            // Painted Cargo Staging Bays (West & East)
-            floorTm.SetTile(new Vector3Int(-18, -49, 0), fCargoTL);
-            floorTm.SetTile(new Vector3Int(-17, -49, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-16, -49, 0), fCargoTR);
-            floorTm.SetTile(new Vector3Int(-18, -50, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-17, -50, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-16, -50, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-18, -51, 0), fCargoBL);
-            floorTm.SetTile(new Vector3Int(-17, -51, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-16, -51, 0), fCargoBR);
+            floorTm.SetTile(new Vector3Int(-12, -43, 0), fLabEpoxyVarRef);
+            floorTm.SetTile(new Vector3Int(-16, -44, 0), fLabEpoxyVarRef);
+            floorTm.SetTile(new Vector3Int(-14, -45, 0), fLabEpoxyVarRef);
+            floorTm.SetTile(new Vector3Int(-15, -49, 0), fLabEpoxyVarRef);
+            floorTm.SetTile(new Vector3Int(-12, -50, 0), fLabEpoxyVarRef);
+            floorTm.SetTile(new Vector3Int(-14, -52, 0), fLabEpoxyVarRef);
 
-            floorTm.SetTile(new Vector3Int(-11, -49, 0), fCargoTL);
-            floorTm.SetTile(new Vector3Int(-10, -49, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-9, -49, 0), fCargoTR);
-            floorTm.SetTile(new Vector3Int(-11, -50, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-10, -50, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-9, -50, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-11, -51, 0), fCargoBL);
-            floorTm.SetTile(new Vector3Int(-10, -51, 0), fTread);
-            floorTm.SetTile(new Vector3Int(-9, -51, 0), fCargoBR);
+            floorTm.SetTile(new Vector3Int(-11, -44, 0), fLabHatchRef);
+            floorTm.SetTile(new Vector3Int(-16, -51, 0), fLabHatchRef);
 
-            // East Doorway Transition
-            floorTm.SetTile(new Vector3Int(-8, -46, 0), fTransStripe);
-            floorTm.SetTile(new Vector3Int(-8, -47, 0), fTransStripe);
-            floorTm.SetTile(new Vector3Int(-7, -46, 0), fThreshold);
-            floorTm.SetTile(new Vector3Int(-7, -47, 0), fThreshold);
+            // 3. Functional Zone: Workstation Area (X in [-15..-12], Y in [-48..-46])
+            for (int x = -15; x <= -12; x++)
+            {
+                for (int y = -48; y <= -46; y++)
+                {
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fLabMetricRef);
+                }
+            }
 
-            // West Doorway Wall Jambs (X = -19)
-            wallTm.SetTile(new Vector3Int(-19, -45, 0), wJambTop);
-            wallTm.SetTile(new Vector3Int(-19, -48, 0), wJambBot);
+            // 4. Functional Zone: West Specimen Containment Area (X in [-18..-17], Y in [-50..-44] excluding doorway)
+            for (int x = -18; x <= -17; x++)
+            {
+                for (int y = -50; y <= -44; y++)
+                {
+                    if (y == -46 || y == -47) continue;
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fCryoPanelRef);
+                }
+            }
+
+            // 5. Functional Zone: East Mega Containment Chamber Area (X in [-10..-9], Y in [-51..-48])
+            for (int x = -10; x <= -9; x++)
+            {
+                for (int y = -51; y <= -48; y++)
+                {
+                    floorTm.SetTile(new Vector3Int(x, y, 0), fCryoPanelRef);
+                }
+            }
+            floorTm.SetTile(new Vector3Int(-11, -50, 0), fXenoHazRef);
+            floorTm.SetTile(new Vector3Int(-11, -49, 0), fXenoHazRef);
+
+            // 6. Functional Zone: Machinery & Decontamination Drainage
+            floorTm.SetTile(new Vector3Int(-14, -51, 0), fXenoGrateRef);
+            floorTm.SetTile(new Vector3Int(-13, -51, 0), fXenoGrateRef);
+
+            // 7. North Wall: Bio-Containment Wall Rhythm (Bulkhead -> Bay -> Solid Bulkhead (under Window prop) -> HVAC -> Recessed Bay)
+            wallTm.SetTile(new Vector3Int(-18, -42, 0), wXenoHRef);
+            wallTm.SetTile(new Vector3Int(-17, -42, 0), wXenoBayRef);
+            wallTm.SetTile(new Vector3Int(-16, -42, 0), wXenoBayRef);
+            wallTm.SetTile(new Vector3Int(-15, -42, 0), wXenoHRef);
+            wallTm.SetTile(new Vector3Int(-14, -42, 0), wXenoHRef);
+            wallTm.SetTile(new Vector3Int(-13, -42, 0), wXenoHRef);
+            wallTm.SetTile(new Vector3Int(-12, -42, 0), wXenoHRef);
+            wallTm.SetTile(new Vector3Int(-11, -42, 0), wXenoHvacRef);
+            wallTm.SetTile(new Vector3Int(-10, -42, 0), wXenoBayRef);
+            wallTm.SetTile(new Vector3Int(-9, -42, 0), wXenoBayRef);
+
+            // 8. South Wall: Lower Wall Architecture (Bulkhead with heavier base structures and service panels)
+            wallTm.SetTile(new Vector3Int(-18, -53, 0), LoadTile("SubLevel_Wall_Xeno_Corner_BL") ?? wWallH);
+            wallTm.SetTile(new Vector3Int(-17, -53, 0), wXenoSouthRef);
+            wallTm.SetTile(new Vector3Int(-16, -53, 0), wXenoSouthRef);
+            wallTm.SetTile(new Vector3Int(-15, -53, 0), wXenoHvacRef);
+            wallTm.SetTile(new Vector3Int(-14, -53, 0), wXenoBayRef);
+            wallTm.SetTile(new Vector3Int(-13, -53, 0), wXenoBayRef);
+            wallTm.SetTile(new Vector3Int(-12, -53, 0), wXenoSouthRef);
+            wallTm.SetTile(new Vector3Int(-11, -53, 0), wXenoHvacRef);
+            wallTm.SetTile(new Vector3Int(-10, -53, 0), wXenoSouthRef);
+            wallTm.SetTile(new Vector3Int(-9, -53, 0), wXenoSouthRef);
+
+            // 9. East Wall: Right Wall Architecture (Deep reinforced bulkhead backing Mega Containment Chamber)
+            for (int y = -52; y <= -43; y++)
+            {
+                if (y == -46 || y == -47) continue;
+                wallTm.SetTile(new Vector3Int(-8, y, 0), wXenoEastRef);
+            }
+
+            // 10. West Wall: Left Wall Architecture (Stronger vertical structural columns & power infeed)
+            for (int y = -52; y <= -43; y++)
+            {
+                if (y == -46 || y == -47) continue;
+                wallTm.SetTile(new Vector3Int(-19, y, 0), wXenoVRef);
+            }
+
+            // East Doorway Transition with Antimicrobial Sticky Decon Mat
+            floorTm.SetTile(new Vector3Int(-8, -46, 0), fLabStickyRef);
+            floorTm.SetTile(new Vector3Int(-8, -47, 0), fLabStickyRef);
+            floorTm.SetTile(new Vector3Int(-7, -46, 0), fLabStickyRef);
+            floorTm.SetTile(new Vector3Int(-7, -47, 0), fLabStickyRef);
+
+            // West Doorway Transition with Antimicrobial Sticky Decon Mat
+            floorTm.SetTile(new Vector3Int(-19, -46, 0), fLabStickyRef);
+            floorTm.SetTile(new Vector3Int(-19, -47, 0), fLabStickyRef);
+
+            // West Doorway Bio-Containment Bulkheads (X = -19)
+            wallTm.SetTile(new Vector3Int(-19, -45, 0), wXenoVRef);
+            wallTm.SetTile(new Vector3Int(-19, -48, 0), wXenoVRef);
 
             // ========================================================
             // 3. POWER RELAY BAY REFINEMENTS
@@ -408,7 +481,7 @@ namespace TheLastSignal.EditorTools
             if (bL != null)
             {
                 Undo.RecordObject(bL.transform, "Reposition Node C Bollard L");
-                bL.transform.position = new Vector3(-3.2f, -34.5f, 0f);
+                bL.transform.position = new Vector3(-1.4f, -30.5f, 0f);
                 EditorUtility.SetDirty(bL);
             }
 
@@ -416,7 +489,7 @@ namespace TheLastSignal.EditorTools
             if (sL != null)
             {
                 Undo.RecordObject(sL.transform, "Reposition Node C Shadow L");
-                sL.transform.position = new Vector3(-3.2f, -34.85f, 0f);
+                sL.transform.position = new Vector3(-1.4f, -30.85f, 0f);
                 EditorUtility.SetDirty(sL);
             }
 
@@ -424,7 +497,7 @@ namespace TheLastSignal.EditorTools
             if (lL != null)
             {
                 Undo.RecordObject(lL.transform, "Reposition Node C Light L");
-                lL.transform.position = new Vector3(-3.2f, -34.3f, 0f);
+                lL.transform.position = new Vector3(-1.4f, -30.3f, 0f);
                 EditorUtility.SetDirty(lL);
             }
 
@@ -432,7 +505,7 @@ namespace TheLastSignal.EditorTools
             if (bR != null)
             {
                 Undo.RecordObject(bR.transform, "Reposition Node C Bollard R");
-                bR.transform.position = new Vector3(2.2f, -34.5f, 0f);
+                bR.transform.position = new Vector3(1.4f, -38.5f, 0f);
                 EditorUtility.SetDirty(bR);
             }
 
@@ -440,7 +513,7 @@ namespace TheLastSignal.EditorTools
             if (sR != null)
             {
                 Undo.RecordObject(sR.transform, "Reposition Node C Shadow R");
-                sR.transform.position = new Vector3(2.2f, -34.85f, 0f);
+                sR.transform.position = new Vector3(1.4f, -38.85f, 0f);
                 EditorUtility.SetDirty(sR);
             }
 
@@ -448,7 +521,7 @@ namespace TheLastSignal.EditorTools
             if (lR != null)
             {
                 Undo.RecordObject(lR.transform, "Reposition Node C Light R");
-                lR.transform.position = new Vector3(2.2f, -34.3f, 0f);
+                lR.transform.position = new Vector3(1.4f, -38.3f, 0f);
                 EditorUtility.SetDirty(lR);
             }
         }

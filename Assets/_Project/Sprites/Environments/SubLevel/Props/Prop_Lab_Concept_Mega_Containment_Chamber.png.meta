@@ -1,0 +1,730 @@
+fileFormatVersion: 2
+guid: 3da51519f30e54efa9af4eb87826bf13
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5218233923469744622
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_0
+  - first:
+      213: 2634069900162577574
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_1
+  - first:
+      213: 9208748284488461451
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_2
+  - first:
+      213: -169834875932157940
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_3
+  - first:
+      213: -6797834493015030788
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_4
+  - first:
+      213: -6353859699981957628
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_5
+  - first:
+      213: 8021617474607760698
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_6
+  - first:
+      213: -1002739439734107734
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_7
+  - first:
+      213: 6240584741265660540
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_8
+  - first:
+      213: -6918200417941093599
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_9
+  - first:
+      213: -5594831746631970793
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_10
+  - first:
+      213: -2461271943276894191
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_11
+  - first:
+      213: 4713418530088774233
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_12
+  - first:
+      213: 9206824066686993218
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_13
+  - first:
+      213: 2457442626577968454
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_14
+  - first:
+      213: 6580046461878338310
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_15
+  - first:
+      213: -6334346702488752919
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_16
+  - first:
+      213: 4815396447824138824
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_17
+  - first:
+      213: 775931990644062256
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_18
+  - first:
+      213: 6843035010320469732
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_19
+  - first:
+      213: -2749297511659532455
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_20
+  - first:
+      213: 8196154809150802181
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_21
+  - first:
+      213: -678785593987623165
+    second: Prop_Lab_Concept_Mega_Containment_Chamber_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 245
+        width: 61
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21661bcd4eb1597b0800000000000000
+      internalID: -5218233923469744622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_1
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 263
+        width: 96
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a43db84e981e8420800000000000000
+      internalID: 2634069900162577574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_2
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 262
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8c2ce256cb0ccf70800000000000000
+      internalID: 9208748284488461451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_3
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 273
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0857958410a4adf0800000000000000
+      internalID: -169834875932157940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_4
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 234
+        width: 51
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf301f98b8d39a1a0800000000000000
+      internalID: -6797834493015030788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_5
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 86
+        width: 51
+        height: 132
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 406c7ed544e82d7a0800000000000000
+      internalID: -6353859699981957628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_6
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 208
+        width: 14
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a35cf02c792825f60800000000000000
+      internalID: 8021617474607760698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_7
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 195
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa1df54dacd8512f0800000000000000
+      internalID: -1002739439734107734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_8
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 214
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7adcd512c20b9650800000000000000
+      internalID: 6240584741265660540
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_9
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 19
+        width: 139
+        height: 239
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12389a3cf5d9dff90800000000000000
+      internalID: -6918200417941093599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_10
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 87
+        width: 28
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7105ceb4b2a2b52b0800000000000000
+      internalID: -5594831746631970793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_11
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 200
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 118685d353ec7ddd0800000000000000
+      internalID: -2461271943276894191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_12
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 0
+        width: 22
+        height: 106
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95a6fab2e2d696140800000000000000
+      internalID: 4713418530088774233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_13
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 103
+        width: 10
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 243456475b535cf70800000000000000
+      internalID: 9206824066686993218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_14
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 56
+        width: 20
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64d251d7c079a1220800000000000000
+      internalID: 2457442626577968454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_15
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 5
+        width: 24
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60303ddf465015b50800000000000000
+      internalID: 6580046461878338310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_16
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 24
+        width: 25
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ecadf12c31e718a0800000000000000
+      internalID: -6334346702488752919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_17
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 19
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8425c356e89b3d240800000000000000
+      internalID: 4815396447824138824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_18
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 17
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0387330d80aa4ca00800000000000000
+      internalID: 775931990644062256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_19
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 4
+        width: 105
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ee86bff51857fe50800000000000000
+      internalID: 6843035010320469732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_20
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 6
+        width: 26
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95f0ba3ca7888d9d0800000000000000
+      internalID: -2749297511659532455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_21
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 6
+        width: 27
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5090b83bf579eb170800000000000000
+      internalID: 8196154809150802181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prop_Lab_Concept_Mega_Containment_Chamber_22
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 5
+        width: 20
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30717bf39187496f0800000000000000
+      internalID: -678785593987623165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Prop_Lab_Concept_Mega_Containment_Chamber_0: -5218233923469744622
+      Prop_Lab_Concept_Mega_Containment_Chamber_1: 2634069900162577574
+      Prop_Lab_Concept_Mega_Containment_Chamber_10: -5594831746631970793
+      Prop_Lab_Concept_Mega_Containment_Chamber_11: -2461271943276894191
+      Prop_Lab_Concept_Mega_Containment_Chamber_12: 4713418530088774233
+      Prop_Lab_Concept_Mega_Containment_Chamber_13: 9206824066686993218
+      Prop_Lab_Concept_Mega_Containment_Chamber_14: 2457442626577968454
+      Prop_Lab_Concept_Mega_Containment_Chamber_15: 6580046461878338310
+      Prop_Lab_Concept_Mega_Containment_Chamber_16: -6334346702488752919
+      Prop_Lab_Concept_Mega_Containment_Chamber_17: 4815396447824138824
+      Prop_Lab_Concept_Mega_Containment_Chamber_18: 775931990644062256
+      Prop_Lab_Concept_Mega_Containment_Chamber_19: 6843035010320469732
+      Prop_Lab_Concept_Mega_Containment_Chamber_2: 9208748284488461451
+      Prop_Lab_Concept_Mega_Containment_Chamber_20: -2749297511659532455
+      Prop_Lab_Concept_Mega_Containment_Chamber_21: 8196154809150802181
+      Prop_Lab_Concept_Mega_Containment_Chamber_22: -678785593987623165
+      Prop_Lab_Concept_Mega_Containment_Chamber_3: -169834875932157940
+      Prop_Lab_Concept_Mega_Containment_Chamber_4: -6797834493015030788
+      Prop_Lab_Concept_Mega_Containment_Chamber_5: -6353859699981957628
+      Prop_Lab_Concept_Mega_Containment_Chamber_6: 8021617474607760698
+      Prop_Lab_Concept_Mega_Containment_Chamber_7: -1002739439734107734
+      Prop_Lab_Concept_Mega_Containment_Chamber_8: 6240584741265660540
+      Prop_Lab_Concept_Mega_Containment_Chamber_9: -6918200417941093599
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
