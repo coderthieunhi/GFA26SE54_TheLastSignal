@@ -13,7 +13,6 @@ namespace TheLastSignal.Editor
     {
         private const string TargetScenePath = "Assets/Scenes/NetworkTestScene.unity";
 
-        [InitializeOnLoadMethod]
         [MenuItem("TheLastSignal/Setup Drone Station & Operator", false, 100)]
         public static void ApplyDroneStationSetup()
         {
