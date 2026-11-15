@@ -110,36 +110,42 @@ namespace TheLastSignal.Entities.Monster
             {
                 redEyesObject = found.gameObject;
                 eyesRenderer = redEyesObject.GetComponent<SpriteRenderer>();
+                if (eyesRenderer != null) eyesRenderer.enabled = false;
+
                 predatorEyeLight = redEyesObject.GetComponent<Light2D>();
                 if (predatorEyeLight == null)
                 {
                     predatorEyeLight = redEyesObject.AddComponent<Light2D>();
                     predatorEyeLight.lightType = Light2D.LightType.Point;
-                    predatorEyeLight.color = new Color(1.0f, 0.10f, 0.22f, 1.0f);
-                    predatorEyeLight.intensity = 0.75f;
+                    predatorEyeLight.color = new Color(0.20f, 0.88f, 0.95f, 1.0f);
+                    predatorEyeLight.intensity = 0.80f;
                     predatorEyeLight.pointLightInnerRadius = 0.2f;
-                    predatorEyeLight.pointLightOuterRadius = 1.6f;
+                    predatorEyeLight.pointLightOuterRadius = 1.8f;
                     predatorEyeLight.falloffIntensity = 0.75f;
+                }
+                else
+                {
+                    predatorEyeLight.color = new Color(0.20f, 0.88f, 0.95f, 1.0f);
                 }
             }
             else
             {
                 redEyesObject = new GameObject("ShadeRedEyes");
                 redEyesObject.transform.SetParent(transform, false);
-                redEyesObject.transform.localPosition = new Vector3(0f, 0.42f, -0.05f);
+                redEyesObject.transform.localPosition = new Vector3(0f, 0.38f, -0.05f);
 
                 eyesRenderer = redEyesObject.AddComponent<SpriteRenderer>();
                 eyesRenderer.sortingLayerName = "Characters";
                 eyesRenderer.sortingOrder = 14;
-                eyesRenderer.color = new Color(1.0f, 0.15f, 0.20f, 1.0f);
+                eyesRenderer.enabled = false; // Native face pixels already feature detailed eyes
 
-                // Add 2D Point Light for predator eye glow cutting through darkness
+                // Add 2D Point Light for predator eye glow cutting through darkness (Cyan bioluminescence)
                 predatorEyeLight = redEyesObject.AddComponent<Light2D>();
                 predatorEyeLight.lightType = Light2D.LightType.Point;
-                predatorEyeLight.color = new Color(1.0f, 0.10f, 0.22f, 1.0f);
-                predatorEyeLight.intensity = 0.75f;
+                predatorEyeLight.color = new Color(0.20f, 0.88f, 0.95f, 1.0f);
+                predatorEyeLight.intensity = 0.80f;
                 predatorEyeLight.pointLightInnerRadius = 0.2f;
-                predatorEyeLight.pointLightOuterRadius = 1.6f;
+                predatorEyeLight.pointLightOuterRadius = 1.8f;
                 predatorEyeLight.falloffIntensity = 0.75f;
             }
 
@@ -160,13 +166,14 @@ namespace TheLastSignal.Entities.Monster
             {
                 // Align predator eye position slightly with facing direction
                 Vector2 facing = controller.FacingDirection;
-                redEyesObject.transform.localPosition = new Vector3(facing.x * 0.14f, 0.42f + (facing.y * 0.08f), -0.05f);
+                redEyesObject.transform.localPosition = new Vector3(facing.x * 0.14f, 0.38f + (facing.y * 0.08f), -0.05f);
 
                 // Menacing pulsing predator eye glow
                 float pulse = 0.80f + (0.20f * Mathf.Sin(Time.time * 7f));
                 if (predatorEyeLight != null)
                 {
-                    predatorEyeLight.intensity = 0.65f * pulse;
+                    float dirFactor = facing.y > 0.5f ? 0.45f : 0.80f;
+                    predatorEyeLight.intensity = dirFactor * pulse;
                 }
             }
         }
@@ -252,6 +259,11 @@ namespace TheLastSignal.Entities.Monster
                 if (active)
                 {
                     bodyRenderer.color = Color.white;
+                    string dirKey = ResolveDirectionKey(controller != null ? controller.FacingDirection : Vector2.down);
+                    if (idleSprites.TryGetValue(dirKey, out Sprite s) && s != null)
+                    {
+                        bodyRenderer.sprite = s;
+                    }
                 }
                 else
                 {
