@@ -28,6 +28,7 @@ namespace TheLastSignal.UI
         [SerializeField] private TextMeshProUGUI coordsText;
         [SerializeField] private TextMeshProUGUI flightSpeedText;
         [SerializeField] private TextMeshProUGUI operatorStatusText;
+        [SerializeField] private TextMeshProUGUI controlsPromptText;
 
         [Header("Battery Display")]
         [SerializeField] private Image batteryBarFill;
@@ -223,7 +224,39 @@ namespace TheLastSignal.UI
             Vector3 pos = activeDrone.transform.position;
             if (coordsText != null)
             {
-                coordsText.text = $"GRID: [X: {pos.x:+00.0;-00.0} | Y: {pos.y:+00.0;-00.0}]";
+                if (activeDrone.IsReturningToDock)
+                {
+                    float rangeToDock = Vector2.Distance(pos, activeDrone.DockPosition);
+                    coordsText.text = $"<color=#00FFCC>AUTOPILOT RTH</color> | DOCK RANGE: {rangeToDock:0.0}m";
+                }
+                else
+                {
+                    coordsText.text = $"GRID: [X: {pos.x:+00.0;-00.0} | Y: {pos.y:+00.0;-00.0}]";
+                }
+            }
+
+            if (titleText != null)
+            {
+                if (activeDrone.IsReturningToDock)
+                {
+                    titleText.text = "<b><color=#FFAA00>AUTOPILOT RTH ENGAGED</color> // <color=#FFFFFF>HOMING TO AIRLOCK DOCK</color></b>";
+                }
+                else
+                {
+                    titleText.text = "<b><color=#00FFCC>RECON DRONE FEED</color> // <color=#FFFFFF>AIRLOCK CRT TERMINAL</color></b>";
+                }
+            }
+
+            if (controlsPromptText != null)
+            {
+                if (activeDrone.IsReturningToDock)
+                {
+                    controlsPromptText.text = "<b><color=#00FFCC>AUTOPILOT HOMING ACTIVE</color></b>  |  <b><color=#FFAA00>[ESC / SPACE]</color></b>: Force Emergency Land";
+                }
+                else
+                {
+                    controlsPromptText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[ESC / SPACE]</color></b>: Auto-Return to Dock";
+                }
             }
 
             if (flightSpeedText != null)
@@ -633,11 +666,11 @@ namespace TheLastSignal.UI
             // Right: Flight Controls Prompt
             GameObject ctrlGo = new GameObject("ControlsText", typeof(RectTransform), typeof(TextMeshProUGUI));
             ctrlGo.transform.SetParent(bottomBar.transform, false);
-            TextMeshProUGUI ctrlText = ctrlGo.GetComponent<TextMeshProUGUI>();
-            ctrlText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[SPACE / ESC]</color></b>: Disengage Feed";
-            ctrlText.fontSize = 13;
-            ctrlText.alignment = TextAlignmentOptions.Right;
-            ctrlText.color = Color.white;
+            controlsPromptText = ctrlGo.GetComponent<TextMeshProUGUI>();
+            controlsPromptText.text = "<b>[W A S D]</b>: Flight Vector  |  <b>[MOUSE]</b>: Steer Spotlight  |  <b><color=#FFAA00>[ESC / SPACE]</color></b>: Auto-Return to Dock";
+            controlsPromptText.fontSize = 13;
+            controlsPromptText.alignment = TextAlignmentOptions.Right;
+            controlsPromptText.color = Color.white;
             RectTransform ctrlRt = ctrlGo.GetComponent<RectTransform>();
             ctrlRt.anchorMin = new Vector2(1f, 0.5f);
             ctrlRt.anchorMax = new Vector2(1f, 0.5f);

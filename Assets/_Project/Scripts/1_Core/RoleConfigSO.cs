@@ -21,7 +21,7 @@ namespace TheLastSignal.Core
         public float droneBatteryCapacity = 100f;
         public float droneBatteryDrainRate = 4.0f;
         public float droneBatteryRechargeRate = 12.0f;
-        public float droneMoveSpeed = 4.8f;
+        public float droneMoveSpeed = 2.4f;
         public float droneSpotlightRange = 8.0f;
         public float droneSpotlightAngle = 45f;
         public float droneRadarRadius = 12f;
@@ -58,7 +58,7 @@ namespace TheLastSignal.Core
             droneBatteryCapacity = 100f,
             droneBatteryDrainRate = 4.0f,
             droneBatteryRechargeRate = 12.0f,
-            droneMoveSpeed = 4.8f,
+            droneMoveSpeed = 2.4f,
             droneSpotlightRange = 8.0f,
             droneSpotlightAngle = 45f,
             droneRadarRadius = 12f,

@@ -40,9 +40,9 @@ namespace TheLastSignal.Entities.Drone
         public static DroneController Instance { get; private set; }
 
         [Header("Flight Parameters")]
-        [SerializeField] private float flightSpeed = 4.8f;
-        [SerializeField] private float acceleration = 18f;
-        [SerializeField] private float deceleration = 24f;
+        [SerializeField] private float flightSpeed = 2.4f; // Reduced by 50% from 4.8f for tactical control
+        [SerializeField] private float acceleration = 12f;
+        [SerializeField] private float deceleration = 16f;
 
         [Header("Spotlight Configuration")]
         [SerializeField] private float spotlightRange = 8.0f;
@@ -86,6 +86,9 @@ namespace TheLastSignal.Entities.Drone
         private float aimAngleDegrees;
         private float currentBattery = 100f;
         private bool isFlightActive = false;
+        private bool isReturningToDock = false;
+        private readonly List<Vector2> flightPathWaypoints = new List<Vector2>();
+        private const float WAYPOINT_SPACING = 0.8f;
         private float radarTimer = 0f;
         private readonly List<RadarPingData> detectedEntities = new List<RadarPingData>();
         private float previousOperatorHealth = -1f;
@@ -98,6 +101,8 @@ namespace TheLastSignal.Entities.Drone
 
         // Public accessors
         public bool IsFlightActive => IsNetworkSessionActive && IsSpawned ? netIsActive.Value : isFlightActive;
+        public bool IsReturningToDock => isReturningToDock;
+        public Vector2 DockPosition => dockAnchorPosition;
         public float CurrentBattery => IsNetworkSessionActive && IsSpawned ? netBattery.Value : currentBattery;
         public float MaxBattery => maxBattery;
         public float BatteryPercent => maxBattery > 0.001f ? Mathf.Clamp01(CurrentBattery / maxBattery) : 0f;
@@ -110,6 +115,7 @@ namespace TheLastSignal.Entities.Drone
         // Events
         public event Action<float> OnBatteryChanged;
         public event Action<bool> OnFlightStateChanged;
+        public event Action<bool> OnAutoReturnStateChanged;
         public event Action<float> OnAimChanged;
         public event Action<IReadOnlyList<RadarPingData>> OnRadarSweep;
         public event Action<string> OnEmergencyDisengage;
@@ -310,6 +316,9 @@ namespace TheLastSignal.Entities.Drone
             }
 
             isFlightActive = true;
+            isReturningToDock = false;
+            flightPathWaypoints.Clear();
+            flightPathWaypoints.Add(activePos);
             currentVelocity = Vector2.zero;
 
             // Lock the pilot's physical body in place (vulnerable at the terminal)
@@ -373,6 +382,8 @@ namespace TheLastSignal.Entities.Drone
             if (!isFlightActive && !netIsActive.Value) return;
 
             isFlightActive = false;
+            isReturningToDock = false;
+            flightPathWaypoints.Clear();
             currentVelocity = Vector2.zero;
             Vector2 landedPos = transform.position;
 
@@ -474,8 +485,11 @@ namespace TheLastSignal.Entities.Drone
 
             if (isLocallyControlled)
             {
-                ReadFlightInput();
-                UpdateSpotlightAim();
+                if (!isReturningToDock)
+                {
+                    ReadFlightInput();
+                    UpdateSpotlightAim();
+                }
                 HandleFlightHotkeys();
                 UpdateBatteryDrain(Time.deltaTime);
                 UpdateRadarSweep(Time.deltaTime);
@@ -503,7 +517,116 @@ namespace TheLastSignal.Entities.Drone
             bool isLocallyControlled = isFlightActive && (currentOperator != null && (!IsNetworkSessionActive || currentOperator.IsOwner));
             if (!isLocallyControlled) return;
 
-            ApplyFlightPhysics(moveInput);
+            if (isReturningToDock)
+            {
+                ExecuteAutoReturnFlightPhysics();
+            }
+            else
+            {
+                RecordFlightBreadcrumb();
+                ApplyFlightPhysics(moveInput);
+            }
+        }
+
+        /// <summary>
+        /// Engages autonomous return-to-base flight, navigating along recorded breadcrumbs back to dock.
+        /// </summary>
+        public void StartAutoReturnFlight()
+        {
+            if (!isFlightActive || isReturningToDock) return;
+
+            isReturningToDock = true;
+            OnAutoReturnStateChanged?.Invoke(true);
+            Debug.Log("<color=#00FFCC>[DroneController]</color> Autopilot engaged: Returning to Airlock Dock Station.");
+        }
+
+        private void RecordFlightBreadcrumb()
+        {
+            Vector2 currentPos = rb != null ? rb.position : (Vector2)transform.position;
+            if (flightPathWaypoints.Count == 0)
+            {
+                flightPathWaypoints.Add(currentPos);
+                return;
+            }
+
+            Vector2 lastPoint = flightPathWaypoints[flightPathWaypoints.Count - 1];
+            if ((currentPos - lastPoint).sqrMagnitude >= (WAYPOINT_SPACING * WAYPOINT_SPACING))
+            {
+                flightPathWaypoints.Add(currentPos);
+            }
+        }
+
+        private void ExecuteAutoReturnFlightPhysics()
+        {
+            Vector2 currentPos = rb != null ? rb.position : (Vector2)transform.position;
+
+            // 1. Check if we already reached or are very close to dock cradle
+            float distToDock = Vector2.Distance(currentPos, dockAnchorPosition);
+            if (distToDock <= 0.35f)
+            {
+                // Touchdown on dock cradle!
+                if (rb != null)
+                {
+                    rb.position = dockAnchorPosition;
+                    rb.linearVelocity = Vector2.zero;
+                }
+                transform.position = dockAnchorPosition;
+                currentVelocity = Vector2.zero;
+                isReturningToDock = false;
+                DisengageFlight("Drone Safely Returned and Docked at Station Cradle");
+                return;
+            }
+
+            // 2. Intelligent shortcut: If direct line of sight to dock exists, clear waypoints and fly direct
+            bool hasLineOfSight = false;
+            Vector2 toDock = (dockAnchorPosition - currentPos);
+            float dockDist = toDock.magnitude;
+            if (dockDist > 0.05f)
+            {
+                RaycastHit2D hit = Physics2D.CircleCast(currentPos, 0.30f, toDock.normalized, dockDist, obstacleLayers);
+                if (hit.collider == null)
+                {
+                    hasLineOfSight = true;
+                    flightPathWaypoints.Clear();
+                }
+            }
+
+            // 3. Determine target navigation position
+            Vector2 targetNavPos;
+            if (hasLineOfSight || flightPathWaypoints.Count == 0)
+            {
+                targetNavPos = dockAnchorPosition;
+            }
+            else
+            {
+                // Target the most recent waypoint along the recorded path
+                targetNavPos = flightPathWaypoints[flightPathWaypoints.Count - 1];
+                float distToWaypoint = Vector2.Distance(currentPos, targetNavPos);
+                if (distToWaypoint <= 0.45f)
+                {
+                    // Reached waypoint, remove and proceed to previous one
+                    flightPathWaypoints.RemoveAt(flightPathWaypoints.Count - 1);
+                    targetNavPos = flightPathWaypoints.Count > 0 
+                        ? flightPathWaypoints[flightPathWaypoints.Count - 1] 
+                        : dockAnchorPosition;
+                }
+            }
+
+            // 4. Steer towards targetNavPos
+            Vector2 moveDir = (targetNavPos - currentPos).normalized;
+            ApplyFlightPhysics(moveDir);
+
+            // Automatically aim spotlight and sensor in flight direction
+            if (moveDir.sqrMagnitude > 0.01f)
+            {
+                aimAngleDegrees = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
+                UpdateSpotlightRotation(aimAngleDegrees);
+                OnAimChanged?.Invoke(aimAngleDegrees);
+                if (gameplayLightSource != null)
+                {
+                    gameplayLightSource.ServerSetAimAngle(aimAngleDegrees);
+                }
+            }
         }
 
         private void ReadFlightInput()
@@ -576,10 +699,18 @@ namespace TheLastSignal.Entities.Drone
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null) return;
 
-            // [Space] or [ESC] disengages drone feed
-            if (keyboard.spaceKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame)
+            // [ESC] or [Space] triggers autonomous return-to-base flight back to the dock
+            if (keyboard.escapeKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
             {
-                DisengageFlight("Operator Terminated Connection");
+                if (!isReturningToDock)
+                {
+                    StartAutoReturnFlight();
+                }
+                else
+                {
+                    // Second press during auto-return forces immediate emergency land/disengage
+                    DisengageFlight("Emergency Abort by Operator");
+                }
             }
         }
 
