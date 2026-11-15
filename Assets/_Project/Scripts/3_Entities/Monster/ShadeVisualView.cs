@@ -1,16 +1,20 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using TheLastSignal.Entities.Player;
 
 namespace TheLastSignal.Entities.Monster
 {
     /// <summary>
-    /// Visual and FX controller for The Shade.
-    /// Handles:
-    /// - Predator shadow silhouette tinting and glowing red predator eyes.
-    /// - 2D curved bloody/shadow claw swipe visualization.
-    /// - Shadow dash afterimages and dark void particle dissipation.
-    /// - Synchronized 3D audio playback for slashes, flesh impacts, and dashes.
+    /// Visual and FX controller for The Shade (Xenomorph Chitin Apex Predator).
+    /// Features:
+    /// 1. Dynamic directional sprite swapping: Overrides body with authentic 8-directional
+    ///    Xenomorph Chitin sprites (8-dir Idle and 8-frame Run cycles for all 8 directions).
+    /// 2. Real-time predator crimson eye glow via 2D Point Light (Light2D) cutting through darkness.
+    /// 3. Visceral 128x128 3-claw bloody laceration FX (FX_Shade_ClawSlash).
+    /// 4. Dark matter shadow burst FX (FX_Shade_ShadowBurst) and afterimage trail on Shadow Dash.
+    /// 5. Procedural spatial audio integration for slashes, flesh impacts, and shadow whooshes.
     /// </summary>
     [RequireComponent(typeof(PlayerController))]
     public class ShadeVisualView : MonoBehaviour
@@ -21,11 +25,16 @@ namespace TheLastSignal.Entities.Monster
 
         private GameObject redEyesObject;
         private SpriteRenderer eyesRenderer;
+        private Light2D predatorEyeLight;
         private Color originalBodyColor = Color.white;
         private bool isShadeActive = false;
+        private float animTimer = 0f;
 
-        private static Sprite cachedClawSprite;
-        private static Sprite cachedEyeSprite;
+        // Cached Sprite Assets
+        private readonly Dictionary<string, Sprite> idleSprites = new Dictionary<string, Sprite>();
+        private readonly Dictionary<string, Sprite[]> runSprites = new Dictionary<string, Sprite[]>();
+        private static Sprite cachedClawFx;
+        private static Sprite cachedBurstFx;
 
         private void Awake()
         {
@@ -44,7 +53,54 @@ namespace TheLastSignal.Entities.Monster
                 audioSource.playOnAwake = false;
             }
 
+            LoadShadeSprites();
             EnsureEyesHierarchy();
+        }
+
+        private void LoadShadeSprites()
+        {
+            // 1. Load 8-directional idle sprites
+            Sprite[] idles = Resources.LoadAll<Sprite>("Monster/Shade_Idle_8Dir");
+            if (idles != null)
+            {
+                for (int i = 0; i < idles.Length; i++)
+                {
+                    string name = idles[i].name;
+                    if (name.Contains("SouthEast")) idleSprites["SouthEast"] = idles[i];
+                    else if (name.Contains("SouthWest")) idleSprites["SouthWest"] = idles[i];
+                    else if (name.Contains("South")) idleSprites["South"] = idles[i];
+                    else if (name.Contains("NorthEast")) idleSprites["NorthEast"] = idles[i];
+                    else if (name.Contains("NorthWest")) idleSprites["NorthWest"] = idles[i];
+                    else if (name.Contains("North")) idleSprites["North"] = idles[i];
+                    else if (name.Contains("East")) idleSprites["East"] = idles[i];
+                    else if (name.Contains("West")) idleSprites["West"] = idles[i];
+                }
+            }
+
+            // 2. Load 8-directional run animations (8 frames each)
+            string[] directions = { "South", "SouthEast", "East", "NorthEast", "North", "NorthWest", "West", "SouthWest" };
+            for (int i = 0; i < directions.Length; i++)
+            {
+                string dir = directions[i];
+                Sprite[] frames = Resources.LoadAll<Sprite>($"Monster/Shade_Run_{dir}");
+                if (frames != null && frames.Length > 0)
+                {
+                    // Sort frames numerically by suffix _0.._7
+                    System.Array.Sort(frames, (a, b) => string.CompareOrdinal(a.name, b.name));
+                    runSprites[dir] = frames;
+                }
+            }
+
+            // 3. Load combat FX sprites
+            if (cachedClawFx == null)
+            {
+                cachedClawFx = Resources.Load<Sprite>("Monster/FX_Shade_ClawSlash");
+            }
+
+            if (cachedBurstFx == null)
+            {
+                cachedBurstFx = Resources.Load<Sprite>("Monster/FX_Shade_ShadowBurst");
+            }
         }
 
         private void EnsureEyesHierarchy()
@@ -54,17 +110,37 @@ namespace TheLastSignal.Entities.Monster
             {
                 redEyesObject = found.gameObject;
                 eyesRenderer = redEyesObject.GetComponent<SpriteRenderer>();
+                predatorEyeLight = redEyesObject.GetComponent<Light2D>();
+                if (predatorEyeLight == null)
+                {
+                    predatorEyeLight = redEyesObject.AddComponent<Light2D>();
+                    predatorEyeLight.lightType = Light2D.LightType.Point;
+                    predatorEyeLight.color = new Color(1.0f, 0.10f, 0.22f, 1.0f);
+                    predatorEyeLight.intensity = 0.75f;
+                    predatorEyeLight.pointLightInnerRadius = 0.2f;
+                    predatorEyeLight.pointLightOuterRadius = 1.6f;
+                    predatorEyeLight.falloffIntensity = 0.75f;
+                }
             }
             else
             {
                 redEyesObject = new GameObject("ShadeRedEyes");
                 redEyesObject.transform.SetParent(transform, false);
-                redEyesObject.transform.localPosition = new Vector3(0f, 0.42f, -0.05f); // Positioned at head level
+                redEyesObject.transform.localPosition = new Vector3(0f, 0.42f, -0.05f);
 
                 eyesRenderer = redEyesObject.AddComponent<SpriteRenderer>();
                 eyesRenderer.sortingLayerName = "Characters";
-                eyesRenderer.sortingOrder = 12;
-                eyesRenderer.sprite = GetGlowingEyesSprite();
+                eyesRenderer.sortingOrder = 14;
+                eyesRenderer.color = new Color(1.0f, 0.15f, 0.20f, 1.0f);
+
+                // Add 2D Point Light for predator eye glow cutting through darkness
+                predatorEyeLight = redEyesObject.AddComponent<Light2D>();
+                predatorEyeLight.lightType = Light2D.LightType.Point;
+                predatorEyeLight.color = new Color(1.0f, 0.10f, 0.22f, 1.0f);
+                predatorEyeLight.intensity = 0.75f;
+                predatorEyeLight.pointLightInnerRadius = 0.2f;
+                predatorEyeLight.pointLightOuterRadius = 1.6f;
+                predatorEyeLight.falloffIntensity = 0.75f;
             }
 
             redEyesObject.SetActive(false);
@@ -82,14 +158,70 @@ namespace TheLastSignal.Entities.Monster
 
             if (isShadeActive && redEyesObject != null && redEyesObject.activeSelf)
             {
-                // Align eyes slightly based on facing direction
+                // Align predator eye position slightly with facing direction
                 Vector2 facing = controller.FacingDirection;
-                redEyesObject.transform.localPosition = new Vector3(facing.x * 0.12f, 0.42f + facing.y * 0.06f, -0.05f);
+                redEyesObject.transform.localPosition = new Vector3(facing.x * 0.14f, 0.42f + (facing.y * 0.08f), -0.05f);
 
-                // Subtle sinister eye pulse
-                float pulse = 0.85f + 0.15f * Mathf.Sin(Time.time * 6f);
-                eyesRenderer.color = new Color(1.0f, 0.15f, 0.20f, pulse);
+                // Menacing pulsing predator eye glow
+                float pulse = 0.80f + (0.20f * Mathf.Sin(Time.time * 7f));
+                if (predatorEyeLight != null)
+                {
+                    predatorEyeLight.intensity = 0.65f * pulse;
+                }
             }
+        }
+
+        private void LateUpdate()
+        {
+            // Only override sprite animation when playing as The Shade
+            if (!isShadeActive || bodyRenderer == null || controller == null) return;
+
+            string dirKey = ResolveDirectionKey(controller.FacingDirection);
+
+            if (controller.IsMoving)
+            {
+                // Advance running animation
+                animTimer += Time.deltaTime * 10f;
+                int frameIndex = Mathf.FloorToInt(animTimer) % 8;
+
+                if (runSprites.TryGetValue(dirKey, out Sprite[] frames) && frames != null && frames.Length > 0)
+                {
+                    int safeIndex = Mathf.Clamp(frameIndex, 0, frames.Length - 1);
+                    bodyRenderer.sprite = frames[safeIndex];
+                }
+                else if (idleSprites.TryGetValue(dirKey, out Sprite idleSprite))
+                {
+                    bodyRenderer.sprite = idleSprite;
+                }
+            }
+            else
+            {
+                // Idle breathing posture
+                if (idleSprites.TryGetValue(dirKey, out Sprite idleSprite))
+                {
+                    bodyRenderer.sprite = idleSprite;
+                }
+            }
+
+            // Render crisp, high-contrast obsidian carapace without darkening tint
+            bodyRenderer.color = Color.white;
+        }
+
+        private string ResolveDirectionKey(Vector2 dir)
+        {
+            if (dir.sqrMagnitude < 0.001f) return "South";
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            if (angle < 0) angle += 360f;
+
+            if (angle >= 337.5f || angle < 22.5f) return "East";
+            if (angle >= 22.5f && angle < 67.5f) return "NorthEast";
+            if (angle >= 67.5f && angle < 112.5f) return "North";
+            if (angle >= 112.5f && angle < 157.5f) return "NorthWest";
+            if (angle >= 157.5f && angle < 202.5f) return "West";
+            if (angle >= 202.5f && angle < 247.5f) return "SouthWest";
+            if (angle >= 247.5f && angle < 292.5f) return "South";
+            return "SouthEast"; // 292.5f to 337.5f
         }
 
         public void SetShadeAppearance(bool active)
@@ -100,8 +232,7 @@ namespace TheLastSignal.Entities.Monster
             {
                 if (active)
                 {
-                    // Dark shadowy predator silhouette with subtle crimson edge tint
-                    bodyRenderer.color = new Color(0.12f, 0.14f, 0.18f, 0.95f);
+                    bodyRenderer.color = Color.white;
                 }
                 else
                 {
@@ -114,7 +245,7 @@ namespace TheLastSignal.Entities.Monster
                 redEyesObject.SetActive(active);
             }
 
-            // Hide normal flashlight cone if acting as The Shade
+            // Hide normal survivor flashlight cone if acting as The Shade
             Transform flashlight = transform.Find("FlashlightCone");
             if (flashlight != null)
             {
@@ -127,17 +258,17 @@ namespace TheLastSignal.Entities.Monster
         /// </summary>
         public void PlaySlashEffect(Vector2 position, Vector2 aimDirection, bool hitSurvivor)
         {
-            // 1. Play cutting whoosh sound
+            // 1. Play cutting whoosh & flesh tearing impact sounds
             if (audioSource != null)
             {
-                audioSource.PlayOneShot(ShadeAudioSynthesizer.GetClawSlashClip(), 0.85f);
+                audioSource.PlayOneShot(ShadeAudioSynthesizer.GetClawSlashClip(), 0.90f);
                 if (hitSurvivor)
                 {
                     audioSource.PlayOneShot(ShadeAudioSynthesizer.GetFleshImpactClip(), 1.0f);
                 }
             }
 
-            // 2. Spawn visual claw slash sprite
+            // 2. Spawn visual 128x128 claw slash sprite
             GameObject slashGo = new GameObject("FX_ClawSlash");
             slashGo.transform.position = position;
 
@@ -145,20 +276,20 @@ namespace TheLastSignal.Entities.Monster
             slashGo.transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
             SpriteRenderer sr = slashGo.AddComponent<SpriteRenderer>();
-            sr.sprite = GetClawSlashSprite();
+            sr.sprite = cachedClawFx != null ? cachedClawFx : GetClawSlashFallbackSprite();
             sr.sortingLayerName = "Characters";
             sr.sortingOrder = 16;
-            sr.color = hitSurvivor ? new Color(1.0f, 0.10f, 0.15f, 1.0f) : new Color(0.85f, 0.20f, 0.25f, 0.9f);
+            sr.color = hitSurvivor ? new Color(1.0f, 0.10f, 0.15f, 1.0f) : new Color(0.95f, 0.20f, 0.30f, 0.95f);
 
             StartCoroutine(AnimateSlashCoroutine(slashGo, sr));
         }
 
         private IEnumerator AnimateSlashCoroutine(GameObject slashGo, SpriteRenderer sr)
         {
-            float duration = 0.24f;
+            float duration = 0.22f;
             float elapsed = 0f;
-            Vector3 startScale = new Vector3(0.5f, 0.5f, 1f);
-            Vector3 targetScale = new Vector3(1.3f, 1.3f, 1f);
+            Vector3 startScale = new Vector3(0.6f, 0.6f, 1f);
+            Vector3 targetScale = new Vector3(1.35f, 1.35f, 1f);
 
             while (elapsed < duration)
             {
@@ -177,21 +308,57 @@ namespace TheLastSignal.Entities.Monster
         }
 
         /// <summary>
-        /// Spawns shadow ghost trail afterimages during a shadow dash.
+        /// Spawns dark matter bursts and shadow ghost trail afterimages during a shadow dash.
         /// </summary>
         public void PlayDashEffect(Vector2 startPos, Vector2 endPos)
         {
             if (audioSource != null)
             {
-                audioSource.PlayOneShot(ShadeAudioSynthesizer.GetShadowDashClip(), 0.95f);
+                audioSource.PlayOneShot(ShadeAudioSynthesizer.GetShadowDashClip(), 1.0f);
             }
+
+            // Spawn launch and landing dark matter bursts
+            SpawnBurstFx(startPos);
+            SpawnBurstFx(endPos);
 
             StartCoroutine(SpawnShadowTrailCoroutine(startPos, endPos));
         }
 
+        private void SpawnBurstFx(Vector2 pos)
+        {
+            GameObject burstGo = new GameObject("FX_ShadowBurst");
+            burstGo.transform.position = pos;
+            burstGo.transform.localScale = new Vector3(1.1f, 1.1f, 1f);
+
+            SpriteRenderer sr = burstGo.AddComponent<SpriteRenderer>();
+            sr.sprite = cachedBurstFx;
+            sr.sortingLayerName = "Characters";
+            sr.sortingOrder = 8;
+            sr.color = new Color(0.85f, 0.15f, 0.25f, 0.85f);
+
+            StartCoroutine(FadeBurstCoroutine(burstGo, sr));
+        }
+
+        private IEnumerator FadeBurstCoroutine(GameObject go, SpriteRenderer sr)
+        {
+            float duration = 0.28f;
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / duration;
+                Color c = sr.color;
+                c.a = Mathf.Lerp(0.85f, 0f, t);
+                sr.color = c;
+                go.transform.localScale = Vector3.Lerp(Vector3.one * 0.8f, Vector3.one * 1.5f, t);
+                yield return null;
+            }
+            Destroy(go);
+        }
+
         private IEnumerator SpawnShadowTrailCoroutine(Vector2 startPos, Vector2 endPos)
         {
-            int steps = 5;
+            int steps = 6;
             for (int i = 0; i <= steps; i++)
             {
                 float frac = (float)i / steps;
@@ -208,16 +375,16 @@ namespace TheLastSignal.Entities.Monster
                 }
                 sr.sortingLayerName = "Characters";
                 sr.sortingOrder = 9;
-                sr.color = new Color(0.08f, 0.05f, 0.12f, 0.65f);
+                sr.color = new Color(0.12f, 0.08f, 0.18f, 0.70f);
 
                 StartCoroutine(FadeGhostCoroutine(ghost, sr));
-                yield return new WaitForSeconds(0.035f);
+                yield return new WaitForSeconds(0.028f);
             }
         }
 
         private IEnumerator FadeGhostCoroutine(GameObject ghost, SpriteRenderer sr)
         {
-            float duration = 0.35f;
+            float duration = 0.32f;
             float elapsed = 0f;
             Color startColor = sr.color;
 
@@ -232,93 +399,42 @@ namespace TheLastSignal.Entities.Monster
             Destroy(ghost);
         }
 
-        // =====================================================================
-        // PROCEDURAL SPRITE GENERATORS
-        // =====================================================================
-
-        private static Sprite GetGlowingEyesSprite()
+        private static Sprite GetClawSlashFallbackSprite()
         {
-            if (cachedEyeSprite == null)
+            int size = 48;
+            Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Point;
+            Color clear = new Color(0, 0, 0, 0);
+
+            for (int y = 0; y < size; y++)
             {
-                int w = 12, h = 6;
-                Texture2D tex = new Texture2D(w, h, TextureFormat.RGBA32, false);
-                tex.filterMode = FilterMode.Point;
-                Color clear = new Color(0, 0, 0, 0);
-
-                for (int y = 0; y < h; y++)
+                for (int x = 0; x < size; x++)
                 {
-                    for (int x = 0; x < w; x++)
-                    {
-                        tex.SetPixel(x, y, clear);
-                    }
+                    tex.SetPixel(x, y, clear);
                 }
-
-                Color redCore = new Color(1.0f, 0.9f, 0.9f, 1.0f);
-                Color redGlow = new Color(1.0f, 0.15f, 0.2f, 1.0f);
-
-                // Left Eye (x: 2..4, y: 2..4)
-                tex.SetPixel(2, 3, redGlow);
-                tex.SetPixel(3, 3, redCore);
-                tex.SetPixel(4, 3, redGlow);
-                tex.SetPixel(3, 2, redGlow);
-                tex.SetPixel(3, 4, redGlow);
-
-                // Right Eye (x: 7..9, y: 2..4)
-                tex.SetPixel(7, 3, redGlow);
-                tex.SetPixel(8, 3, redCore);
-                tex.SetPixel(9, 3, redGlow);
-                tex.SetPixel(8, 2, redGlow);
-                tex.SetPixel(8, 4, redGlow);
-
-                tex.Apply();
-                cachedEyeSprite = Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f), 32f);
             }
-            return cachedEyeSprite;
-        }
 
-        private static Sprite GetClawSlashSprite()
-        {
-            if (cachedClawSprite == null)
+            Vector2 center = new Vector2(10, 24);
+            Color brightRed = new Color(1.0f, 0.2f, 0.25f, 1.0f);
+            Color darkRed = new Color(0.6f, 0.05f, 0.1f, 0.85f);
+
+            float[] radii = new float[] { 22f, 26f, 30f };
+            foreach (float r in radii)
             {
-                int size = 48;
-                Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-                tex.filterMode = FilterMode.Point;
-                Color clear = new Color(0, 0, 0, 0);
-
-                for (int y = 0; y < size; y++)
+                for (float a = -0.7f; a <= 0.7f; a += 0.02f)
                 {
-                    for (int x = 0; x < size; x++)
+                    int px = (int)(center.x + Mathf.Cos(a) * r);
+                    int py = (int)(center.y + Mathf.Sin(a) * (r * 0.85f));
+                    if (px >= 0 && px < size && py >= 0 && py < size)
                     {
-                        tex.SetPixel(x, y, clear);
+                        tex.SetPixel(px, py, brightRed);
+                        if (py + 1 < size) tex.SetPixel(px, py + 1, darkRed);
                     }
                 }
-
-                Vector2 center = new Vector2(10, 24);
-                Color brightRed = new Color(1.0f, 0.2f, 0.25f, 1.0f);
-                Color darkRed = new Color(0.6f, 0.05f, 0.1f, 0.85f);
-                Color whiteCore = new Color(1.0f, 0.9f, 0.95f, 1.0f);
-
-                // 3 curved slash arcs simulating 3 lethal razor claws
-                float[] radii = new float[] { 22f, 26f, 30f };
-                foreach (float r in radii)
-                {
-                    for (float a = -0.7f; a <= 0.7f; a += 0.02f)
-                    {
-                        int px = (int)(center.x + Mathf.Cos(a) * r);
-                        int py = (int)(center.y + Mathf.Sin(a) * (r * 0.85f));
-                        if (px >= 0 && px < size && py >= 0 && py < size)
-                        {
-                            tex.SetPixel(px, py, (r == 26f && Mathf.Abs(a) < 0.3f) ? whiteCore : brightRed);
-                            if (py + 1 < size) tex.SetPixel(px, py + 1, darkRed);
-                            if (py - 1 >= 0) tex.SetPixel(px, py - 1, darkRed);
-                        }
-                    }
-                }
-
-                tex.Apply();
-                cachedClawSprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.2f, 0.5f), 32f);
             }
-            return cachedClawSprite;
+
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.2f, 0.5f), 32f);
         }
     }
 }

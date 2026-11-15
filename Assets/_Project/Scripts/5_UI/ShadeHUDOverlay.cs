@@ -145,7 +145,7 @@ namespace TheLastSignal.UI
 
             if (dashCooldownFill != null)
             {
-                dashCooldownFill.fillAmount = 1.0f - combatController.DashCooldownPercent;
+                dashCooldownFill.fillAmount = combatController.DashCooldownPercent;
             }
         }
 
@@ -325,35 +325,76 @@ namespace TheLastSignal.UI
             statRt.sizeDelta = new Vector2(600f, 30f);
 
             // Right: The 2 Combat Skills
+            Sprite slashIconSprite = Resources.Load<Sprite>("Monster/Icon_Skill_ClawSlash");
+            Sprite dashIconSprite = Resources.Load<Sprite>("Monster/Icon_Skill_ShadowDash");
+
             // Skill 1: Claw Slash
+            GameObject slashIconGo = new GameObject("SlashIcon", typeof(RectTransform), typeof(Image));
+            slashIconGo.transform.SetParent(bottomBar.transform, false);
+            RectTransform siRt = slashIconGo.GetComponent<RectTransform>();
+            siRt.anchorMin = new Vector2(1f, 0.5f);
+            siRt.anchorMax = new Vector2(1f, 0.5f);
+            siRt.pivot = new Vector2(1f, 0.5f);
+            siRt.anchoredPosition = new Vector2(-490f, 0f);
+            siRt.sizeDelta = new Vector2(36f, 36f);
+            Image siImg = slashIconGo.GetComponent<Image>();
+            siImg.sprite = slashIconSprite;
+
             GameObject slashGo = new GameObject("SlashSkillText", typeof(RectTransform), typeof(TextMeshProUGUI));
             slashGo.transform.SetParent(bottomBar.transform, false);
             slashSkillText = slashGo.GetComponent<TextMeshProUGUI>();
-            slashSkillText.text = "<b>[M1 / F] CLAW SLASH</b>  <color=#FF2233>[READY - 50 DMG]</color>";
-            slashSkillText.fontSize = 13;
-            slashSkillText.alignment = TextAlignmentOptions.Right;
+            slashSkillText.text = "<b>[M1 / F] CLAW SLASH</b>  <color=#FF2233>[50 DMG]</color>";
+            slashSkillText.fontSize = 12;
+            slashSkillText.alignment = TextAlignmentOptions.Left;
             slashSkillText.color = Color.white;
             RectTransform slashRt = slashGo.GetComponent<RectTransform>();
             slashRt.anchorMin = new Vector2(1f, 0.5f);
             slashRt.anchorMax = new Vector2(1f, 0.5f);
             slashRt.pivot = new Vector2(1f, 0.5f);
             slashRt.anchoredPosition = new Vector2(-280f, 0f);
-            slashRt.sizeDelta = new Vector2(300f, 30f);
+            slashRt.sizeDelta = new Vector2(200f, 30f);
 
             // Skill 2: Shadow Dash
+            GameObject dashIconGo = new GameObject("DashIcon", typeof(RectTransform), typeof(Image));
+            dashIconGo.transform.SetParent(bottomBar.transform, false);
+            RectTransform diRt = dashIconGo.GetComponent<RectTransform>();
+            diRt.anchorMin = new Vector2(1f, 0.5f);
+            diRt.anchorMax = new Vector2(1f, 0.5f);
+            diRt.pivot = new Vector2(1f, 0.5f);
+            diRt.anchoredPosition = new Vector2(-235f, 0f);
+            diRt.sizeDelta = new Vector2(36f, 36f);
+            Image diImg = dashIconGo.GetComponent<Image>();
+            diImg.sprite = dashIconSprite;
+
+            // Cooldown overlay on Dash Icon
+            GameObject cdFillGo = new GameObject("DashCooldownFill", typeof(RectTransform), typeof(Image));
+            cdFillGo.transform.SetParent(dashIconGo.transform, false);
+            RectTransform cdRt = cdFillGo.GetComponent<RectTransform>();
+            cdRt.anchorMin = Vector2.zero;
+            cdRt.anchorMax = Vector2.one;
+            cdRt.offsetMin = Vector2.zero;
+            cdRt.offsetMax = Vector2.zero;
+            dashCooldownFill = cdFillGo.GetComponent<Image>();
+            dashCooldownFill.sprite = white;
+            dashCooldownFill.type = Image.Type.Filled;
+            dashCooldownFill.fillMethod = Image.FillMethod.Radial360;
+            dashCooldownFill.fillClockwise = false;
+            dashCooldownFill.fillOrigin = 2; // Top
+            dashCooldownFill.color = new Color(0f, 0f, 0f, 0.70f);
+
             GameObject dashGo = new GameObject("DashSkillText", typeof(RectTransform), typeof(TextMeshProUGUI));
             dashGo.transform.SetParent(bottomBar.transform, false);
             dashSkillText = dashGo.GetComponent<TextMeshProUGUI>();
-            dashSkillText.text = "<b>[M2 / SPACE] SHADOW DASH</b>  <color=#00FFCC>[READY - 4.5m]</color>";
-            dashSkillText.fontSize = 13;
-            dashSkillText.alignment = TextAlignmentOptions.Right;
+            dashSkillText.text = "<b>[M2 / SPACE] SHADOW DASH</b>  <color=#00FFCC>[4.5m]</color>";
+            dashSkillText.fontSize = 12;
+            dashSkillText.alignment = TextAlignmentOptions.Left;
             dashSkillText.color = Color.white;
             RectTransform dashRt = dashGo.GetComponent<RectTransform>();
             dashRt.anchorMin = new Vector2(1f, 0.5f);
             dashRt.anchorMax = new Vector2(1f, 0.5f);
             dashRt.pivot = new Vector2(1f, 0.5f);
-            dashRt.anchoredPosition = new Vector2(-35f, 0f);
-            dashRt.sizeDelta = new Vector2(300f, 30f);
+            dashRt.anchoredPosition = new Vector2(-30f, 0f);
+            dashRt.sizeDelta = new Vector2(200f, 30f);
         }
 
         private static Sprite GetSolidWhiteSprite()

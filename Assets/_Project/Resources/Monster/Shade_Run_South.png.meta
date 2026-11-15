@@ -1,0 +1,432 @@
+fileFormatVersion: 2
+guid: f272c64aa40a640cdb67f10bb2ff31b3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3377233666418587873
+    second: Shade_Run_South_0
+  - first:
+      213: 5349303300931756737
+    second: Shade_Run_South_1
+  - first:
+      213: -969965327258012049
+    second: Shade_Run_South_2
+  - first:
+      213: -5016276143571581925
+    second: Shade_Run_South_3
+  - first:
+      213: -4180951219505568701
+    second: Shade_Run_South_4
+  - first:
+      213: -6481987843153027644
+    second: Shade_Run_South_5
+  - first:
+      213: -581910592857799659
+    second: Shade_Run_South_6
+  - first:
+      213: -5330509315896809755
+    second: Shade_Run_South_7
+  - first:
+      213: -1869827048758880819
+    second: Shade_Run_South_8
+  - first:
+      213: -7441257331495351645
+    second: Shade_Run_South_9
+  - first:
+      213: 433588756339667171
+    second: Shade_Run_South_10
+  - first:
+      213: 6025836501149529453
+    second: Shade_Run_South_11
+  - first:
+      213: 2870926029890929726
+    second: Shade_Run_South_12
+  - first:
+      213: -4635692433622074449
+    second: Shade_Run_South_13
+  - first:
+      213: 2765151210699980038
+    second: Shade_Run_South_14
+  - first:
+      213: 8714789562130729692
+    second: Shade_Run_South_15
+  - first:
+      213: -734452302548948536
+    second: Shade_Run_South_16
+  - first:
+      213: -3750649918132311573
+    second: Shade_Run_South_17
+  - first:
+      213: -1045368455217281567
+    second: Shade_Run_South_18
+  - first:
+      213: -1331598696061563205
+    second: Shade_Run_South_19
+  - first:
+      213: -6683607960377496459
+    second: Shade_Run_South_20
+  - first:
+      213: -8267814541246042811
+    second: Shade_Run_South_21
+  - first:
+      213: 8326265660469135788
+    second: Shade_Run_South_22
+  - first:
+      213: -6665283742512911510
+    second: Shade_Run_South_23
+  - first:
+      213: -3247500736008185366
+    second: Shade_Run_South_24
+  - first:
+      213: 318233209974015536
+    second: Shade_Run_South_25
+  - first:
+      213: 8119501115205564452
+    second: Shade_Run_South_26
+  - first:
+      213: -687139363787590710
+    second: Shade_Run_South_27
+  - first:
+      213: -812738098895145718
+    second: Shade_Run_South_28
+  - first:
+      213: 7131063016291354295
+    second: Shade_Run_South_29
+  - first:
+      213: 2145172439873301452
+    second: Shade_Run_South_30
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Shade_Run_South_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 92
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1741adafd7a121d0800000000000000
+      internalID: -3377233666418587873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shade_Run_South_1
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 92
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c2acd7a20b8c3a40800000000000000
+      internalID: 5349303300931756737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shade_Run_South_2
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 92
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6637588cadf982f0800000000000000
+      internalID: -969965327258012049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shade_Run_South_3
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 92
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b14462fbc6b926ab0800000000000000
+      internalID: -5016276143571581925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shade_Run_South_4
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 92
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 344622a74074af5c0800000000000000
+      internalID: -4180951219505568701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shade_Run_South_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cd9672566a5b06a0800000000000000
+      internalID: -6481987843153027644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shade_Run_South_6
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 0
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5148cad1663ace7f0800000000000000
+      internalID: -581910592857799659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shade_Run_South_7
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 0
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e66f0af40a3606b0800000000000000
+      internalID: -5330509315896809755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Shade_Run_South_0: -3377233666418587873
+      Shade_Run_South_1: 5349303300931756737
+      Shade_Run_South_10: 433588756339667171
+      Shade_Run_South_11: 6025836501149529453
+      Shade_Run_South_12: 2870926029890929726
+      Shade_Run_South_13: -4635692433622074449
+      Shade_Run_South_14: 2765151210699980038
+      Shade_Run_South_15: 8714789562130729692
+      Shade_Run_South_16: -734452302548948536
+      Shade_Run_South_17: -3750649918132311573
+      Shade_Run_South_18: -1045368455217281567
+      Shade_Run_South_19: -1331598696061563205
+      Shade_Run_South_2: -969965327258012049
+      Shade_Run_South_20: -6683607960377496459
+      Shade_Run_South_21: -8267814541246042811
+      Shade_Run_South_22: 8326265660469135788
+      Shade_Run_South_23: -6665283742512911510
+      Shade_Run_South_24: -3247500736008185366
+      Shade_Run_South_25: 318233209974015536
+      Shade_Run_South_26: 8119501115205564452
+      Shade_Run_South_27: -687139363787590710
+      Shade_Run_South_28: -812738098895145718
+      Shade_Run_South_29: 7131063016291354295
+      Shade_Run_South_3: -5016276143571581925
+      Shade_Run_South_30: 2145172439873301452
+      Shade_Run_South_4: -4180951219505568701
+      Shade_Run_South_5: -6481987843153027644
+      Shade_Run_South_6: -581910592857799659
+      Shade_Run_South_7: -5330509315896809755
+      Shade_Run_South_8: -1869827048758880819
+      Shade_Run_South_9: -7441257331495351645
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
