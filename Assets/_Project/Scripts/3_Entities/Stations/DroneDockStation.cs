@@ -140,6 +140,16 @@ namespace TheLastSignal.Entities.Stations
             {
                 if (cachedDockSprite == null)
                 {
+                    cachedDockSprite = Resources.Load<Sprite>("Drone/Prop_Drone_Recharge_Dock");
+                }
+
+                if (cachedDockSprite == null)
+                {
+                    cachedDockSprite = Resources.Load<Sprite>("Prop_Drone_Recharge_Dock");
+                }
+
+                if (cachedDockSprite == null)
+                {
                     cachedDockSprite = CreateDockPadSprite();
                 }
                 dockRenderer.sprite = cachedDockSprite;

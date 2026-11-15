@@ -25,6 +25,16 @@ namespace TheLastSignal.Entities.Drone
         [SerializeField] private AudioSource motorAudioSource;
         [SerializeField] private AudioSource sfxAudioSource;
 
+        [Header("Tactical Sprites")]
+        [SerializeField] private Sprite chassisSprite;
+        [SerializeField] private Sprite rotorBlurSprite;
+        [SerializeField] private Sprite shadowSprite;
+
+        [Header("Ground Shadow")]
+        [SerializeField] private Transform shadowRoot;
+        [SerializeField] private SpriteRenderer shadowRenderer;
+        [SerializeField] private Vector3 shadowOffset = new Vector3(0f, -0.40f, 0f);
+
         [Header("Animation Settings")]
         [SerializeField] private float hoverFrequency = 3.5f;
         [SerializeField] private float hoverAmplitude = 0.06f;
@@ -52,8 +62,50 @@ namespace TheLastSignal.Entities.Drone
             }
 
             EnsureVisualHierarchy();
+            EnsureShadowHierarchy();
             EnsureAudioSources();
             EnsureChassisSprite();
+        }
+
+        private void EnsureShadowHierarchy()
+        {
+            if (shadowRoot == null)
+            {
+                Transform found = transform.Find("ShadowRoot");
+                if (found != null)
+                {
+                    shadowRoot = found;
+                }
+                else
+                {
+                    GameObject sGo = new GameObject("ShadowRoot");
+                    sGo.transform.SetParent(transform, false);
+                    shadowRoot = sGo.transform;
+                }
+            }
+
+            shadowRoot.localPosition = shadowOffset;
+
+            if (shadowRenderer == null)
+            {
+                shadowRenderer = shadowRoot.GetComponent<SpriteRenderer>();
+                if (shadowRenderer == null)
+                {
+                    shadowRenderer = shadowRoot.gameObject.AddComponent<SpriteRenderer>();
+                    shadowRenderer.sortingLayerName = "Characters";
+                    shadowRenderer.sortingOrder = 3; // Below dock and drone
+                }
+            }
+
+            if (shadowSprite == null)
+            {
+                shadowSprite = Resources.Load<Sprite>("Drone/ReconDrone_Shadow");
+            }
+
+            if (shadowRenderer.sprite == null && shadowSprite != null)
+            {
+                shadowRenderer.sprite = shadowSprite;
+            }
         }
 
         private void EnsureVisualHierarchy()
@@ -93,8 +145,20 @@ namespace TheLastSignal.Entities.Drone
         {
             if (chassisRenderer != null && chassisRenderer.sprite == null)
             {
-                proceduralDroneSprite = CreateTactileDroneSprite();
-                chassisRenderer.sprite = proceduralDroneSprite;
+                if (chassisSprite == null)
+                {
+                    chassisSprite = Resources.Load<Sprite>("Drone/ReconDrone_Chassis");
+                }
+
+                if (chassisSprite != null)
+                {
+                    chassisRenderer.sprite = chassisSprite;
+                }
+                else
+                {
+                    proceduralDroneSprite = CreateTactileDroneSprite();
+                    chassisRenderer.sprite = proceduralDroneSprite;
+                }
             }
         }
 
@@ -103,13 +167,18 @@ namespace TheLastSignal.Entities.Drone
             rotorProps = new Transform[4];
             Vector2[] rotorOffsets = new Vector2[]
             {
-                new Vector2(-0.35f, 0.32f),  // Top Left
-                new Vector2(0.35f, 0.32f),   // Top Right
-                new Vector2(-0.35f, -0.32f), // Bottom Left
-                new Vector2(0.35f, -0.32f)   // Bottom Right
+                new Vector2(-0.30f, 0.27f),  // Top Left (aligned with nacelle centers)
+                new Vector2(0.30f, 0.27f),   // Top Right
+                new Vector2(-0.30f, -0.27f), // Bottom Left
+                new Vector2(0.30f, -0.27f)   // Bottom Right
             };
 
-            Sprite bladeSprite = CreateRotorBladeSprite();
+            if (rotorBlurSprite == null)
+            {
+                rotorBlurSprite = Resources.Load<Sprite>("Drone/ReconDrone_RotorBlur");
+            }
+
+            Sprite bladeSprite = rotorBlurSprite != null ? rotorBlurSprite : CreateRotorBladeSprite();
 
             for (int i = 0; i < 4; i++)
             {
@@ -128,7 +197,7 @@ namespace TheLastSignal.Entities.Drone
                     sr.sprite = bladeSprite;
                     sr.sortingLayerName = "Characters";
                     sr.sortingOrder = 11;
-                    sr.color = new Color(0.7f, 0.85f, 1f, 0.85f);
+                    sr.color = new Color(1f, 1f, 1f, 0.90f);
                     rotorProps[i] = propGo.transform;
                 }
             }
@@ -241,6 +310,15 @@ namespace TheLastSignal.Entities.Drone
                 }
             }
 
+            if (shadowRoot != null)
+            {
+                shadowRoot.localScale = Vector3.one;
+                if (shadowRenderer != null)
+                {
+                    shadowRenderer.color = new Color(1f, 1f, 1f, active ? 0.70f : 0.35f);
+                }
+            }
+
             if (spotlightLight2D != null)
             {
                 spotlightLight2D.enabled = active;
@@ -311,11 +389,11 @@ namespace TheLastSignal.Entities.Drone
         {
             if (controller == null || !controller.IsFlightActive) return;
 
-            // 1. Sinusoidal hover float
+            // 1. Sinusoidal hover float (with slight takeoff altitude boost)
             float hoverOffset = Mathf.Sin(Time.time * hoverFrequency) * hoverAmplitude;
             if (visualRoot != null)
             {
-                visualRoot.localPosition = baseVisualLocalPos + new Vector3(0f, hoverOffset, 0f);
+                visualRoot.localPosition = baseVisualLocalPos + new Vector3(0f, hoverOffset + 0.15f, 0f);
 
                 // 2. Flight banking tilt based on velocity X
                 Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -332,6 +410,14 @@ namespace TheLastSignal.Entities.Drone
                         motorAudioSource.pitch = Mathf.Lerp(1.0f, 1.22f, speed / 5.0f);
                     }
                 }
+            }
+
+            // 3. Dynamic ground drop shadow response to flight altitude
+            if (shadowRoot != null && shadowRenderer != null)
+            {
+                float shadowScale = 1.0f - (hoverOffset * 0.35f);
+                shadowRoot.localScale = new Vector3(shadowScale, shadowScale, 1f);
+                shadowRenderer.color = new Color(1f, 1f, 1f, Mathf.Clamp01(0.70f - (hoverOffset * 0.8f)));
             }
 
             // 4. Spin rotor blades
