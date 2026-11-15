@@ -34,6 +34,11 @@ namespace TheLastSignal.Entities.Player
         private static bool IsNetworkSessionActive =>
             NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
 
+        /// <summary>
+        /// Static reference to the local client's active PlayerController.
+        /// </summary>
+        public static PlayerController Local { get; private set; }
+
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 3f;
         [SerializeField] private float acceleration = 15.5f;
@@ -120,13 +125,23 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         public Collider2D CurrentInteractable { get; private set; }
 
+        private Vector2 lockedAnchorPosition;
+        private bool isPositionLocked;
+
         private void Awake()
         {
+            if (!IsNetworkSessionActive || IsOwner)
+            {
+                Local = this;
+            }
+
             rb = GetComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            rb.mass = 1000f; // High mass prevents dynamic objects/physics from pushing the player
+            rb.linearDamping = 10f; // High linear damping neutralizes unwanted drifting
 
             playerHealth = GetComponent<PlayerHealth>();
             if (playerHealth == null)
@@ -229,6 +244,7 @@ namespace TheLastSignal.Entities.Player
             }
 
             // Local owner: place body on own spawn slot and enable controls
+            Local = this;
             ResetState(ResolveNetworkSpawnPosition(slotIndex));
             SetControlEnabled(true);
 
@@ -246,9 +262,23 @@ namespace TheLastSignal.Entities.Player
         /// </summary>
         public override void OnNetworkDespawn()
         {
+            if (Local == this)
+            {
+                Local = null;
+            }
+
             // TODO: drop/clear this player's held item once the Inventory/Pin system exists. No such
             // system exists yet (out of scope for Story 3.6), so there is nothing to drop right now.
             base.OnNetworkDespawn();
+        }
+
+        public override void OnDestroy()
+        {
+            if (Local == this)
+            {
+                Local = null;
+            }
+            base.OnDestroy();
         }
 
         /// <summary>
@@ -312,6 +342,24 @@ namespace TheLastSignal.Entities.Player
             {
                 moveInput = Vector2.zero;
                 currentVelocity = Vector2.zero;
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector2.zero;
+                    rb.angularVelocity = 0f;
+                    rb.constraints = RigidbodyConstraints2D.FreezeAll;
+                    lockedAnchorPosition = rb.position;
+                    isPositionLocked = true;
+                }
+            }
+            else
+            {
+                if (rb != null)
+                {
+                    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+                    rb.linearVelocity = Vector2.zero;
+                    rb.angularVelocity = 0f;
+                }
+                isPositionLocked = false;
             }
         }
 
@@ -337,6 +385,9 @@ namespace TheLastSignal.Entities.Player
             rb.position = worldPosition;
             transform.position = new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
             lastRemotePosition = transform.position;
+            lockedAnchorPosition = worldPosition;
+            isPositionLocked = true;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
             if (playerHealth != null)
             {
@@ -480,10 +531,19 @@ namespace TheLastSignal.Entities.Player
         {
             if (!controlEnabled)
             {
+                if (isPositionLocked && rb != null)
+                {
+                    rb.position = lockedAnchorPosition;
+                    rb.linearVelocity = Vector2.zero;
+                }
                 return;
             }
 
             ApplyMovement(moveInput);
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
         }
 
         /// <summary>

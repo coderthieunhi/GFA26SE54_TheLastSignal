@@ -22,6 +22,7 @@ namespace TheLastSignal.UI
         [SerializeField] private TextMeshProUGUI objectiveText;
         [SerializeField] private TextMeshProUGUI sessionStatusText;
         [SerializeField] private TextMeshProUGUI countdownText;
+        [SerializeField] private bool showObjectiveText = false;
 
         private void OnEnable()
         {
@@ -51,6 +52,12 @@ namespace TheLastSignal.UI
 
         private void Start()
         {
+            if (objectiveText != null && !showObjectiveText)
+            {
+                objectiveText.gameObject.SetActive(false);
+                objectiveText.text = string.Empty;
+            }
+
             if (GameManager.Instance == null)
             {
                 return;
@@ -82,6 +89,13 @@ namespace TheLastSignal.UI
         {
             if (objectiveText == null)
             {
+                return;
+            }
+
+            if (!showObjectiveText)
+            {
+                objectiveText.gameObject.SetActive(false);
+                objectiveText.text = string.Empty;
                 return;
             }
 

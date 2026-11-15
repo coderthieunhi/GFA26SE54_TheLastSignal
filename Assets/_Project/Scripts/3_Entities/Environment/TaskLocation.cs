@@ -1,9 +1,25 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using TheLastSignal.Core.Interaction;
 using TheLastSignal.Entities.Player;
+using TheLastSignal.UI.Tasks;
 
 namespace TheLastSignal.Entities.Environment
 {
+    public enum TaskMinigameType
+    {
+        Automatic,
+        WireBridging,
+        ValveBalancing,
+        MemorySequence,
+        WaveformTuning,
+        TimingCalibration,
+        PowerGridRouting,
+        IsotopeDecryption,
+        CipherRingAlignment
+    }
     public enum TaskStationType
     {
         Generator,
@@ -14,9 +30,10 @@ namespace TheLastSignal.Entities.Environment
     }
 
     /// <summary>
-    /// Placeholder location for a gameplay objective or task station.
-    /// Implements IInteractable so PlayerController can detect and interact with it via [E].
-    /// Epic 8 (Task Ticket System) can easily hook concrete minigames, tickets, or objectives here.
+    /// Interactive repair station that orchestrates multi-stage minigame sequences.
+    /// Manages randomized non-repeating sub-task playlists (5 minigames),
+    /// role quotas (3 for Engineer, 5 for Drone Operator / Logistics),
+    /// persistent partial progress saving, and seamless intermission transitions.
     /// </summary>
     public class TaskLocation : MonoBehaviour, IInteractable
     {
@@ -25,6 +42,14 @@ namespace TheLastSignal.Entities.Environment
         [SerializeField] private string stationDisplayName = "Station";
         [SerializeField] private TaskStationType stationType = TaskStationType.Generator;
         [SerializeField] private bool isCompleted = false;
+
+        [Header("Minigame")]
+        [SerializeField] private bool useMinigame = true;
+        [SerializeField] private bool forceSpecificMinigame = false;
+        [SerializeField] private TaskMinigameType minigameType = TaskMinigameType.Automatic;
+
+        [Header("Multi-Stage Repair Playlist")]
+        [SerializeField] private List<TaskMinigameType> subTasksPlaylist = new List<TaskMinigameType>();
 
         [Header("Feedback")]
         [SerializeField] private SpriteRenderer markerRenderer;
@@ -36,9 +61,43 @@ namespace TheLastSignal.Entities.Environment
         public TaskStationType StationType => stationType;
         public bool IsCompleted => isCompleted;
 
-        public string InteractionPrompt => isCompleted ? $"{stationDisplayName} (Finished)" : $"Interact with {stationDisplayName}";
+        public string InteractionPrompt
+        {
+            get
+            {
+                if (isCompleted) return $"{stationDisplayName} (Finished)";
+
+                if (TryGetComponent(out StationRepair repair))
+                {
+                    if (repair.IsLocked)
+                    {
+                        return $"{stationDisplayName} (In use)";
+                    }
+
+                    int steps = repair.CompletedSteps;
+                    if (steps > 0)
+                    {
+                        return $"Repair {stationDisplayName} [Stage {steps}/5]";
+                    }
+                }
+                return $"Interact with {stationDisplayName}";
+            }
+        }
+
         public string GetInteractionPrompt() => InteractionPrompt;
-        public bool CanInteract(PlayerController player) => !isCompleted;
+
+        public bool CanInteract(PlayerController player)
+        {
+            if (isCompleted) return false;
+            if (TryGetComponent(out StationRepair repair))
+            {
+                if (repair.IsStationLockedByOther(player, out _))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         private void Awake()
         {
@@ -46,6 +105,7 @@ namespace TheLastSignal.Entities.Environment
             {
                 markerRenderer = GetComponentInChildren<SpriteRenderer>();
             }
+            EnsureSubTasksPlaylist(forceReshuffle: true);
         }
 
         public void Initialize(string id, string displayName, TaskStationType type)
@@ -54,24 +114,271 @@ namespace TheLastSignal.Entities.Environment
             stationDisplayName = displayName;
             stationType = type;
             isCompleted = false;
+            EnsureSubTasksPlaylist(forceReshuffle: true);
+        }
+
+        /// <summary>
+        /// Generates a deterministic non-repeating sequence of 5 minigames for this station.
+        /// </summary>
+        private void EnsureSubTasksPlaylist(bool forceReshuffle = false)
+        {
+            if (!forceReshuffle && subTasksPlaylist != null && subTasksPlaylist.Count >= 8) return;
+
+            subTasksPlaylist = new List<TaskMinigameType>
+            {
+                TaskMinigameType.WireBridging,
+                TaskMinigameType.ValveBalancing,
+                TaskMinigameType.MemorySequence,
+                TaskMinigameType.WaveformTuning,
+                TaskMinigameType.TimingCalibration,
+                TaskMinigameType.PowerGridRouting,
+                TaskMinigameType.IsotopeDecryption,
+                TaskMinigameType.CipherRingAlignment
+            };
+
+            // Deterministic stable shuffle based on stationId polynomial hash
+            int seed = GetStableHash(!string.IsNullOrEmpty(stationId) ? stationId : stationDisplayName);
+            System.Random rng = new System.Random(seed);
+            for (int i = 0; i < subTasksPlaylist.Count; i++)
+            {
+                int r = rng.Next(i, subTasksPlaylist.Count);
+                (subTasksPlaylist[i], subTasksPlaylist[r]) = (subTasksPlaylist[r], subTasksPlaylist[i]);
+            }
+        }
+
+        private static int GetStableHash(string str)
+        {
+            if (string.IsNullOrEmpty(str)) return 42;
+            unchecked
+            {
+                int hash = 17;
+                for (int i = 0; i < str.Length; i++)
+                {
+                    hash = hash * 31 + str[i];
+                }
+                return Mathf.Abs(hash);
+            }
         }
 
         public void Interact(PlayerController player)
         {
+            if (player == null)
+            {
+                player = PlayerController.Local ?? UnityEngine.Object.FindAnyObjectByType<PlayerController>();
+            }
+
+            if (!CanInteract(player)) return;
+
             Debug.Log($"<color=yellow>[TaskLocation]</color> Player interacted with {stationDisplayName} ({stationId} - {stationType})!");
 
-            // TLS-E05-S02: every Survivor can repair any machine; repair speed is role-scaled in
-            // StationRepair itself. Epic 8's Task Ticket System can still replace this with a real
-            // minigame later — this only adds a progress counter to the existing placeholder.
             if (TryGetComponent(out StationRepair repair))
             {
-                repair.RequestRepair(player);
+                if (!repair.TryClaimRepairLock(player, out string lockReason))
+                {
+                    Debug.LogWarning($"<color=orange>[TaskLocation]</color> Cannot interact: {lockReason}");
+                    return;
+                }
+            }
+
+            if (useMinigame && !isCompleted)
+            {
+                OpenCurrentSubTask(player);
+                return;
+            }
+
+            // Fallback: non-minigame direct repair
+            if (TryGetComponent(out StationRepair directRepair))
+            {
+                directRepair.RequestRepair(player);
             }
         }
 
         public void Interact(GameObject player)
         {
-            Interact(player != null ? player.GetComponent<PlayerController>() : null);
+            PlayerController pc = null;
+            if (player != null)
+            {
+                pc = player.GetComponent<PlayerController>() ?? player.GetComponentInParent<PlayerController>();
+            }
+            if (pc == null)
+            {
+                pc = PlayerController.Local ?? UnityEngine.Object.FindAnyObjectByType<PlayerController>();
+            }
+            Interact(pc);
+        }
+
+        /// <summary>
+        /// Resolves the current sub-task minigame type based on playlist and completed steps.
+        /// Guaranteed to rotate across all 5 minigames for all task locations unless explicitly forced.
+        /// </summary>
+        public TaskMinigameType GetCurrentSubTaskType()
+        {
+            if (forceSpecificMinigame && minigameType != TaskMinigameType.Automatic)
+            {
+                return minigameType;
+            }
+
+            EnsureSubTasksPlaylist();
+            int currentStep = 0;
+            if (TryGetComponent(out StationRepair repair))
+            {
+                currentStep = repair.CompletedSteps;
+            }
+
+            if (subTasksPlaylist == null || subTasksPlaylist.Count == 0)
+            {
+                EnsureSubTasksPlaylist(forceReshuffle: true);
+            }
+
+            return subTasksPlaylist[currentStep % subTasksPlaylist.Count];
+        }
+
+        /// <summary>
+        /// Opens the appropriate minigame for the current sub-task.
+        /// </summary>
+        public void OpenCurrentSubTask(PlayerController player)
+        {
+            TaskMinigameType activeType = GetCurrentSubTaskType();
+
+            switch (activeType)
+            {
+                case TaskMinigameType.TimingCalibration:
+                    var calibUI = CalibrationTaskUI.Instance ?? CalibrationTaskUI.GetOrCreateInstance();
+                    calibUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.WaveformTuning:
+                    var waveUI = WaveformTaskUI.Instance ?? WaveformTaskUI.GetOrCreateInstance();
+                    waveUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.MemorySequence:
+                    var memUI = MemoryTaskUI.Instance ?? MemoryTaskUI.GetOrCreateInstance();
+                    memUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.ValveBalancing:
+                    var valveUI = ValveTaskUI.Instance ?? ValveTaskUI.GetOrCreateInstance();
+                    valveUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.PowerGridRouting:
+                    var gridUI = PowerGridTaskUI.Instance ?? PowerGridTaskUI.GetOrCreateInstance();
+                    gridUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.IsotopeDecryption:
+                    var isoUI = IsotopeTaskUI.Instance ?? IsotopeTaskUI.GetOrCreateInstance();
+                    isoUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.CipherRingAlignment:
+                    var cipherUI = CipherRingTaskUI.Instance ?? CipherRingTaskUI.GetOrCreateInstance();
+                    cipherUI?.Open(player, this);
+                    break;
+
+                case TaskMinigameType.WireBridging:
+                default:
+                    var wireUI = WireTaskUI.Instance ?? WireTaskUI.GetOrCreateInstance();
+                    wireUI?.Open(player, this);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Called when any minigame completes. Advances the repair pipeline and either completes the station
+        /// or presents the Intermission screen allowing the player to continue or exit and save.
+        /// </summary>
+        public void OnSubTaskCompleted(PlayerController player, MonoBehaviour currentMinigameUI)
+        {
+            if (TryGetComponent(out StationRepair repair))
+            {
+                repair.AdvanceRepairStep(player, out bool isStationCompleted);
+
+                if (isStationCompleted)
+                {
+                    SetCompleted(true);
+                    repair.ReleaseRepairLock(player);
+                    StartCoroutine(CloseMinigameRoutine(currentMinigameUI, 0.85f, player));
+                    return;
+                }
+
+                // Station requires more sub-tasks!
+                // Close current minigame UI
+                CloseMinigame(currentMinigameUI);
+
+                // Show Intermission screen
+                int current = repair.CompletedSteps;
+                int target = repair.GetTargetStepsForPlayer(player);
+                TaskMinigameType nextType = subTasksPlaylist[current % subTasksPlaylist.Count];
+                string nextName = GetMinigameDisplayName(nextType);
+
+                var intermission = TaskIntermissionUI.Instance ?? TaskIntermissionUI.GetOrCreateInstance();
+                if (intermission != null)
+                {
+                    intermission.ShowIntermission(player, this, current, target, nextName,
+                        onContinue: () =>
+                        {
+                            OpenCurrentSubTask(player);
+                        },
+                        onExit: () =>
+                        {
+                            repair.ReleaseRepairLock(player);
+                        });
+                }
+                else
+                {
+                    // Fallback if intermission UI not in scene: proceed directly
+                    OpenCurrentSubTask(player);
+                }
+            }
+            else
+            {
+                SetCompleted(true);
+                CloseMinigame(currentMinigameUI);
+                if (player != null) player.SetControlEnabled(true);
+            }
+        }
+
+        /// <summary>
+        /// Helper to close any minigame UI instance.
+        /// </summary>
+        public void CloseMinigame(MonoBehaviour minigameUI)
+        {
+            if (minigameUI is WireTaskUI wire) wire.CloseMinigame();
+            else if (minigameUI is ValveTaskUI valve) valve.CloseMinigame();
+            else if (minigameUI is MemoryTaskUI mem) mem.CloseMinigame();
+            else if (minigameUI is WaveformTaskUI wave) wave.CloseMinigame();
+            else if (minigameUI is CalibrationTaskUI calib) calib.CloseMinigame();
+            else if (minigameUI is PowerGridTaskUI grid) grid.CloseMinigame();
+            else if (minigameUI is IsotopeTaskUI iso) iso.CloseMinigame();
+            else if (minigameUI is CipherRingTaskUI cipher) cipher.CloseMinigame();
+        }
+
+        private IEnumerator CloseMinigameRoutine(MonoBehaviour minigameUI, float delay, PlayerController player)
+        {
+            yield return new WaitForSeconds(delay);
+            CloseMinigame(minigameUI);
+            if (player != null)
+            {
+                player.SetControlEnabled(true);
+            }
+        }
+
+        public string GetMinigameDisplayName(TaskMinigameType type)
+        {
+            switch (type)
+            {
+                case TaskMinigameType.WireBridging: return "ELECTRICAL WIRE BRIDGING";
+                case TaskMinigameType.ValveBalancing: return "PRESSURE VALVE BALANCING";
+                case TaskMinigameType.MemorySequence: return "REACTOR MEMORY CORE KEYPAD";
+                case TaskMinigameType.WaveformTuning: return "RADIO WAVEFORM SYNCHRONIZER";
+                case TaskMinigameType.TimingCalibration: return "POWER SURGE PULSE CALIBRATION";
+                case TaskMinigameType.PowerGridRouting: return "HIGH-VOLTAGE POWER GRID ROUTING";
+                case TaskMinigameType.IsotopeDecryption: return "REACTOR ISOTOPE DECRYPTION";
+                case TaskMinigameType.CipherRingAlignment: return "CONCENTRIC CIPHER RING ALIGNMENT";
+                default: return "SYSTEM MAINTENANCE";
+            }
         }
 
         public void SetCompleted(bool completed)
