@@ -228,6 +228,25 @@ namespace TheLastSignal.Entities.Monster
         {
             isShadeActive = active;
 
+            if (idleSprites.Count == 0)
+            {
+                LoadShadeSprites();
+            }
+
+            if (redEyesObject == null)
+            {
+                EnsureEyesHierarchy();
+            }
+
+            if (bodyRenderer == null)
+            {
+                bodyRenderer = GetComponentInChildren<SpriteRenderer>();
+                if (bodyRenderer != null)
+                {
+                    originalBodyColor = bodyRenderer.color;
+                }
+            }
+
             if (bodyRenderer != null)
             {
                 if (active)
@@ -246,7 +265,7 @@ namespace TheLastSignal.Entities.Monster
             }
 
             // Hide normal survivor flashlight cone if acting as The Shade
-            Transform flashlight = transform.Find("FlashlightCone");
+            Transform flashlight = transform.Find("FlashlightCone") ?? transform.Find("DroneFlashlight");
             if (flashlight != null)
             {
                 flashlight.gameObject.SetActive(!active);

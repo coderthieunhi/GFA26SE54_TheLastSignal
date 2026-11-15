@@ -216,7 +216,7 @@ namespace TheLastSignal.Entities.Player
 
         private void Update()
         {
-            if (playerController == null)
+            if (playerController == null || playerController.IsMonster)
             {
                 return;
             }
