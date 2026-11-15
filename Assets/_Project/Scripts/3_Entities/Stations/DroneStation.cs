@@ -286,35 +286,8 @@ namespace TheLastSignal.Entities.Stations
                     // Activate persistent drone at its current map location (or take over from autopilot) & open Sci-Fi CRT Overlay
                     droneController.EngageFlight(player);
 
-                    // Open Sci-Fi CRT overlay
-                    DroneHUDOverlay overlay = DroneHUDOverlay.Instance;
-                    if (overlay == null)
-                    {
-                        overlay = FindAnyObjectByType<DroneHUDOverlay>();
-                    }
-
-                    if (overlay == null)
-                    {
-                        GameObject canvasObj = GameObject.Find("LobbyCanvas");
-                        if (canvasObj == null)
-                        {
-                            Canvas c = FindAnyObjectByType<Canvas>();
-                            if (c != null) canvasObj = c.gameObject;
-                        }
-
-                        GameObject overlayGo = new GameObject("DroneHUDOverlay", typeof(RectTransform));
-                        if (canvasObj != null)
-                        {
-                            overlayGo.transform.SetParent(canvasObj.transform, false);
-                            RectTransform rt = overlayGo.GetComponent<RectTransform>();
-                            rt.anchorMin = Vector2.zero;
-                            rt.anchorMax = Vector2.one;
-                            rt.offsetMin = Vector2.zero;
-                            rt.offsetMax = Vector2.zero;
-                        }
-                        overlay = overlayGo.AddComponent<DroneHUDOverlay>();
-                    }
-
+                    // Open Sci-Fi CRT overlay (uses dedicated ScreenSpaceOverlay Canvas)
+                    DroneHUDOverlay overlay = DroneHUDOverlay.GetOrCreate();
                     if (overlay != null)
                     {
                         overlay.Open(droneController);

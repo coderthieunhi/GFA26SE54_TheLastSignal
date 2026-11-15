@@ -64,18 +64,7 @@ namespace TheLastSignal.Editor
             DroneHUDOverlay hudOverlay = Object.FindAnyObjectByType<DroneHUDOverlay>();
             if (hudOverlay == null)
             {
-                GameObject canvasObj = GameObject.Find("LobbyCanvas");
-                GameObject overlayGo = new GameObject("DroneHUDOverlay", typeof(RectTransform));
-                if (canvasObj != null)
-                {
-                    overlayGo.transform.SetParent(canvasObj.transform, false);
-                    RectTransform rt = overlayGo.GetComponent<RectTransform>();
-                    rt.anchorMin = Vector2.zero;
-                    rt.anchorMax = Vector2.one;
-                    rt.offsetMin = Vector2.zero;
-                    rt.offsetMax = Vector2.zero;
-                }
-                hudOverlay = overlayGo.AddComponent<DroneHUDOverlay>();
+                hudOverlay = DroneHUDOverlay.GetOrCreate();
                 dirty = true;
             }
 
