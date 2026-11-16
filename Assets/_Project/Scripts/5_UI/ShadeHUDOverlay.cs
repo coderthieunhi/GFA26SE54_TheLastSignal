@@ -62,10 +62,11 @@ namespace TheLastSignal.UI
             if (localPlayer == null)
             {
                 localPlayer = PlayerController.Local;
-                if (localPlayer != null)
-                {
-                    combatController = localPlayer.GetComponent<ShadeCombatController>();
-                }
+            }
+
+            if (localPlayer != null && combatController == null)
+            {
+                combatController = localPlayer.GetComponent<ShadeCombatController>();
             }
 
             // Only show HUD if local player is The Shade

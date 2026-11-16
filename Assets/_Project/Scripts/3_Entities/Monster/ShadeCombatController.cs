@@ -43,6 +43,9 @@ namespace TheLastSignal.Entities.Monster
 
         private float slashTimer = 0f;
         private float dashTimer = 0f;
+        private float slashBufferTimer = 0f;
+        private float dashBufferTimer = 0f;
+        private const float InputBufferWindow = 0.15f;
         private bool isDashing = false;
         private bool isExposedToLight = false;
         private PlayerHealth nearestSurvivor = null;
@@ -75,6 +78,14 @@ namespace TheLastSignal.Entities.Monster
             }
 
             obstacleLayer = LayerMask.GetMask("Obstacle", "Default");
+        }
+
+        private void OnDisable()
+        {
+            if (playerController != null)
+            {
+                playerController.SpeedMultiplier = 1.0f;
+            }
         }
 
         private void Update()
@@ -124,6 +135,11 @@ namespace TheLastSignal.Entities.Monster
                 playerController.IsMonster = !playerController.IsMonster;
                 visualView.SetShadeAppearance(playerController.IsMonster);
 
+                if (!playerController.IsMonster)
+                {
+                    playerController.SpeedMultiplier = 1.0f;
+                }
+
                 string mode = playerController.IsMonster ? "<color=red>THE SHADE (PREDATOR)</color>" : "<color=green>SURVIVOR</color>";
                 Debug.Log($"<color=yellow>[ShadeCombatController]</color> Player role toggled to: {mode}!");
             }
@@ -155,22 +171,42 @@ namespace TheLastSignal.Entities.Monster
             Mouse mouse = Mouse.current;
             Keyboard kb = Keyboard.current;
 
-            // 1. Claw Slash [Left Mouse / F Key]
+            // 1. Claw Slash [Left Mouse / F Key] with 0.15s Input Buffer
             bool slashPressed = (mouse != null && mouse.leftButton.wasPressedThisFrame) ||
                                 (kb != null && kb.fKey.wasPressedThisFrame);
 
-            if (slashPressed && slashTimer <= 0f && !isDashing)
+            if (slashPressed)
             {
-                ExecuteClawSlash();
+                slashBufferTimer = InputBufferWindow;
             }
 
-            // 2. Shadow Dash [Right Mouse / Space Key]
+            if (slashBufferTimer > 0f)
+            {
+                slashBufferTimer -= Time.deltaTime;
+                if (slashTimer <= 0f && !isDashing)
+                {
+                    slashBufferTimer = 0f;
+                    ExecuteClawSlash();
+                }
+            }
+
+            // 2. Shadow Dash [Right Mouse / Space Key] with 0.15s Input Buffer
             bool dashPressed = (mouse != null && mouse.rightButton.wasPressedThisFrame) ||
                                (kb != null && kb.spaceKey.wasPressedThisFrame);
 
-            if (dashPressed && dashTimer <= 0f && !isDashing)
+            if (dashPressed)
             {
-                ExecuteShadowDash();
+                dashBufferTimer = InputBufferWindow;
+            }
+
+            if (dashBufferTimer > 0f)
+            {
+                dashBufferTimer -= Time.deltaTime;
+                if (dashTimer <= 0f && !isDashing)
+                {
+                    dashBufferTimer = 0f;
+                    ExecuteShadowDash();
+                }
             }
         }
 
@@ -344,8 +380,50 @@ namespace TheLastSignal.Entities.Monster
             // Broadcast dash FX to all peers
             PlayDashFxClientRpc(startPos, targetPos);
 
-            // Execute translation on Server
-            StartCoroutine(PerformDashCoroutine(startPos, dashDir));
+            // Execute translation on Server ONLY IF Server is the Owner
+            if (IsOwner)
+            {
+                StartCoroutine(PerformDashCoroutine(startPos, dashDir));
+            }
+            else
+            {
+                // Server doesn't fight client's NetworkTransform, but schedules authoritative landing shockwave
+                StartCoroutine(DelayedShockwaveCoroutine(targetPos, dashDir));
+            }
+        }
+
+        private IEnumerator DelayedShockwaveCoroutine(Vector2 targetPos, Vector2 dashDir)
+        {
+            yield return new WaitForSeconds(dashDuration);
+            ApplyDashLandingShockwave(targetPos, dashDir);
+        }
+
+        private void ApplyDashLandingShockwave(Vector2 landingPos, Vector2 dashDir)
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(landingPos, 0.95f);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Collider2D col = colliders[i];
+                if (col.gameObject == gameObject) continue;
+
+                PlayerHealth targetHealth = col.GetComponent<PlayerHealth>() ?? col.GetComponentInParent<PlayerHealth>();
+                if (targetHealth != null && !targetHealth.IsDead)
+                {
+                    if (targetHealth.TryGetComponent(out PlayerController targetCtrl) && targetCtrl.IsMonster)
+                    {
+                        continue;
+                    }
+
+                    Vector2 pushDir = ((Vector2)targetHealth.transform.position - landingPos).normalized;
+                    if (pushDir.sqrMagnitude < 0.001f) pushDir = dashDir;
+
+                    if (targetHealth.TryGetComponent(out PlayerController targetPc))
+                    {
+                        targetPc.ApplyHitImpulse(pushDir, force: 2.8f, staggerDuration: 0.35f, slowMultiplier: 0.40f);
+                        Debug.Log($"<color=red>[The Shade]</color> Shadow Dash Landing Shockwave pushed & staggered Survivor {targetHealth.name}!");
+                    }
+                }
+            }
         }
 
         [ClientRpc]
@@ -404,6 +482,12 @@ namespace TheLastSignal.Entities.Monster
 
             if (rb != null) rb.MovePosition(targetPos);
             else transform.position = targetPos;
+
+            // Apply arrival shockwave on local machine when offline or host
+            if (!IsNetworkSessionActive || IsServer)
+            {
+                ApplyDashLandingShockwave(targetPos, dashDir);
+            }
 
             // Unlock WASD movement upon dash completion
             if (playerController != null)

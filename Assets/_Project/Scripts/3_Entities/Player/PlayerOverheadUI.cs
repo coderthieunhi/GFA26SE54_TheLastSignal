@@ -74,12 +74,20 @@ namespace TheLastSignal.Entities.Player
             {
                 if (statusLabel != null)
                 {
-                    statusLabel.text = "<b><color=#FF2233>[THE SHADE]</color></b>";
-                    statusLabel.color = new Color(1f, 0.2f, 0.25f, 1f);
+                    if (playerHealth != null && playerHealth.IsDead)
+                    {
+                        statusLabel.text = "<b><color=#888888>[ELIMINATED]</color></b>";
+                        statusLabel.color = new Color(0.6f, 0.6f, 0.6f, 0.8f);
+                    }
+                    else
+                    {
+                        statusLabel.text = "<b><color=#FF2233>[THE SHADE]</color></b>";
+                        statusLabel.color = new Color(1f, 0.2f, 0.25f, 1f);
+                    }
                 }
                 if (fillBarImage != null && playerHealth != null)
                 {
-                    fillBarImage.fillAmount = playerHealth.HealthPercent;
+                    fillBarImage.fillAmount = playerHealth.IsDead ? 0f : playerHealth.HealthPercent;
                     fillBarImage.color = new Color(0.95f, 0.15f, 0.20f, 1f);
                 }
                 return;

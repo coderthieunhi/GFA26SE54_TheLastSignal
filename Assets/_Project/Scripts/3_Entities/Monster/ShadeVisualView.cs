@@ -279,6 +279,10 @@ namespace TheLastSignal.Entities.Monster
                 else
                 {
                     bodyRenderer.color = originalBodyColor;
+                    if (controller != null)
+                    {
+                        controller.SpeedMultiplier = 1.0f;
+                    }
                 }
             }
 
@@ -404,6 +408,7 @@ namespace TheLastSignal.Entities.Monster
 
             while (elapsed < duration)
             {
+                if (slashGo == null || sr == null) yield break;
                 elapsed += Time.deltaTime;
                 float t = elapsed / duration;
 
@@ -420,7 +425,7 @@ namespace TheLastSignal.Entities.Monster
                 yield return null;
             }
 
-            Destroy(slashGo);
+            if (slashGo != null) Destroy(slashGo);
         }
 
         private void SpawnBloodSplatterDecal(Vector2 position, Vector2 aimDirection)
@@ -452,18 +457,20 @@ namespace TheLastSignal.Entities.Monster
         private IEnumerator FadeBloodDecalCoroutine(GameObject bloodGo, SpriteRenderer sr)
         {
             yield return new WaitForSeconds(14f);
+            if (bloodGo == null || sr == null) yield break;
             float fadeDuration = 3f;
             float elapsed = 0f;
             Color c = sr.color;
 
             while (elapsed < fadeDuration)
             {
+                if (bloodGo == null || sr == null) yield break;
                 elapsed += Time.deltaTime;
                 float t = elapsed / fadeDuration;
                 sr.color = new Color(c.r, c.g, c.b, Mathf.Lerp(c.a, 0f, t));
                 yield return null;
             }
-            Destroy(bloodGo);
+            if (bloodGo != null) Destroy(bloodGo);
         }
 
         private static Sprite GetBloodSplatterFallbackSprite()
@@ -569,6 +576,7 @@ namespace TheLastSignal.Entities.Monster
             float elapsed = 0f;
             while (elapsed < duration)
             {
+                if (go == null || sr == null) yield break;
                 elapsed += Time.deltaTime;
                 float t = elapsed / duration;
                 Color c = sr.color;
@@ -577,7 +585,7 @@ namespace TheLastSignal.Entities.Monster
                 go.transform.localScale = Vector3.Lerp(Vector3.one * 0.8f, Vector3.one * 1.5f, t);
                 yield return null;
             }
-            Destroy(go);
+            if (go != null) Destroy(go);
         }
 
         private IEnumerator SpawnShadowTrailCoroutine(Vector2 startPos, Vector2 endPos)
@@ -610,17 +618,19 @@ namespace TheLastSignal.Entities.Monster
         {
             float duration = 0.32f;
             float elapsed = 0f;
+            if (ghost == null || sr == null) yield break;
             Color startColor = sr.color;
 
             while (elapsed < duration)
             {
+                if (ghost == null || sr == null) yield break;
                 elapsed += Time.deltaTime;
                 float t = elapsed / duration;
                 sr.color = new Color(startColor.r, startColor.g, startColor.b, Mathf.Lerp(startColor.a, 0f, t));
                 yield return null;
             }
 
-            Destroy(ghost);
+            if (ghost != null) Destroy(ghost);
         }
 
         private static Sprite GetClawSlashFallbackSprite()

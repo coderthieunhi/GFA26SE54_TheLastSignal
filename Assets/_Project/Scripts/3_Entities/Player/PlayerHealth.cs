@@ -513,18 +513,29 @@ namespace TheLastSignal.Entities.Player
                 return;
             }
 
-            bool allDownedOrDead = true;
+            bool anySurvivorFound = false;
+            bool allSurvivorsDownedOrDead = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
                 PlayerHealth p = activePlayers[i];
-                if (p != null && p.IsAlive)
+                if (p == null) continue;
+
+                // Skip monster: Game Over check is specifically for all human survivors being downed or dead
+                if (p.TryGetComponent(out PlayerController ctrl) && ctrl.IsMonster)
                 {
-                    allDownedOrDead = false;
+                    continue;
+                }
+
+                anySurvivorFound = true;
+                if (p.IsAlive)
+                {
+                    allSurvivorsDownedOrDead = false;
                     break;
                 }
             }
 
-            if (allDownedOrDead)
+            if (anySurvivorFound && allSurvivorsDownedOrDead)
             {
                 PlayerHealth runner = null;
                 for (int i = 0; i < activePlayers.Count; i++)
