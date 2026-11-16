@@ -36,6 +36,13 @@ namespace TheLastSignal.Entities.Camera
         [Tooltip("Tilemap(s) whose combined bounds define the playable map. If autoIncludeAllTilemaps is false, only these tilemaps are used.")]
         [SerializeField] private Tilemap[] boundsTilemaps;
 
+        public static CameraFollow Instance { get; private set; }
+
+        [Header("Screen Shake")]
+        private Vector2 shakeOffset = Vector2.zero;
+        private float shakeRemaining = 0f;
+        private float shakeIntensity = 0f;
+
         private UnityEngine.Camera cam;
         private Transform target;
         private Vector3 velocity;
@@ -54,6 +61,8 @@ namespace TheLastSignal.Entities.Camera
                 return;
             }
 
+            Instance = this;
+
             cam = GetComponent<UnityEngine.Camera>();
             if (cam != null)
             {
@@ -70,6 +79,28 @@ namespace TheLastSignal.Entities.Camera
         public void SetTarget(Transform newTarget)
         {
             target = newTarget;
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+        }
+
+        /// <summary>
+        /// Triggers a screen shake impulse (duration seconds, magnitude units).
+        /// </summary>
+        public void TriggerShake(float duration = 0.15f, float magnitude = 0.15f)
+        {
+            shakeRemaining = duration;
+            shakeIntensity = magnitude;
+        }
+
+        public static void Shake(float duration = 0.15f, float magnitude = 0.15f)
+        {
+            if (Instance != null)
+            {
+                Instance.TriggerShake(duration, magnitude);
+            }
         }
 
         public void SetTargetOrthoSize(float newSize, float smooth = 0.35f)
@@ -146,10 +177,22 @@ namespace TheLastSignal.Entities.Camera
                 return;
             }
 
+            // Screen Shake calculation
+            if (shakeRemaining > 0f)
+            {
+                shakeRemaining -= Time.deltaTime;
+                float progress = Mathf.Clamp01(shakeRemaining * 8f);
+                shakeOffset = UnityEngine.Random.insideUnitCircle * (shakeIntensity * progress);
+            }
+            else
+            {
+                shakeOffset = Vector2.zero;
+            }
+
             // Smooth lookahead offset
             currentOffset = Vector2.SmoothDamp(currentOffset, targetOffset, ref offsetVelocity, offsetSmoothTime);
 
-            Vector3 desired = new Vector3(target.position.x + currentOffset.x, target.position.y + currentOffset.y, transform.position.z);
+            Vector3 desired = new Vector3(target.position.x + currentOffset.x + shakeOffset.x, target.position.y + currentOffset.y + shakeOffset.y, transform.position.z);
             Vector3 smoothed = Vector3.SmoothDamp(transform.position, desired, ref velocity, smoothTime);
 
             if (hasBounds)

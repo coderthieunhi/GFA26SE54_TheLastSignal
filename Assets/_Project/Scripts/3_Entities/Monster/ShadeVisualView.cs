@@ -35,6 +35,7 @@ namespace TheLastSignal.Entities.Monster
         private readonly Dictionary<string, Sprite[]> runSprites = new Dictionary<string, Sprite[]>();
         private static Sprite cachedClawFx;
         private static Sprite cachedBurstFx;
+        private static Sprite[] cachedBloodFx;
 
         private void Awake()
         {
@@ -100,6 +101,16 @@ namespace TheLastSignal.Entities.Monster
             if (cachedBurstFx == null)
             {
                 cachedBurstFx = Resources.Load<Sprite>("Monster/FX_Shade_ShadowBurst");
+            }
+
+            if (cachedBloodFx == null || cachedBloodFx.Length == 0)
+            {
+                var b1 = Resources.Load<Sprite>("Monster/FX_Blood_Splash");
+                var b2 = Resources.Load<Sprite>("Monster/FX_Blood_Droplets");
+                var bList = new List<Sprite>();
+                if (b1 != null) bList.Add(b1);
+                if (b2 != null) bList.Add(b2);
+                cachedBloodFx = bList.ToArray();
             }
         }
 
@@ -285,24 +296,35 @@ namespace TheLastSignal.Entities.Monster
         }
 
         /// <summary>
-        /// Instantiates a dynamic 2D claw slash swipe in the attack direction.
+        /// Instantiates a dynamic 2D claw slash swipe in the attack direction with dynamic crimson flash, camera shake, and blood decals.
         /// </summary>
         public void PlaySlashEffect(Vector2 position, Vector2 aimDirection, bool hitSurvivor)
         {
             // 1. Play cutting whoosh & flesh tearing impact sounds
             if (audioSource != null)
             {
-                audioSource.PlayOneShot(ShadeAudioSynthesizer.GetClawSlashClip(), 0.90f);
+                audioSource.PlayOneShot(ShadeAudioSynthesizer.GetClawSlashClip(), 0.95f);
                 if (hitSurvivor)
                 {
                     audioSource.PlayOneShot(ShadeAudioSynthesizer.GetFleshImpactClip(), 1.0f);
+                    audioSource.PlayOneShot(ShadeAudioSynthesizer.GetSurvivorPainClip(), 0.85f);
                 }
             }
 
             // 2. Physical monster body lunge toward attack direction
             StartCoroutine(AnimateSlashLungeCoroutine(aimDirection));
 
-            // 3. Spawn visual 128x128 claw slash sprite
+            // 3. Camera Shake on hit or heavy attack
+            if (hitSurvivor)
+            {
+                TheLastSignal.Entities.Camera.CameraFollow.Shake(0.14f, 0.20f);
+            }
+            else
+            {
+                TheLastSignal.Entities.Camera.CameraFollow.Shake(0.06f, 0.08f);
+            }
+
+            // 4. Spawn visual 128x128 claw slash sprite
             GameObject slashGo = new GameObject("FX_ClawSlash");
             slashGo.transform.position = position;
 
@@ -315,7 +337,22 @@ namespace TheLastSignal.Entities.Monster
             sr.sortingOrder = 16;
             sr.color = hitSurvivor ? new Color(1.0f, 0.10f, 0.15f, 1.0f) : new Color(0.95f, 0.20f, 0.30f, 0.95f);
 
-            StartCoroutine(AnimateSlashCoroutine(slashGo, sr));
+            // 5. Dynamic Light2D Crimson Flash in darkness
+            Light2D slashLight = slashGo.AddComponent<Light2D>();
+            slashLight.lightType = Light2D.LightType.Point;
+            slashLight.color = hitSurvivor ? new Color(1.0f, 0.10f, 0.15f, 1.0f) : new Color(0.95f, 0.20f, 0.30f, 0.85f);
+            slashLight.intensity = hitSurvivor ? 3.2f : 1.8f;
+            slashLight.pointLightInnerRadius = 0.3f;
+            slashLight.pointLightOuterRadius = 2.4f;
+            slashLight.falloffIntensity = 0.65f;
+
+            StartCoroutine(AnimateSlashCoroutine(slashGo, sr, slashLight));
+
+            // 6. Spawn Blood Decal on Floor when hitting a Survivor
+            if (hitSurvivor)
+            {
+                SpawnBloodSplatterDecal(position, aimDirection);
+            }
         }
 
         private IEnumerator AnimateSlashLungeCoroutine(Vector2 aimDirection)
@@ -357,12 +394,13 @@ namespace TheLastSignal.Entities.Monster
             bodyRenderer.transform.localPosition = originalLocalPos;
         }
 
-        private IEnumerator AnimateSlashCoroutine(GameObject slashGo, SpriteRenderer sr)
+        private IEnumerator AnimateSlashCoroutine(GameObject slashGo, SpriteRenderer sr, Light2D light)
         {
             float duration = 0.22f;
             float elapsed = 0f;
             Vector3 startScale = new Vector3(0.6f, 0.6f, 1f);
             Vector3 targetScale = new Vector3(1.35f, 1.35f, 1f);
+            float startLightIntensity = light != null ? light.intensity : 0f;
 
             while (elapsed < duration)
             {
@@ -374,10 +412,86 @@ namespace TheLastSignal.Entities.Monster
                 c.a = Mathf.Clamp01(1.0f - (t * t));
                 sr.color = c;
 
+                if (light != null)
+                {
+                    light.intensity = Mathf.Lerp(startLightIntensity, 0f, t * t);
+                }
+
                 yield return null;
             }
 
             Destroy(slashGo);
+        }
+
+        private void SpawnBloodSplatterDecal(Vector2 position, Vector2 aimDirection)
+        {
+            GameObject bloodGo = new GameObject("Decal_BloodSplatter");
+            Vector2 offset = aimDirection.normalized * UnityEngine.Random.Range(0.2f, 0.5f);
+            bloodGo.transform.position = position + offset;
+            bloodGo.transform.rotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(0f, 360f));
+            float scale = UnityEngine.Random.Range(0.65f, 1.15f);
+            bloodGo.transform.localScale = new Vector3(scale, scale, 1f);
+
+            SpriteRenderer sr = bloodGo.AddComponent<SpriteRenderer>();
+            if (cachedBloodFx != null && cachedBloodFx.Length > 0)
+            {
+                sr.sprite = cachedBloodFx[UnityEngine.Random.Range(0, cachedBloodFx.Length)];
+            }
+            else
+            {
+                sr.sprite = GetBloodSplatterFallbackSprite();
+            }
+
+            sr.sortingLayerName = "Floor";
+            sr.sortingOrder = 15; // Above floor tiles, below obstacles/characters
+            sr.color = new Color(0.85f, 0.05f, 0.08f, 0.92f);
+
+            StartCoroutine(FadeBloodDecalCoroutine(bloodGo, sr));
+        }
+
+        private IEnumerator FadeBloodDecalCoroutine(GameObject bloodGo, SpriteRenderer sr)
+        {
+            yield return new WaitForSeconds(14f);
+            float fadeDuration = 3f;
+            float elapsed = 0f;
+            Color c = sr.color;
+
+            while (elapsed < fadeDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / fadeDuration;
+                sr.color = new Color(c.r, c.g, c.b, Mathf.Lerp(c.a, 0f, t));
+                yield return null;
+            }
+            Destroy(bloodGo);
+        }
+
+        private static Sprite GetBloodSplatterFallbackSprite()
+        {
+            int size = 32;
+            Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Point;
+            Color clear = new Color(0, 0, 0, 0);
+            Color blood = new Color(0.75f, 0.05f, 0.08f, 0.95f);
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dist = Vector2.Distance(new Vector2(x, y), new Vector2(16, 16));
+                    float noise = Mathf.PerlinNoise(x * 0.2f, y * 0.2f) * 6f;
+                    if (dist < (7f + noise))
+                    {
+                        tex.SetPixel(x, y, blood);
+                    }
+                    else
+                    {
+                        tex.SetPixel(x, y, clear);
+                    }
+                }
+            }
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 32f);
         }
 
         /// <summary>
@@ -390,11 +504,48 @@ namespace TheLastSignal.Entities.Monster
                 audioSource.PlayOneShot(ShadeAudioSynthesizer.GetShadowDashClip(), 1.0f);
             }
 
+            // Screen Dash Impulse
+            TheLastSignal.Entities.Camera.CameraFollow.Shake(0.08f, 0.12f);
+
             // Spawn launch and landing dark matter bursts
             SpawnBurstFx(startPos);
-            SpawnBurstFx(endPos);
+
+            // Dissolve body into dark matter shadow during transit
+            StartCoroutine(DissolveBodyDuringDashCoroutine(0.18f));
 
             StartCoroutine(SpawnShadowTrailCoroutine(startPos, endPos));
+        }
+
+        private IEnumerator DissolveBodyDuringDashCoroutine(float duration)
+        {
+            if (bodyRenderer == null) yield break;
+
+            Color originalCol = Color.white;
+            Color darkPhantom = new Color(0.15f, 0.08f, 0.22f, 0.20f);
+
+            float halfTime = duration * 0.45f;
+            float elapsed = 0f;
+
+            // Fade to dark phantom smoke
+            while (elapsed < halfTime)
+            {
+                elapsed += Time.deltaTime;
+                bodyRenderer.color = Color.Lerp(originalCol, darkPhantom, elapsed / halfTime);
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(duration * 0.15f);
+
+            // Re-materialize with metal claw scrape brake sound
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(ShadeAudioSynthesizer.GetClawScrapeClip(), 0.85f);
+            }
+
+            bodyRenderer.color = originalCol;
+
+            // Landing burst
+            SpawnBurstFx(transform.position);
         }
 
         private void SpawnBurstFx(Vector2 pos)
