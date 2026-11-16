@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -105,6 +106,73 @@ namespace TheLastSignal.Entities.Player
             false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private readonly NetworkVariable<PlayerDirection> netFacing = new NetworkVariable<PlayerDirection>(
             PlayerDirection.Down, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+        private bool isMovementLocked = false;
+        private Vector2 knockbackVelocity;
+        private Coroutine staggerCoroutine;
+
+        /// <summary>
+        /// When true, movement input from WASD is ignored (e.g. during Shadow Dash).
+        /// </summary>
+        public bool IsMovementLocked
+        {
+            get => isMovementLocked;
+            set
+            {
+                isMovementLocked = value;
+                if (isMovementLocked)
+                {
+                    currentVelocity = Vector2.zero;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Manually sets the facing direction of the player (e.g. when aiming an attack or dash).
+        /// </summary>
+        public void SetFacingDirection(Vector2 direction)
+        {
+            if (direction.sqrMagnitude < 0.0001f) return;
+            facingDirection = direction.normalized;
+            facing = ResolveCardinalDirection(facingDirection);
+            if (IsSpawned && IsOwner)
+            {
+                netFacingDirection.Value = facingDirection;
+                netFacing.Value = facing;
+            }
+        }
+
+        /// <summary>
+        /// Applies an impulse knockback and brief stagger slow to this player.
+        /// </summary>
+        public void ApplyHitImpulse(Vector2 impulseDirection, float force = 2.5f, float staggerDuration = 0.25f, float slowMultiplier = 0.4f)
+        {
+            if (staggerCoroutine != null)
+            {
+                StopCoroutine(staggerCoroutine);
+            }
+            staggerCoroutine = StartCoroutine(HitStaggerRoutine(impulseDirection.normalized * force, staggerDuration, slowMultiplier));
+        }
+
+        private IEnumerator HitStaggerRoutine(Vector2 initialKnockback, float duration, float slowFactor)
+        {
+            knockbackVelocity = initialKnockback;
+            float elapsed = 0f;
+            float originalMultiplier = speedMultiplier;
+            speedMultiplier = Mathf.Min(speedMultiplier, slowFactor);
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.fixedDeltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+                knockbackVelocity = Vector2.Lerp(initialKnockback, Vector2.zero, t * t);
+                yield return new WaitForFixedUpdate();
+            }
+
+            knockbackVelocity = Vector2.zero;
+            speedMultiplier = originalMultiplier;
+            staggerCoroutine = null;
+        }
 
         /// <summary>Raw (already clamped to length 1) movement input for this frame.</summary>
         public Vector2 MoveInput => moveInput;
@@ -551,7 +619,7 @@ namespace TheLastSignal.Entities.Player
 
         private void FixedUpdate()
         {
-            if (!controlEnabled)
+            if (!controlEnabled || isMovementLocked)
             {
                 if (isPositionLocked && rb != null)
                 {
@@ -648,7 +716,7 @@ namespace TheLastSignal.Entities.Player
                 }
             }
 
-            Vector2 targetPosition = rb.position + moveDelta;
+            Vector2 targetPosition = rb.position + moveDelta + (knockbackVelocity * Time.fixedDeltaTime);
             rb.MovePosition(targetPosition);
         }
 

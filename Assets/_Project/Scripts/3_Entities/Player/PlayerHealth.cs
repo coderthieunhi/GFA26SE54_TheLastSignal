@@ -57,6 +57,7 @@ namespace TheLastSignal.Entities.Player
         // Offline / Single-player fallback state
         private float offlineHealth = 100f;
         private PlayerLifeState offlineLifeState = PlayerLifeState.Alive;
+        private float offlineBleedout = 60f;
 
         /// <summary>Invoked on all clients whenever health value changes (currentHealth, maxHealth).</summary>
         public event Action<float, float> OnHealthChanged;
@@ -80,12 +81,13 @@ namespace TheLastSignal.Entities.Player
         public bool IsDowned => LifeState == PlayerLifeState.Downed;
         public bool IsDead => LifeState == PlayerLifeState.Dead;
         public float DownedCrawlSpeedMultiplier => downedCrawlSpeedMultiplier;
-        public float BleedoutRemaining => IsNetworkSessionActive && IsSpawned ? bleedoutRemaining.Value : 0f;
+        public float BleedoutRemaining => IsNetworkSessionActive && IsSpawned ? bleedoutRemaining.Value : offlineBleedout;
 
         private void Awake()
         {
             offlineHealth = maxHealth;
             offlineLifeState = PlayerLifeState.Alive;
+            offlineBleedout = bleedoutDuration;
         }
 
         public override void OnNetworkSpawn()
@@ -171,6 +173,18 @@ namespace TheLastSignal.Entities.Player
                     CheckAllPlayersDownedCondition();
                 }
             }
+            else if (!IsNetworkSessionActive && enableBleedout && offlineLifeState == PlayerLifeState.Downed)
+            {
+                offlineBleedout -= Time.deltaTime;
+                if (offlineBleedout <= 0f)
+                {
+                    offlineBleedout = 0f;
+                    offlineLifeState = PlayerLifeState.Dead;
+                    OnLifeStateChanged?.Invoke(offlineLifeState);
+                    Debug.Log($"<color=red>[PlayerHealth]</color> Offline player bled out and DIED!");
+                    CheckAllPlayersDownedCondition();
+                }
+            }
 
             // Development / test shortcuts for local player
             if (enableDebugKeys && (IsOwner || !IsNetworkSessionActive))
@@ -253,12 +267,51 @@ namespace TheLastSignal.Entities.Player
                 if (offlineHealth <= 0f)
                 {
                     offlineLifeState = PlayerLifeState.Downed;
+                    offlineBleedout = bleedoutDuration;
                     Debug.Log($"<color=red>[PlayerHealth]</color> Offline player entered DOWNED state!");
                     CheckAllPlayersDownedCondition();
                 }
 
                 OnHealthChanged?.Invoke(offlineHealth, maxHealth);
                 OnLifeStateChanged?.Invoke(offlineLifeState);
+            }
+        }
+
+        /// <summary>
+        /// Slashes or damages a Downed player, drastically reducing bleedout timer.
+        /// If bleedout reaches 0, the player dies immediately.
+        /// </summary>
+        public void DamageDowned(float bleedoutDrain = 30f)
+        {
+            if (IsNetworkSessionActive)
+            {
+                if (!IsServer) return;
+                if (lifeState.Value != PlayerLifeState.Downed) return;
+
+                bleedoutRemaining.Value = Mathf.Max(0f, bleedoutRemaining.Value - bleedoutDrain);
+                Debug.Log($"<color=red>[PlayerHealth]</color> Downed player {gameObject.name} slashed! Bleedout remaining: {bleedoutRemaining.Value:0.0}s");
+                if (bleedoutRemaining.Value <= 0f)
+                {
+                    bleedoutRemaining.Value = 0f;
+                    lifeState.Value = PlayerLifeState.Dead;
+                    Debug.Log($"<color=red>[PlayerHealth]</color> Player {gameObject.name} bled out and DIED!");
+                    CheckAllPlayersDownedCondition();
+                }
+            }
+            else
+            {
+                if (offlineLifeState != PlayerLifeState.Downed) return;
+
+                offlineBleedout = Mathf.Max(0f, offlineBleedout - bleedoutDrain);
+                Debug.Log($"<color=red>[PlayerHealth]</color> Offline downed player slashed! Bleedout remaining: {offlineBleedout:0.0}s");
+                if (offlineBleedout <= 0f)
+                {
+                    offlineBleedout = 0f;
+                    offlineLifeState = PlayerLifeState.Dead;
+                    OnLifeStateChanged?.Invoke(offlineLifeState);
+                    Debug.Log($"<color=red>[PlayerHealth]</color> Offline player DIED!");
+                    CheckAllPlayersDownedCondition();
+                }
             }
         }
 
@@ -318,6 +371,7 @@ namespace TheLastSignal.Entities.Player
 
                 offlineHealth = Mathf.Clamp(targetHp, 1f, maxHealth);
                 offlineLifeState = PlayerLifeState.Alive;
+                offlineBleedout = bleedoutDuration;
                 OnHealthChanged?.Invoke(offlineHealth, maxHealth);
                 OnLifeStateChanged?.Invoke(offlineLifeState);
                 Debug.Log($"<color=green>[PlayerHealth]</color> Offline player was REVIVED with {offlineHealth} HP!");

@@ -198,6 +198,12 @@ namespace TheLastSignal.Entities.Monster
             Vector2 origin = transform.position;
             Vector2 aimDir = GetAimDirection();
 
+            // Snap facing direction toward attack target
+            if (playerController != null)
+            {
+                playerController.SetFacingDirection(aimDir);
+            }
+
             OnSlashPerformed?.Invoke();
 
             if (IsNetworkSessionActive)
@@ -233,7 +239,7 @@ namespace TheLastSignal.Entities.Monster
                     targetHealth = col.GetComponentInParent<PlayerHealth>();
                 }
 
-                if (targetHealth != null && targetHealth.IsAlive)
+                if (targetHealth != null && !targetHealth.IsDead)
                 {
                     // Ignore fellow monster
                     if (targetHealth.TryGetComponent(out PlayerController targetCtrl) && targetCtrl.IsMonster)
@@ -241,9 +247,33 @@ namespace TheLastSignal.Entities.Monster
                         continue;
                     }
 
-                    targetHealth.TakeDamage(slashDamage);
-                    hitAnySurvivor = true;
-                    Debug.Log($"<color=red>[The Shade]</color> Claw Slash HIT {targetHealth.name} for {slashDamage} DMG! [HP Remaining: {targetHealth.CurrentHealth:0}/{targetHealth.MaxHealth:0}]");
+                    Vector2 hitDir = ((Vector2)targetHealth.transform.position - origin).normalized;
+                    if (hitDir.sqrMagnitude < 0.001f) hitDir = aimDir;
+
+                    if (targetHealth.IsAlive)
+                    {
+                        targetHealth.TakeDamage(slashDamage);
+                        hitAnySurvivor = true;
+                        Debug.Log($"<color=red>[The Shade]</color> Claw Slash HIT {targetHealth.name} for {slashDamage} DMG! [HP Remaining: {targetHealth.CurrentHealth:0}/{targetHealth.MaxHealth:0}]");
+
+                        // Apply visceral hit impulse and stagger slow to Survivor
+                        if (targetHealth.TryGetComponent(out PlayerController targetPc))
+                        {
+                            targetPc.ApplyHitImpulse(hitDir, force: 3.2f, staggerDuration: 0.25f, slowMultiplier: 0.35f);
+                        }
+                    }
+                    else if (targetHealth.IsDowned)
+                    {
+                        targetHealth.DamageDowned(30f);
+                        hitAnySurvivor = true;
+                        Debug.Log($"<color=red>[The Shade]</color> Claw Slash EXECUTE HIT on Downed {targetHealth.name}! (Drained 30s bleedout, {targetHealth.BleedoutRemaining:0.0}s remaining)");
+
+                        // Apply small jolt to downed player
+                        if (targetHealth.TryGetComponent(out PlayerController targetPc))
+                        {
+                            targetPc.ApplyHitImpulse(hitDir, force: 1.5f, staggerDuration: 0.15f, slowMultiplier: 0.1f);
+                        }
+                    }
                 }
             }
 
@@ -280,11 +310,21 @@ namespace TheLastSignal.Entities.Monster
             Vector2 startPos = transform.position;
             Vector2 dashDir = GetAimDirection();
 
+            // Snap facing direction toward dash target
+            if (playerController != null)
+            {
+                playerController.SetFacingDirection(dashDir);
+            }
+
             OnDashPerformed?.Invoke();
 
             if (IsNetworkSessionActive)
             {
                 PerformShadowDashServerRpc(startPos, dashDir);
+                if (IsOwner && !IsServer)
+                {
+                    StartCoroutine(PerformDashCoroutine(startPos, dashDir));
+                }
             }
             else
             {
@@ -295,9 +335,10 @@ namespace TheLastSignal.Entities.Monster
         [ServerRpc]
         private void PerformShadowDashServerRpc(Vector2 startPos, Vector2 dashDir)
         {
-            // Server calculates end position and verifies obstacle raycast
-            RaycastHit2D hit = Physics2D.Raycast(startPos, dashDir, dashDistance, obstacleLayer);
-            float actualDistance = hit.collider != null ? Mathf.Max(0.5f, hit.distance - 0.45f) : dashDistance;
+            // Server calculates end position with sweep CircleCast (radius 0.35m) to prevent wall clipping
+            float castRadius = 0.35f;
+            RaycastHit2D hit = Physics2D.CircleCast(startPos, castRadius, dashDir, dashDistance, obstacleLayer);
+            float actualDistance = hit.collider != null ? Mathf.Max(0.2f, hit.distance - 0.1f) : dashDistance;
             Vector2 targetPos = startPos + (dashDir * actualDistance);
 
             // Broadcast dash FX to all peers
@@ -320,9 +361,17 @@ namespace TheLastSignal.Entities.Monster
         {
             isDashing = true;
 
-            // Raycast check so we never clip through outer walls
-            RaycastHit2D hit = Physics2D.Raycast(startPos, dashDir, dashDistance, obstacleLayer);
-            float actualDist = hit.collider != null ? Mathf.Max(0.5f, hit.distance - 0.45f) : dashDistance;
+            // Lock WASD movement during dash so physics velocity doesn't fight dash translation
+            if (playerController != null)
+            {
+                playerController.IsMovementLocked = true;
+                playerController.SetFacingDirection(dashDir);
+            }
+
+            // CircleCast sweep check so we never clip through outer walls or snag on doorways
+            float castRadius = 0.35f;
+            RaycastHit2D hit = Physics2D.CircleCast(startPos, castRadius, dashDir, dashDistance, obstacleLayer);
+            float actualDist = hit.collider != null ? Mathf.Max(0.2f, hit.distance - 0.1f) : dashDistance;
             Vector2 targetPos = startPos + (dashDir * actualDist);
 
             if (!IsNetworkSessionActive && visualView != null)
@@ -356,6 +405,12 @@ namespace TheLastSignal.Entities.Monster
             if (rb != null) rb.MovePosition(targetPos);
             else transform.position = targetPos;
 
+            // Unlock WASD movement upon dash completion
+            if (playerController != null)
+            {
+                playerController.IsMovementLocked = false;
+            }
+
             isDashing = false;
         }
 
@@ -373,7 +428,7 @@ namespace TheLastSignal.Entities.Monster
             for (int i = 0; i < activePlayers.Count; i++)
             {
                 PlayerHealth pHealth = activePlayers[i];
-                if (pHealth == null || !pHealth.IsAlive || pHealth.gameObject == gameObject) continue;
+                if (pHealth == null || pHealth.IsDead || pHealth.gameObject == gameObject) continue;
 
                 if (pHealth.TryGetComponent(out PlayerController targetCtrl) && targetCtrl.IsMonster)
                 {

@@ -121,6 +121,18 @@ namespace TheLastSignal.UI
                 {
                     slashSkillText.text = $"<b>[M1 / F] CLAW SLASH</b>  <color=#FFAA00>[{combatController.SlashCooldownRemaining:0.0}s]</color>";
                 }
+                else if (inStrikeRange)
+                {
+                    var target = combatController.NearestSurvivorInRange;
+                    if (target != null && target.IsDowned)
+                    {
+                        slashSkillText.text = "<b>[M1 / F] CLAW SLASH</b>  <color=#FF0044>[STRIKE - EXECUTE DOWNED TARGET]</color>";
+                    }
+                    else
+                    {
+                        slashSkillText.text = "<b>[M1 / F] CLAW SLASH</b>  <color=#FF2233>[IN STRIKE RANGE - 50 DMG]</color>";
+                    }
+                }
                 else
                 {
                     slashSkillText.text = "<b>[M1 / F] CLAW SLASH</b>  <color=#FF2233>[READY - 50 DMG]</color>";

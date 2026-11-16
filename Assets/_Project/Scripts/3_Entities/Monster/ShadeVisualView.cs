@@ -299,7 +299,10 @@ namespace TheLastSignal.Entities.Monster
                 }
             }
 
-            // 2. Spawn visual 128x128 claw slash sprite
+            // 2. Physical monster body lunge toward attack direction
+            StartCoroutine(AnimateSlashLungeCoroutine(aimDirection));
+
+            // 3. Spawn visual 128x128 claw slash sprite
             GameObject slashGo = new GameObject("FX_ClawSlash");
             slashGo.transform.position = position;
 
@@ -313,6 +316,45 @@ namespace TheLastSignal.Entities.Monster
             sr.color = hitSurvivor ? new Color(1.0f, 0.10f, 0.15f, 1.0f) : new Color(0.95f, 0.20f, 0.30f, 0.95f);
 
             StartCoroutine(AnimateSlashCoroutine(slashGo, sr));
+        }
+
+        private IEnumerator AnimateSlashLungeCoroutine(Vector2 aimDirection)
+        {
+            if (bodyRenderer == null) yield break;
+
+            Vector3 originalLocalPos = bodyRenderer.transform.localPosition;
+            Vector3 lungeOffset = (Vector3)(aimDirection.normalized * 0.16f);
+
+            // Turn face to aimDirection
+            string dirKey = ResolveDirectionKey(aimDirection);
+            if (idleSprites.TryGetValue(dirKey, out Sprite s) && s != null)
+            {
+                bodyRenderer.sprite = s;
+            }
+
+            // Quick snappy lunge forward (0.05s) and return (0.10s)
+            float lungeTime = 0.05f;
+            float returnTime = 0.10f;
+            float elapsed = 0f;
+
+            while (elapsed < lungeTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / lungeTime;
+                bodyRenderer.transform.localPosition = Vector3.Lerp(originalLocalPos, originalLocalPos + lungeOffset, t);
+                yield return null;
+            }
+
+            elapsed = 0f;
+            while (elapsed < returnTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / returnTime;
+                bodyRenderer.transform.localPosition = Vector3.Lerp(originalLocalPos + lungeOffset, originalLocalPos, t);
+                yield return null;
+            }
+
+            bodyRenderer.transform.localPosition = originalLocalPos;
         }
 
         private IEnumerator AnimateSlashCoroutine(GameObject slashGo, SpriteRenderer sr)
