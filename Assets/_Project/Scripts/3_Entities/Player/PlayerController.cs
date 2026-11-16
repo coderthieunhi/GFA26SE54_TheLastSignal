@@ -34,10 +34,24 @@ namespace TheLastSignal.Entities.Player
         private static bool IsNetworkSessionActive =>
             NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
 
+        private static PlayerController _local;
+
         /// <summary>
         /// Static reference to the local client's active PlayerController.
+        /// Degrades cleanly to FindObjectOfType when NGO session is not active.
         /// </summary>
-        public static PlayerController Local { get; private set; }
+        public static PlayerController Local
+        {
+            get
+            {
+                if (_local == null && !IsNetworkSessionActive)
+                {
+                    _local = FindObjectOfType<PlayerController>();
+                }
+                return _local;
+            }
+            private set => _local = value;
+        }
 
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 3f;

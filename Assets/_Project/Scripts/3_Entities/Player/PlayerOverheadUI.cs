@@ -59,18 +59,37 @@ namespace TheLastSignal.Entities.Player
         {
             if (canvasObj == null) return;
 
-            // Hide overhead health UI when playing as The Shade (predator role)
             bool isMonster = playerController != null && playerController.IsMonster;
-            if (canvasObj.activeSelf == isMonster)
+            if (!canvasObj.activeSelf)
             {
-                canvasObj.SetActive(!isMonster);
+                canvasObj.SetActive(true);
             }
 
-            if (isMonster) return;
-
-            // Follow player position without inheriting rotation or flipping
-            canvasObj.transform.position = transform.position + offset;
+            // Adjust offset height (The Shade sprite is taller: 92px vs survivor 64px)
+            Vector3 currentOffset = isMonster ? new Vector3(0f, 1.25f, 0f) : offset;
+            canvasObj.transform.position = transform.position + currentOffset;
             canvasObj.transform.rotation = Quaternion.identity;
+
+            if (isMonster)
+            {
+                if (statusLabel != null)
+                {
+                    statusLabel.text = "<b><color=#FF2233>[THE SHADE]</color></b>";
+                    statusLabel.color = new Color(1f, 0.2f, 0.25f, 1f);
+                }
+                if (fillBarImage != null && playerHealth != null)
+                {
+                    fillBarImage.fillAmount = playerHealth.HealthPercent;
+                    fillBarImage.color = new Color(0.95f, 0.15f, 0.20f, 1f);
+                }
+                return;
+            }
+            else if (statusLabel != null && statusLabel.text.Contains("[THE SHADE]"))
+            {
+                // Revert to survivor appearance
+                HandleLifeStateChanged(playerHealth != null ? playerHealth.LifeState : PlayerLifeState.Alive);
+                if (playerHealth != null) HandleHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+            }
 
             // Pulse effect when downed
             if (playerHealth != null && playerHealth.IsDowned && statusLabel != null)
@@ -87,7 +106,11 @@ namespace TheLastSignal.Entities.Player
             float ratio = max > 0.001f ? Mathf.Clamp01(current / max) : 0f;
             fillBarImage.fillAmount = ratio;
 
-            if (playerHealth != null && playerHealth.IsDowned)
+            if (playerController != null && playerController.IsMonster)
+            {
+                fillBarImage.color = new Color(0.95f, 0.15f, 0.20f, 1f);
+            }
+            else if (playerHealth != null && playerHealth.IsDowned)
             {
                 fillBarImage.color = downedColor;
             }
@@ -100,6 +123,18 @@ namespace TheLastSignal.Entities.Player
         private void HandleLifeStateChanged(PlayerLifeState state)
         {
             if (statusLabel == null) return;
+
+            if (playerController != null && playerController.IsMonster)
+            {
+                statusLabel.text = "<b><color=#FF2233>[THE SHADE]</color></b>";
+                statusLabel.color = new Color(1f, 0.2f, 0.25f, 1f);
+                if (fillBarImage != null)
+                {
+                    fillBarImage.color = new Color(0.95f, 0.15f, 0.20f, 1f);
+                    fillBarImage.fillAmount = playerHealth != null ? playerHealth.HealthPercent : 1f;
+                }
+                return;
+            }
 
             switch (state)
             {

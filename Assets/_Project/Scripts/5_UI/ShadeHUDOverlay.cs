@@ -24,13 +24,15 @@ namespace TheLastSignal.UI
         [Header("Telemetry Labels")]
         [SerializeField] private TextMeshProUGUI headerTitleText;
         [SerializeField] private TextMeshProUGUI statusText;
-        [SerializeField] private TextMeshProUGUI reticlePromptText;
+
+        [Header("The Shade Health Display")]
+        [SerializeField] private Image shadeHealthFill;
+        [SerializeField] private TextMeshProUGUI shadeHpText;
 
         [Header("Skill Displays")]
         [SerializeField] private TextMeshProUGUI slashSkillText;
         [SerializeField] private TextMeshProUGUI dashSkillText;
         [SerializeField] private Image dashCooldownFill;
-        [SerializeField] private Image reticleImage;
 
         [Header("Root")]
         [SerializeField] private GameObject overlayRoot;
@@ -78,29 +80,24 @@ namespace TheLastSignal.UI
                 return;
             }
 
-            // 1. Update Strike Reticle Feedback
+            // 1. Update The Shade Health Bar
+            PlayerHealth localHealth = localPlayer != null ? localPlayer.GetComponent<PlayerHealth>() : null;
+            if (localHealth != null)
+            {
+                if (shadeHealthFill != null)
+                {
+                    shadeHealthFill.fillAmount = localHealth.HealthPercent;
+                }
+                if (shadeHpText != null)
+                {
+                    shadeHpText.text = $"<b>{(int)localHealth.CurrentHealth}</b> / {(int)localHealth.MaxHealth} HP";
+                }
+            }
+
+            // 2. Strike Range Prompt in Skill Card
             bool inStrikeRange = combatController.NearestSurvivorInRange != null;
-            if (reticleImage != null)
-            {
-                reticleImage.color = inStrikeRange
-                    ? new Color(1.0f, 0.15f, 0.20f, 0.95f)
-                    : new Color(0.70f, 0.20f, 0.25f, 0.55f);
-            }
 
-            if (reticlePromptText != null)
-            {
-                if (inStrikeRange)
-                {
-                    PlayerHealth victim = combatController.NearestSurvivorInRange;
-                    reticlePromptText.text = $"<b><color=#FF2233>[!] TARGET IN STRIKE RANGE [{victim.CurrentHealth:0}/{victim.MaxHealth:0} HP] // PRESS [M1/F]</color></b>";
-                }
-                else
-                {
-                    reticlePromptText.text = "<color=#8899AA>STALKING // SURVIVOR DETECTION ACTIVE</color>";
-                }
-            }
-
-            // 2. Update Environmental Status
+            // 3. Update Environmental Status
             if (statusText != null)
             {
                 if (combatController.IsStunned)
@@ -189,6 +186,34 @@ namespace TheLastSignal.UI
                     rootRt.offsetMax = Vector2.zero;
                     rootRt.pivot = new Vector2(0.5f, 0.5f);
                 }
+
+                // Bind references if not serialized
+                if (shadeHealthFill == null)
+                {
+                    Transform t = overlayRoot.transform.Find("TopBar/Shade_Health_Bar_Container/HP_Track/HP_Fill");
+                    if (t != null) shadeHealthFill = t.GetComponent<Image>();
+                }
+                if (shadeHpText == null)
+                {
+                    Transform t = overlayRoot.transform.Find("TopBar/Shade_Health_Bar_Container/HP_Text");
+                    if (t != null) shadeHpText = t.GetComponent<TextMeshProUGUI>();
+                }
+                if (statusText == null)
+                {
+                    Transform t = overlayRoot.transform.Find("BottomBar/StatusText");
+                    if (t != null) statusText = t.GetComponent<TextMeshProUGUI>();
+                }
+                if (slashSkillText == null)
+                {
+                    Transform t = overlayRoot.transform.Find("BottomBar/SlashSkillText");
+                    if (t != null) slashSkillText = t.GetComponent<TextMeshProUGUI>();
+                }
+                if (dashSkillText == null)
+                {
+                    Transform t = overlayRoot.transform.Find("BottomBar/DashSkillText");
+                    if (t != null) dashSkillText = t.GetComponent<TextMeshProUGUI>();
+                }
+
                 Canvas.ForceUpdateCanvases();
                 return;
             }
@@ -240,15 +265,73 @@ namespace TheLastSignal.UI
             GameObject titleGo = new GameObject("HeaderTitle", typeof(RectTransform), typeof(TextMeshProUGUI));
             titleGo.transform.SetParent(topBar.transform, false);
             headerTitleText = titleGo.GetComponent<TextMeshProUGUI>();
-            headerTitleText.text = "<b><color=#FF2233>HOSTILE BIOLOGICAL HAZARD</color> // <color=#FFFFFF>THE SHADE</color></b>  <color=#888888>[SOLO 1v3 APEX PREDATOR]</color>";
-            headerTitleText.fontSize = 16;
+            headerTitleText.text = "<b><color=#FF2233>THE SHADE</color></b>  <color=#888888>[APEX PREDATOR]</color>";
+            headerTitleText.fontSize = 15;
             headerTitleText.alignment = TextAlignmentOptions.Left;
             RectTransform titleRt = titleGo.GetComponent<RectTransform>();
             titleRt.anchorMin = new Vector2(0f, 0.5f);
             titleRt.anchorMax = new Vector2(0f, 0.5f);
             titleRt.pivot = new Vector2(0f, 0.5f);
-            titleRt.anchoredPosition = new Vector2(35f, 0f);
-            titleRt.sizeDelta = new Vector2(700f, 30f);
+            titleRt.anchoredPosition = new Vector2(30f, 0f);
+            titleRt.sizeDelta = new Vector2(320f, 30f);
+
+            // Center: The Shade Vitality Bar
+            GameObject hpBarContainer = new GameObject("Shade_Health_Bar_Container", typeof(RectTransform));
+            hpBarContainer.transform.SetParent(topBar.transform, false);
+            RectTransform hpContainerRt = hpBarContainer.GetComponent<RectTransform>();
+            hpContainerRt.anchorMin = new Vector2(0.5f, 0.5f);
+            hpContainerRt.anchorMax = new Vector2(0.5f, 0.5f);
+            hpContainerRt.pivot = new Vector2(0.5f, 0.5f);
+            hpContainerRt.anchoredPosition = new Vector2(0f, 0f);
+            hpContainerRt.sizeDelta = new Vector2(340f, 26f);
+
+            // HP Bar Background Track
+            GameObject hpTrackGo = new GameObject("HP_Track", typeof(RectTransform), typeof(Image));
+            hpTrackGo.transform.SetParent(hpBarContainer.transform, false);
+            RectTransform hpTrackRt = hpTrackGo.GetComponent<RectTransform>();
+            hpTrackRt.anchorMin = Vector2.zero;
+            hpTrackRt.anchorMax = Vector2.one;
+            hpTrackRt.sizeDelta = Vector2.zero;
+            Image hpTrackBg = hpTrackGo.GetComponent<Image>();
+            hpTrackBg.color = new Color(0.12f, 0.04f, 0.06f, 0.95f);
+
+            // Red border on HP track
+            GameObject hpBorder = new GameObject("Border", typeof(RectTransform), typeof(Image));
+            hpBorder.transform.SetParent(hpTrackGo.transform, false);
+            RectTransform hpBorderRt = hpBorder.GetComponent<RectTransform>();
+            hpBorderRt.anchorMin = new Vector2(0f, 0f);
+            hpBorderRt.anchorMax = new Vector2(1f, 0f);
+            hpBorderRt.sizeDelta = new Vector2(0f, 2f);
+            Image hpBorderImg = hpBorder.GetComponent<Image>();
+            hpBorderImg.color = new Color(1.0f, 0.15f, 0.20f, 0.85f);
+
+            // Fill Bar
+            GameObject hpFillGo = new GameObject("HP_Fill", typeof(RectTransform), typeof(Image));
+            hpFillGo.transform.SetParent(hpTrackGo.transform, false);
+            RectTransform hpFillRt = hpFillGo.GetComponent<RectTransform>();
+            hpFillRt.anchorMin = Vector2.zero;
+            hpFillRt.anchorMax = Vector2.one;
+            hpFillRt.sizeDelta = new Vector2(-4f, -4f);
+            shadeHealthFill = hpFillGo.GetComponent<Image>();
+            shadeHealthFill.type = Image.Type.Filled;
+            shadeHealthFill.fillMethod = Image.FillMethod.Horizontal;
+            shadeHealthFill.fillOrigin = (int)Image.OriginHorizontal.Left;
+            shadeHealthFill.fillAmount = 1f;
+            shadeHealthFill.color = new Color(0.95f, 0.15f, 0.20f, 1f);
+
+            // HP Text
+            GameObject hpTextGo = new GameObject("HP_Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+            hpTextGo.transform.SetParent(hpBarContainer.transform, false);
+            shadeHpText = hpTextGo.GetComponent<TextMeshProUGUI>();
+            shadeHpText.text = "<b>100 / 100 HP</b>";
+            shadeHpText.fontSize = 12;
+            shadeHpText.fontStyle = FontStyles.Bold;
+            shadeHpText.alignment = TextAlignmentOptions.Center;
+            shadeHpText.color = Color.white;
+            RectTransform hpTextRt = hpTextGo.GetComponent<RectTransform>();
+            hpTextRt.anchorMin = Vector2.zero;
+            hpTextRt.anchorMax = Vector2.one;
+            hpTextRt.sizeDelta = Vector2.zero;
 
             // Top Right: Debug Key hint
             GameObject hintGo = new GameObject("DebugHint", typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -262,34 +345,10 @@ namespace TheLastSignal.UI
             hintRt.anchorMin = new Vector2(1f, 0.5f);
             hintRt.anchorMax = new Vector2(1f, 0.5f);
             hintRt.pivot = new Vector2(1f, 0.5f);
-            hintRt.anchoredPosition = new Vector2(-35f, 0f);
-            hintRt.sizeDelta = new Vector2(400f, 24f);
+            hintRt.anchoredPosition = new Vector2(-30f, 0f);
+            hintRt.sizeDelta = new Vector2(320f, 24f);
 
-            // 2. Center Dynamic Strike Reticle
-            GameObject reticleGo = new GameObject("CenterReticle", typeof(RectTransform), typeof(Image));
-            reticleGo.transform.SetParent(overlayRoot.transform, false);
-            RectTransform reticleRt = reticleGo.GetComponent<RectTransform>();
-            reticleRt.anchorMin = new Vector2(0.5f, 0.5f);
-            reticleRt.anchorMax = new Vector2(0.5f, 0.5f);
-            reticleRt.sizeDelta = new Vector2(28f, 28f);
-            reticleImage = reticleGo.GetComponent<Image>();
-            reticleImage.sprite = white;
-            reticleImage.color = new Color(0.7f, 0.2f, 0.25f, 0.55f);
-
-            // Prompt below reticle
-            GameObject retPromptGo = new GameObject("ReticlePrompt", typeof(RectTransform), typeof(TextMeshProUGUI));
-            retPromptGo.transform.SetParent(overlayRoot.transform, false);
-            reticlePromptText = retPromptGo.GetComponent<TextMeshProUGUI>();
-            reticlePromptText.text = "STALKING // SURVIVOR DETECTION ACTIVE";
-            reticlePromptText.fontSize = 12;
-            reticlePromptText.alignment = TextAlignmentOptions.Center;
-            RectTransform rpRt = retPromptGo.GetComponent<RectTransform>();
-            rpRt.anchorMin = new Vector2(0.5f, 0.5f);
-            rpRt.anchorMax = new Vector2(0.5f, 0.5f);
-            rpRt.anchoredPosition = new Vector2(0f, -36f);
-            rpRt.sizeDelta = new Vector2(500f, 24f);
-
-            // 3. Bottom Status & Skills Bar
+            // 2. Bottom Status & Skills Bar
             GameObject bottomBar = new GameObject("BottomBar", typeof(RectTransform), typeof(Image));
             bottomBar.transform.SetParent(overlayRoot.transform, false);
             RectTransform botRt = bottomBar.GetComponent<RectTransform>();
