@@ -74,6 +74,13 @@ namespace TheLastSignal.UI
 
         private void Update()
         {
+            // Hide Survivor Health HUD when local player is acting as The Shade
+            bool isMonster = PlayerController.Local != null && PlayerController.Local.IsMonster;
+            if (hudPanel != null && hudPanel.activeSelf == isMonster)
+            {
+                hudPanel.SetActive(!isMonster);
+            }
+
             // Smoothly animate ghost fill bar toward current fill
             if (healthFillImage != null && ghostFillImage != null)
             {
@@ -277,6 +284,11 @@ namespace TheLastSignal.UI
             }
 
             if (parentCanvas == null) return;
+
+            if (parentCanvas.renderMode == RenderMode.ScreenSpaceOverlay && parentCanvas.sortingOrder < 100)
+            {
+                parentCanvas.sortingOrder = 100;
+            }
 
             Transform targetParent = parentCanvas.transform;
 

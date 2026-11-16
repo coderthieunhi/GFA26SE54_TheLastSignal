@@ -59,6 +59,15 @@ namespace TheLastSignal.Entities.Player
         {
             if (canvasObj == null) return;
 
+            // Hide overhead health UI when playing as The Shade (predator role)
+            bool isMonster = playerController != null && playerController.IsMonster;
+            if (canvasObj.activeSelf == isMonster)
+            {
+                canvasObj.SetActive(!isMonster);
+            }
+
+            if (isMonster) return;
+
             // Follow player position without inheriting rotation or flipping
             canvasObj.transform.position = transform.position + offset;
             canvasObj.transform.rotation = Quaternion.identity;
@@ -131,7 +140,9 @@ namespace TheLastSignal.Entities.Player
 
             Canvas canvas = canvasObj.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
-            canvas.sortingOrder = 20; // Above characters and obstacles
+            // Always render on top of map, obstacles, walls, and character sprites
+            canvas.sortingLayerName = SortingLayer.NameToID("OverheadUI") != 0 ? "OverheadUI" : "Characters";
+            canvas.sortingOrder = 500;
 
             RectTransform canvasRect = canvasObj.GetComponent<RectTransform>();
             canvasRect.sizeDelta = new Vector2(80f, 24f);
@@ -141,6 +152,7 @@ namespace TheLastSignal.Entities.Player
             bgObj.transform.SetParent(canvasObj.transform, false);
             Image bgImage = bgObj.AddComponent<Image>();
             bgImage.color = new Color(0.1f, 0.12f, 0.15f, 0.85f);
+            bgImage.raycastTarget = false;
             RectTransform bgRect = bgObj.GetComponent<RectTransform>();
             bgRect.anchorMin = new Vector2(0.5f, 0.5f);
             bgRect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -156,6 +168,7 @@ namespace TheLastSignal.Entities.Player
             fillBarImage.fillOrigin = (int)Image.OriginHorizontal.Left;
             fillBarImage.fillAmount = 1f;
             fillBarImage.color = healthyColor;
+            fillBarImage.raycastTarget = false;
 
             RectTransform fillRect = fillObj.GetComponent<RectTransform>();
             fillRect.anchorMin = Vector2.zero;
@@ -171,6 +184,7 @@ namespace TheLastSignal.Entities.Player
             statusLabel.fontStyle = FontStyles.Bold;
             statusLabel.text = playerController != null ? playerController.gameObject.name : "P1";
             statusLabel.color = Color.white;
+            statusLabel.raycastTarget = false;
 
             RectTransform labelRect = labelObj.GetComponent<RectTransform>();
             labelRect.anchorMin = new Vector2(0.5f, 0.5f);

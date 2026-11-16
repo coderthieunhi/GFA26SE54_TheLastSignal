@@ -92,7 +92,7 @@ namespace TheLastSignal.UI
                 if (inStrikeRange)
                 {
                     PlayerHealth victim = combatController.NearestSurvivorInRange;
-                    reticlePromptText.text = $"<b><color=#FF2233>⚠ TARGET IN STRIKE RANGE [{victim.CurrentHealth:0}/{victim.MaxHealth:0} HP] // PRESS [M1/F]</color></b>";
+                    reticlePromptText.text = $"<b><color=#FF2233>[!] TARGET IN STRIKE RANGE [{victim.CurrentHealth:0}/{victim.MaxHealth:0} HP] // PRESS [M1/F]</color></b>";
                 }
                 else
                 {
@@ -105,15 +105,15 @@ namespace TheLastSignal.UI
             {
                 if (combatController.IsStunned)
                 {
-                    statusText.text = "<b><color=#00D4FF>⚡ STATUS: EMP DISRUPTED [STUNNED - CANNOT MOVE / ATTACK]</color></b>";
+                    statusText.text = "<b><color=#00D4FF>[EMP STUN] DISRUPTED // CANNOT MOVE OR ATTACK</color></b>";
                 }
                 else if (combatController.IsExposedToLight)
                 {
-                    statusText.text = "<b><color=#FFAA00>☀ STATUS: EXPOSED TO LIGHT [-30% SPEED DEBUFF]</color></b>";
+                    statusText.text = "<b><color=#FFAA00>[EXPOSED] LIGHT HAZARD // -30% SPEED DEBUFF</color></b>";
                 }
                 else
                 {
-                    statusText.text = "<b><color=#FF2244>👁 STATUS: SHADOWS [125% SPEED - APEX PREDATOR]</color></b>";
+                    statusText.text = "<b><color=#FF2244>[SHADOWS] APEX PREDATOR // +25% SPEED BOOST</color></b>";
                 }
             }
 
@@ -314,7 +314,7 @@ namespace TheLastSignal.UI
             GameObject statGo = new GameObject("StatusText", typeof(RectTransform), typeof(TextMeshProUGUI));
             statGo.transform.SetParent(bottomBar.transform, false);
             statusText = statGo.GetComponent<TextMeshProUGUI>();
-            statusText.text = "<b><color=#FF2244>👁 STATUS: SHADOWS [125% SPEED - APEX PREDATOR]</color></b>";
+            statusText.text = "<b><color=#FF2244>[SHADOWS] APEX PREDATOR // +25% SPEED BOOST</color></b>";
             statusText.fontSize = 13;
             statusText.alignment = TextAlignmentOptions.Left;
             RectTransform statRt = statGo.GetComponent<RectTransform>();
@@ -395,7 +395,23 @@ namespace TheLastSignal.UI
             dashRt.pivot = new Vector2(1f, 0.5f);
             dashRt.anchoredPosition = new Vector2(-30f, 0f);
             dashRt.sizeDelta = new Vector2(200f, 30f);
+
+            // Default to inactive so it never obstructs scene view in editor or survivor gameplay
+            if (overlayRoot != null)
+            {
+                overlayRoot.SetActive(false);
+            }
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!Application.isPlaying && overlayRoot != null && overlayRoot.activeSelf)
+            {
+                overlayRoot.SetActive(false);
+            }
+        }
+#endif
 
         private static Sprite GetSolidWhiteSprite()
         {
