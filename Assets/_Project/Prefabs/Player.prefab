@@ -341,7 +341,7 @@ MonoBehaviour:
   downedCrawlSpeedMultiplier: 0.35
   enableBleedout: 0
   bleedoutDuration: 60
-  enableDebugKeys: 1
+  enableDebugKeys: 0
 --- !u!114 &4001000000000000002
 MonoBehaviour:
   m_ObjectHideFlags: 0

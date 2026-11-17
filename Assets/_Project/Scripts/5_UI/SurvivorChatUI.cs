@@ -45,6 +45,7 @@ namespace TheLastSignal.UI
         private const float FadeDelaySeconds = 6f;
         private float blockedAlertTimer = 0f;
         private string blockedAlertReason = string.Empty;
+        private float submitCooldown = 0f;
 
         private static readonly Color[] SlotColors = new Color[]
         {
@@ -134,11 +135,17 @@ namespace TheLastSignal.UI
 
         private void HandleKeyboardInput()
         {
+            if (submitCooldown > 0f)
+            {
+                submitCooldown -= Time.deltaTime;
+                return;
+            }
+
             Keyboard kb = Keyboard.current;
             bool enterPressed = kb != null && (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame);
             bool escPressed = kb != null && kb.escapeKey.wasPressedThisFrame;
 
-            bool isMonster = localCommsAgent != null && localCommsAgent.IsMonster;
+            bool isMonster = (localCommsAgent != null && localCommsAgent.IsMonster) || (localPlayer != null && localPlayer.IsMonster);
 
             if (isMonster)
             {
@@ -159,30 +166,27 @@ namespace TheLastSignal.UI
                     localPlayer.IsMovementLocked = true;
                 }
 
-                if (enterPressed)
-                {
-                    SubmitChat();
-                }
-                else if (escPressed)
+                if (escPressed)
                 {
                     CancelChat();
+                }
+                else if (enterPressed)
+                {
+                    SubmitChat(inputField.text);
                 }
             }
             else
             {
                 if (enterPressed)
                 {
-                    // Check if local player is The Shade
-                    if (localCommsAgent != null && localCommsAgent.IsMonster)
-                    {
-                        HandleCommsBlocked("THE SHADE HAS NO TRANSCEIVER // CANNOT TRANSMIT TEXT");
-                        return;
-                    }
-
-                    // Open and focus chat input
                     OpenChatInput();
                 }
             }
+        }
+
+        private void HandleInputFieldSubmit(string text)
+        {
+            SubmitChat(text);
         }
 
         public void OpenChatInput()
@@ -190,30 +194,43 @@ namespace TheLastSignal.UI
             if (inputField == null) return;
 
             inputField.gameObject.SetActive(true);
-            inputField.ActivateInputField();
             inputField.Select();
+            inputField.ActivateInputField();
+
+            if (UnityEngine.EventSystems.EventSystem.current != null)
+            {
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(inputField.gameObject);
+            }
 
             if (localPlayer != null)
             {
                 localPlayer.IsMovementLocked = true;
             }
 
+            submitCooldown = 0.15f;
             lastActivityTime = Time.time;
         }
 
-        public void SubmitChat()
+        public void SubmitChat(string text = null)
         {
             if (inputField == null) return;
 
-            string text = inputField.text;
+            if (text == null) text = inputField.text;
+
             inputField.text = string.Empty;
             inputField.DeactivateInputField();
+
+            if (UnityEngine.EventSystems.EventSystem.current != null)
+            {
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+            }
 
             if (localPlayer != null)
             {
                 localPlayer.IsMovementLocked = false;
             }
 
+            submitCooldown = 0.20f;
             lastActivityTime = Time.time;
 
             if (!string.IsNullOrWhiteSpace(text))
@@ -232,11 +249,17 @@ namespace TheLastSignal.UI
             inputField.text = string.Empty;
             inputField.DeactivateInputField();
 
+            if (UnityEngine.EventSystems.EventSystem.current != null)
+            {
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+            }
+
             if (localPlayer != null)
             {
                 localPlayer.IsMovementLocked = false;
             }
 
+            submitCooldown = 0.15f;
             lastActivityTime = Time.time;
         }
 
@@ -380,6 +403,12 @@ namespace TheLastSignal.UI
 
             if (chatRoot != null && chatRoot.transform.childCount > 0)
             {
+                if (inputField == null) inputField = GetComponentInChildren<TMP_InputField>();
+                if (inputField != null)
+                {
+                    inputField.onSubmit.RemoveListener(HandleInputFieldSubmit);
+                    inputField.onSubmit.AddListener(HandleInputFieldSubmit);
+                }
                 return;
             }
 
@@ -522,6 +551,8 @@ namespace TheLastSignal.UI
             inputField.textComponent = inputText;
             inputField.placeholder = placeholderText;
             inputField.characterLimit = 120;
+            inputField.lineType = TMP_InputField.LineType.SingleLine;
+            inputField.onSubmit.AddListener(HandleInputFieldSubmit);
         }
 
         /// <summary>

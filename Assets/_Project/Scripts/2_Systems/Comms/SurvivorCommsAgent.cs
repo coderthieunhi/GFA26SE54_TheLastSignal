@@ -210,7 +210,7 @@ namespace TheLastSignal.Systems.Comms
                 cleanMsg = cleanMsg.Substring(0, 120);
             }
 
-            if (IsNetworkSessionActive)
+            if (IsNetworkSessionActive && IsSpawned)
             {
                 SubmitChatMessageServerRpc(cleanMsg);
             }
@@ -238,6 +238,12 @@ namespace TheLastSignal.Systems.Comms
 
             // Hidden Information (Rule 5): Filter recipients so The Shade client NEVER receives human radio comms
             List<ulong> survivorClientIds = GetSurvivorClientIds();
+            ulong senderId = rpcParams.Receive.SenderClientId;
+            if (!survivorClientIds.Contains(senderId))
+            {
+                survivorClientIds.Add(senderId);
+            }
+
             if (survivorClientIds.Count == 0) return;
 
             ClientRpcParams targetParams = new ClientRpcParams
@@ -312,6 +318,22 @@ namespace TheLastSignal.Systems.Comms
             List<ulong> survivors = new List<ulong>();
             if (NetworkManager.Singleton == null) return survivors;
 
+            // 1. Check all active PlayerControllers in scene by OwnerClientId
+            PlayerController[] allPlayers = UnityEngine.Object.FindObjectsByType<PlayerController>(UnityEngine.FindObjectsSortMode.None);
+            for (int i = 0; i < allPlayers.Length; i++)
+            {
+                PlayerController pc = allPlayers[i];
+                if (pc == null || !pc.IsSpawned) continue;
+                if (pc.IsMonster) continue; // Exclude The Shade!
+
+                ulong ownerId = pc.OwnerClientId;
+                if (ownerId != excludeClientId && !survivors.Contains(ownerId))
+                {
+                    survivors.Add(ownerId);
+                }
+            }
+
+            // 2. Fallback to ConnectedClientsList
             IReadOnlyList<NetworkClient> clients = NetworkManager.Singleton.ConnectedClientsList;
             for (int i = 0; i < clients.Count; i++)
             {
@@ -321,10 +343,12 @@ namespace TheLastSignal.Systems.Comms
                 if (c.PlayerObject != null && c.PlayerObject.TryGetComponent(out PlayerController ctrl))
                 {
                     // Exclude monster roles
-                    if (!ctrl.IsMonster)
-                    {
-                        survivors.Add(c.ClientId);
-                    }
+                    if (ctrl.IsMonster) continue;
+                }
+
+                if (!survivors.Contains(c.ClientId))
+                {
+                    survivors.Add(c.ClientId);
                 }
             }
 

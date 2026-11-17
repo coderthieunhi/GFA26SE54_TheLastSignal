@@ -41,8 +41,8 @@ namespace TheLastSignal.Entities.Player
         [SerializeField] private bool enableBleedout = false;
         [SerializeField] private float bleedoutDuration = 60f;
 
-        [Header("Debug Controls (H: Damage, J: Heal, K: Revive)")]
-        [SerializeField] private bool enableDebugKeys = true;
+        [Header("Debug Controls")]
+        [SerializeField] private bool enableDebugKeys = false;
 
         // Server-authoritative synchronized network state
         private readonly NetworkVariable<float> currentHealth = new NetworkVariable<float>(
@@ -198,10 +198,7 @@ namespace TheLastSignal.Entities.Player
             Keyboard kb = Keyboard.current;
             if (kb == null) return;
 
-            if (kb.hKey.wasPressedThisFrame)
-            {
-                TakeDamageFromClient(25f);
-            }
+            // 'H' key damage hotkey removed per user request
             if (kb.jKey.wasPressedThisFrame)
             {
                 HealFromClient(25f);
