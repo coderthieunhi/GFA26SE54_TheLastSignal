@@ -241,6 +241,11 @@ namespace TheLastSignal.Entities.Player
                 gameObject.AddComponent<TheLastSignal.Entities.Monster.ShadeCombatController>();
             }
 
+            if (GetComponent<TheLastSignal.Systems.Comms.SurvivorCommsAgent>() == null)
+            {
+                gameObject.AddComponent<TheLastSignal.Systems.Comms.SurvivorCommsAgent>();
+            }
+
             capsuleCollider = GetComponent<CapsuleCollider2D>();
             if (capsuleCollider != null)
             {
@@ -511,6 +516,9 @@ namespace TheLastSignal.Entities.Player
             {
                 cameraFollow.SetTarget(transform);
             }
+
+            // Ensure Survivor Chat & Voice Comms HUD is instantiated on local client
+            TheLastSignal.UI.SurvivorChatUI.GetOrCreateInstance();
         }
 
         private void Update()
